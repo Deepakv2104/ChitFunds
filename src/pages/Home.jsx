@@ -24,8 +24,10 @@ const HomePage = () => {
         <div className="container">
           <div className="left-section">
             <h2>Weclome to ChitFunds !</h2>
+            <br></br>
             <h1>Empowering Financial Growth: Your Partner in Chit Funds</h1>
             <p>XYZ Chit Funds: Your pathway to financial growth and stability. Join us to unlock opportunities and realize your dreams with trusted chit fund solutions.</p>
+            <br></br>
             <div className="button-row">
               <Button variant="success" onClick={handleClick}>Sign Up</Button>
               <Button variant="primary">Login</Button>

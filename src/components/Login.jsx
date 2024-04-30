@@ -16,7 +16,7 @@ const Login = () => {
     };
 
     return (
-        <div className="container">
+        <div className="login">
           <div className="login-screen">
             <div className="login-form">
               <h2>Login</h2>

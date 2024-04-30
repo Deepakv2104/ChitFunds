@@ -8,14 +8,17 @@ import FiveLakhChit from './components/5LakhChit';
 import TenLakhChit from './components/10LakhChit';
 import ExistingChitPage from './pages/ExistingChitPage';
 import NewChitPage from './pages/NewChitPage';
+import Home from './pages/Home'
 // Import other chit pages here
-
+import './App.css'
 const App = () => {
   return (
 
     <Router>
+       <div className="App">
+     
       <Routes>
-      <Route path="/" exact element={<Login />} />
+      <Route path="/" exact element={<Home />} />
       <Route path="/select-options" element={<SelectOptions />} />
       <Route path="/1lakh" element={<OneLakhChit />} />
       <Route path="/2lakh" element={<TwoLakhChit />} />
@@ -25,7 +28,8 @@ const App = () => {
       <Route path="/10lakh" element={<TenLakhChit />} />
       {/* Add routes for other chit pages */}
       </Routes>
-
+   
+      </div>
       
     </Router>
   );

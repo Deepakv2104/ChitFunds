@@ -1,0 +1,76 @@
+/* Homepage styles */
+.homepage {
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    
+  }
+  
+  .homepage .container {
+    display: flex;
+    flex-direction: column; /* Flex column layout by default */
+    padding: 20px;
+  }
+  
+  .homepage .left-section,
+  .homepage .right-section {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 20px;
+  }
+  
+  .homepage .left-section h1 {
+    /* margin-top: 20px; */
+    font-size: 38px;
+    line-height: 44px
+
+  }
+  .homepage .left-section h2 {
+    /* margin-top: 20px; */
+    font-size: 26px;
+    /* line-height: 44px */
+
+  }
+  .homepage .left-section .button-row {
+    display: flex;
+    gap: 10px; /* Adjust the gap between buttons */
+  }
+  
+  .homepage .left-section p {
+    font-size: 16px;
+    
+line-height: 20px;
+    /* padding: 10px; */
+  }
+  
+  .homepage .right-section {
+    display: flex;
+    justify-content: center;
+    border: 3px solid #454242; /* Border around the right section */
+    /* margin: 10px; */
+   border-radius: 10px;
+   
+  }
+  
+  /* Media query for mobile view */
+  @media screen and (min-width: 768px) {
+    .homepage .container {
+      flex-direction: row; /* Flex row layout for screens larger than 768px */
+    }
+  
+    .homepage .left-section,
+    .homepage .right-section {
+      width: 50%;
+      margin-bottom: 0;
+    }
+  }
+  
+  /* Additional styles for Navbar, if needed */
+  .homepage .navbar {
+    /* Your Navbar styles here */
+  }
+  
+  /* Additional styles for LottieAnimation component, if needed */
+  .homepage .lottie-animation {
+    /* Your LottieAnimation styles here */
+  }
+  

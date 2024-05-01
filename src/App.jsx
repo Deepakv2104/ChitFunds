@@ -12,6 +12,10 @@ import AuthPage from './pages/AuthPage'
 import Home from './pages/Home'
 // Import other chit pages here
 import './App.css'
+import Dashboard from './pages/dashboard/dashboard';
+import DashboardHome from './pages/dashboard/dashboardHome';
+import Contacts from './pages/dashboard/Contacts';
+import Settings from './pages/Settings';
 const App = () => {
   return (
 
@@ -21,6 +25,15 @@ const App = () => {
       <Routes>
       <Route path="/" exact element={<Home />} />
       <Route path="/signup" exact element={<AuthPage />} />
+      <Route path="/signup" exact element={<AuthPage />} />
+
+      <Route path="/dashboard" exact element={<Dashboard />} >
+      <Route path="/dashboard/dashboardHome" exact element={<DashboardHome />} />
+      <Route path="/dashboard/contacts" exact element={<Contacts />} />
+      <Route path="/dashboard/settings" exact element={<Settings />} />
+
+
+</Route>
       <Route path="/select-options" element={<SelectOptions />} />
       <Route path="/1lakh" element={<OneLakhChit />} />
       <Route path="/2lakh" element={<TwoLakhChit />} />

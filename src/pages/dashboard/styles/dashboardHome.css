@@ -1,0 +1,21 @@
+.dashboardHome{
+    min-height: 100vh;
+}
+.yellow-star {
+    color: #e3c411; /* Yellow color */
+    font-size: 1.5rem; /* Adjust the size of the star icon */
+    margin-left: 5px;
+  }
+  
+  .text-container {
+    display: flex; /* Make the container flex */
+    align-items: center; /* Align items vertically */
+    
+  }
+  
+  .user-name {
+    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+    font-size: 1.5rem; /* Adjust the font size of the name */
+    font-weight: bold; /* Make the name bold */
+  }
+  

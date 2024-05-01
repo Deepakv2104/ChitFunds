@@ -1,0 +1,75 @@
+.sidebar {
+    width: 200px;
+    height: 100vh;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: -200px;
+    transition: left 0.3s ease-in-out;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .toggle-button {
+    position: absolute;
+    top: 20px;
+    left: 180px;
+    background: none;
+    border: none;
+    color: #000000;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  nav ul li {
+    padding: 15px 0;
+  }
+  
+  nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px 20px;
+  }
+  
+  /* Media Query for Mobile View */
+  @media (max-width: 768px) {
+    .sidebar {
+      bottom: 0;
+      top: initial;
+      left: 0;
+      width: 100%;
+      height: auto;
+    }
+  
+    .toggle-button {
+      left: 20px;
+      top: initial;
+      bottom: 20px;
+    }
+  
+    nav {
+      display: flex;
+      justify-content: space-around;
+    }
+  
+    nav ul {
+      flex-direction: row;
+    }
+  
+    nav ul li {
+      padding: 0;
+    }
+  
+    nav ul li a {
+      padding: 15px 0;
+    }
+  }
+  

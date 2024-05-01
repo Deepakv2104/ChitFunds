@@ -2,7 +2,8 @@
 .homepage {
     width: 100%;
     font-family: 'Roboto', sans-serif;
-    height: 90vh;
+    /* min-height: 100vh; */
+    /* margin-top: 50px; */
  
   }
   
@@ -51,12 +52,14 @@
     border: 3px solid #454242; /* Border around the right section */
     /* margin: 10px; */
    border-radius: 10px;
+   width: 100%;
+   margin-bottom: 20px;
    
   }
   
   /* Media query for mobile view */
   @media screen and (min-width: 768px) {
-    .homepage .container {
+     .homepage .container {
       flex-direction: row; /* Flex row layout for screens larger than 768px */
     }
   
@@ -67,13 +70,5 @@
     }
   }
   
-  /* Additional styles for Navbar, if needed */
-  .homepage .navbar {
-    /* Your Navbar styles here */
-  }
-  
-  /* Additional styles for LottieAnimation component, if needed */
-  .homepage .lottie-animation {
-    /* Your LottieAnimation styles here */
-  }
+
   

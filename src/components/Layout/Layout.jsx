@@ -22,7 +22,10 @@ const Layout = ({ children }) => {
   return (
     <div className="layout">
       <Navbar />
-      {children}
+      <div style={{ paddingBottom: isMobile ? "70px" : "0" }}>
+        {/* Add bottom padding based on whether it's mobile or not */}
+        {children}
+      </div>
       {/* Render the appropriate footer component based on screen width */}
       {isMobile ? <DashboardFooter /> : <Footer />}
     </div>

@@ -1,9 +1,10 @@
 import React from 'react';
 import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 
-export default function App() {
+export default function Footer() {
   return (
-    <MDBFooter style={{ backgroundColor: '#0f172a', color: '#fff', padding:'20px' }} className='text-center text-lg-start'>
+    <div  style={{ backgroundColor: '#0f172a', color: '#fff', padding:'20px' }}>
+ <MDBFooter  className='text-center text-lg-start'>
       {/* <section className='d-flex justify-content-center justify-content-lg-between p-4 border-bottom'>
         <div className='me-5 d-none d-lg-block'>
           <span>Get connected with us on social networks:</span>
@@ -122,5 +123,7 @@ export default function App() {
 </div>
 
     </MDBFooter>
+    </div>
+   
   );
 }

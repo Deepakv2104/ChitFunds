@@ -1,51 +1,53 @@
 @media (max-width: 768px) {
-  
-    .dashboard-footer {
-      background-color: #0f172a;
-      color: #ffffff;
-      padding: 1rem;
-      text-align: center;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.1);
-    }
-  
-    .tab-button {
-      border: none;
-      background-color: transparent;
-      color: #ffffff;
-      font-size: 1.2rem;
-      padding: 0.5rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-    }
-  
-    .icon {
-      font-size: 1.5rem; /* Make the icon a bit bigger */
-    }
-  
-    .text {
-      font-size: 0.9rem;
-    }
-  
-    .tab-button:hover {
-      background-color: #a5fbff; /* Change background color on hover */
-      border-radius: 10px;
-      color: black;
-    }
-
- 
-  
-    .tab-button:focus {
-      outline: none;
-    }
+  .dashboard-footer {
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 1rem;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.1);
   }
+
+  .tab-button {
+    border: none;
+    background-color: transparent;
+    color: #ffffff;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .icon {
+    font-size: 1.5rem; /* Make the icon a bit bigger */
+  }
+
+  .text {
+    font-size: 0.9rem;
+  }
+
+  .tab-button:hover {
+    background-color: #a5fbff; /* Change background color on hover */
+    border-radius: 10px;
+    color: black;
+  }
+
+  .tab-button:focus {
+    outline: none;
+  }
+
+  /* Add padding to the bottom of the content area to prevent it from flowing behind the footer */
+  .content-area {
+    padding-bottom: 60px; /* Adjust as needed */
+  }
+}

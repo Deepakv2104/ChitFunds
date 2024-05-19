@@ -100,7 +100,7 @@ const FilterableContactTable = () => {
       <br></br>
       <br></br>
       <br></br>
-      <h1><center>Client Contacts - 1 Lakh</center></h1>
+      <h1><center>Client  - 1 Lakh</center></h1>
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
       <NewContactRow addContact={addContact} />
       <ContactTable contacts={contacts} filterText={filterText} />

@@ -1,84 +1,184 @@
 .new-chit-page {
-    font-family: 'Arial', sans-serif;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 50px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 100vh;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  height: 80vh;
+}
+
+.left-container, .right-container {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  /* background-color: #b9a2a2; */
+  border: 2px solid #007BFF;
+  position: relative;
+}
+
+.group-name-input, .search-input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: block;
+  box-sizing: border-box;
+}
+
+.selected-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.create-button {
+  position: absolute; /* Position the button absolutely */
+  bottom: 20px; /* Adjust this value to set the distance from the bottom */
+  left: 50%; /* Align the button horizontally */
+  transform: translateX(-50%); /* Center the button horizontally */
+}
+
+.create-button:hover {
+  background-color: #218838; /* Darker green on hover */
+  border-color: #218838; /* Darker green border on hover */
+}
+
+.chip {
+  display: flex;
+
+  align-items: center;
+  padding: 8px 15px; /* Adjusted padding */
+  /* margin: 5px; */
+  border: 2px solid #007BFF; /* Outlined style */
+  border-radius: 20px; /* Reduced border radius */
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.chip:hover {
+  background-color: #f0f8ff;
+  border-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.chip img, .chip .MuiAvatar-root {
+  margin-right: 2px;
+  width: 24px; /* Reduced avatar size */
+  height: 24px; /* Reduced avatar size */
+}
+
+.chip-name {
+  flex-grow: 1;
+  margin-right: 8px; /* Reduced margin */
+  font-size: 0.9rem; /* Reduced font size */
+}
+
+.chip button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #ff0000;
+  font-weight: bold;
+  padding: 0;
+  transition: color 0.3s;
+}
+
+.chip button:hover {
+  color: #b30000;
+}
+.available-contacts {
+  margin-top: 20px;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.contact-row:hover {
+  background-color: #ffffff;
+}
+
+.contact-name {
+  margin-left: 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .flex-container {
+      flex-direction: column;
   }
-  
-  h2 {
-    text-align: center;
-    color: #333;
+
+  .left-container, .right-container {
+      margin-bottom: 20px;
   }
-  
-  .group-name-input, .search-input {
-    width: calc(100% - 20px);
-    margin: 10px auto;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    display: block;
-  }
-  
-  .selected-contacts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  
+}
+
+@media (max-width: 768px) {
   .chip {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px; /* Adjusted padding */
     margin: 5px;
-    background-color: #e0e0e0;
-    border-radius: 25px;
   }
-  
+
   .chip img, .chip .MuiAvatar-root {
-    margin-right: 10px;
+    margin-right: 10px; /* Adjusted margin */
+    width: 32px; /* Increased avatar size */
+    height: 32px; /* Increased avatar size */
   }
-  
-  .chip button {
-    border: none;
-    background: none;
-    margin-left: 10px;
-    cursor: pointer;
-    color: red;
-    font-weight: bold;
-    padding: 0;
+
+  .chip-name {
+    margin-right: 10px; /* Adjusted margin */
+    font-size: 1rem; /* Increased font size */
   }
-  
-  .available-contacts {
-    width: 100%;
-    border-collapse: collapse;
+  .chip-content {
+    display: flex;
+    align-items: center; /* Align button and name horizontally */
   }
-  
-  .available-contacts tr {
-    cursor: pointer;
-    transition: background-color 0.3s;
+
+
+}
+
+@media (max-width: 480px) {
+  .chip {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .available-contacts tr:hover {
-    background-color: #f1f1f1;
+
+  .chip img, .chip .MuiAvatar-root {
+    margin-right: 0;
+    margin-bottom: 5px;
   }
-  
-  .available-contacts td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
+
+  .chip-name {
+    margin-right: 0;
   }
-  
-  .available-contacts img, .available-contacts .MuiAvatar-root {
-    margin-right: 10px;
-    width: 40px;
-    height: 40px;
-  }
-  
+}

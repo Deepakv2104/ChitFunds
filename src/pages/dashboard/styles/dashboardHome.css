@@ -1,31 +1,23 @@
 .dashboardHome{
     min-height: 100vh;
     background-color: #e1d9d9;
+    
 }
-.yellow-star {
-    color: #e3c411; /* Yellow color */
-    font-size: 1.5rem; /* Adjust the size of the star icon */
-    margin-left: 5px;
-  }
+
   
-  .text-container {
-    display: flex; /* Make the container flex */
-    align-items: center; /* Align items vertically */
-    margin: 5px 0 5px 0 ;
-  }
-  
-  .user-name {
-    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
-    font-size: 1.5rem; /* Adjust the font size of the name */
-    font-weight: bold; /* Make the name bold */
-    /* color: white; */
-  }
+
   .image-grid {
     display: grid;
     grid-gap: 20px; /* Gap between grid items */
     cursor: pointer;
   }
   
+  .section-titles{
+    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+    font-size: 1.5rem; /* Adjust the font size of the name */
+    font-weight: bold; /* Make the name bold */
+
+  }
   /* Large devices (laptops, desktops) */
   @media (min-width: 1024px) {
     .image-grid {

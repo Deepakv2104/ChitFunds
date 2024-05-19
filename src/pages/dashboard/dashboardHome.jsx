@@ -41,18 +41,11 @@ const DashboardHome = () => {
 
   return (
     <div className="dashboardHome w-full sm:flex p-2 items-end">
+      <h2 >Chit Amounts</h2>
+<hr style={{ width: '100%', border: '1px solid black' }}/>
       <div className="sm:flex-grow flex justify-between">
         <div>
-          <div className="flex items-center">
-            <div className="text-container">
-              <div className="user-name">
-                Hello {userData ? userData.name : 'Guest'}
-              </div>
-              <div className="flex items-center ml-2">
-                <FaStar className="yellow-star" />
-              </div>
-            </div>
-          </div>
+  
           <div className="image-grid">
             <img
               src={oneLakh}

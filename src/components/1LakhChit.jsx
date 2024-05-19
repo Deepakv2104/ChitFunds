@@ -9,7 +9,7 @@ const OneLakhChit = () => {
                 <Link
                     to="/existingchit?title=Your existing's chit"
                     style={{
-                        display: 'inline-block',
+                        display: 'inline-block',    
                         padding: '10px 20px',
                         backgroundColor: '#4caf50',
                         color: 'white',
@@ -22,7 +22,7 @@ const OneLakhChit = () => {
                     Existing Chit
                 </Link>
                 <Link
-                    to="/newchit?title=Create a new chit"
+                    to="NewChitPage"
                     style={{
                         display: 'inline-block',
                         padding: '10px 20px',

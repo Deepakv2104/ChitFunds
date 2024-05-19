@@ -8,35 +8,41 @@ nav {
   align-items: center;
   background-color: #0f172a;
   color: white;
-  position: sticky;
+  /* position: sticky; */
   top: 0;
-  z-index: 2;
+    z-index: 2;
   height: 50px;
-
-}
-<div className="text-container flex items-center justify-between">
-<div className="flex items-center">
-  <div className="user-name">
-    Hello {userData ? userData.name : 'Guest'}
-  </div>
-  <FaStar className="yellow-star ml-2" />
-</div>
-<div className="flex items-center">
-  <FaBell className="notification-icon mr-4" /> {/* Notification icon */}
-  <FaUser className="profile-avatar rounded-full" /> {/* Profile avatar icon */}
-</div>
-</div>
-
-.text-container {
-  display: flex; /* Make the container flex */
-  align-items: center; /* Align items vertically */
-  margin: 5px 0 5px 0 ;
-  /* background-color: white; */
-  padding: 5px;
+  margin-bottom: 50px;
+  position:fixed;
+  width: 100%;
   
-justify-content: space-between;
+
 
 }
+.text-nav{
+  width: 100%;
+  background-color: rgb(12, 59, 43);
+  display: flex;
+  padding: 10px;
+
+}
+
+
+.user-name {
+  font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+  font-size: 1.5rem; /* Adjust the font size of the name */
+  font-weight: bold; /* Make the name bold */
+  color: rgb(255, 255, 255);
+}
+
+.yellow-star {
+  color: #e3c411; /* Yellow color */
+  font-size: 1.5rem; /* Adjust the size of the star icon */
+  margin-left: 5px;
+}
+
+
+
 nav .title {
   font-size: 1.5rem;
   margin: 1rem;

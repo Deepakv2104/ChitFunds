@@ -5,7 +5,7 @@ import { db } from '../../Authentication/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import "./Navbar.css";
 import { Link, NavLink } from "react-router-dom";
-import { FaBell, FaUser } from 'react-icons/fa'; // Import the icons
+import { FaBell } from 'react-icons/fa'; // Import the icons
  const Navbar = () => {
   const { currentUser } = useAuth();
 
@@ -56,23 +56,15 @@ import { FaBell, FaUser } from 'react-icons/fa'; // Import the icons
       </ul>
      
     </nav>
-    <nav  className="text-nav">
-    <div className="flex items-center">
-    <div className="text-container flex items-center justify-between">
-    <div className="flex items-center">
-      <div className="user-name">
-        Hello {userData ? userData.name : 'Guest'}
-      </div>
-      <FaStar className="yellow-star ml-2" />
+    {/* <div  className="text-nav">
+    <div className="user-name">
+      Hello {userData ? userData.name : 'Guest'}
     </div>
-    <div className="flex items-center">
-      <FaBell className="notification-icon mr-4" /> {/* Notification icon */}
-      <FaUser className="profile-avatar rounded-full" /> {/* Profile avatar icon */}
-    </div>
+    <div className="flex items-center ml-2">
+      <FaStar className="yellow-star" />
   </div>
-    </div>
-   
-    </nav>
+  
+    </div> */}
     </div>
   );
 };

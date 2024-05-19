@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import './NewChitPage.css';
-
+import { Button } from 'react-bootstrap';
 const contacts = [
   { id: 1, name: 'John Doe', image: 'https://via.placeholder.com/40' },
   { id: 2, name: 'Jane Smith', image: 'https://via.placeholder.com/40' },
@@ -14,10 +14,11 @@ const contacts = [
 const Chip = ({ contact, onRemove }) => (
   <div className="chip">
     <Avatar alt={contact.name} src={contact.image} />
-    {contact.name}
+    <span className="chip-name">{contact.name}</span>
     <button onClick={() => onRemove(contact.id)}>x</button>
   </div>
 );
+
 
 const NewChitPage = () => {
   const [groupName, setGroupName] = useState('');
@@ -43,7 +44,12 @@ const NewChitPage = () => {
   const handleGroupNameChange = (event) => {
     setGroupName(event.target.value);
   };
-
+  const handleCreateGroup = () => {
+    // Here you can define the logic to create the group using the groupName and selectedContacts.
+    // For demonstration, let's just log the groupName and selectedContacts to console.
+    console.log("Group Name:", groupName);
+    console.log("Selected Contacts:", selectedContacts);
+  };
   const filteredContacts = availableContacts.filter(contact =>
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -51,35 +57,48 @@ const NewChitPage = () => {
   return (
     <div className="new-chit-page">
       <h2>Create a New Group</h2>
-      <input
-        type="text"
-        placeholder="Group Name"
-        value={groupName}
-        onChange={handleGroupNameChange}
-        className="group-name-input"
-      />
-      <div className="selected-contacts">
-        {selectedContacts.map(contact => (
-          <Chip key={contact.id} contact={contact} onRemove={handleRemoveContact} />
-        ))}
+      <div className="flex-container">
+      <div className="left-container">
+  <p>Group name</p>
+  <input
+    type="text"
+    placeholder="Group Name"
+    value={groupName}
+    onChange={handleGroupNameChange}
+    className="group-name-input"
+  />
+  <p>Selected Contacts</p>
+
+  <div className="selected-contacts">
+    {selectedContacts.map(contact => (
+      <Chip key={contact.id} contact={contact} onRemove={handleRemoveContact} />
+    ))}
+  </div>
+  <Button variant="success" className="create-button" onClick={handleCreateGroup}>
+    Create
+  </Button>
+</div>
+        <div className="right-container">
+        <p>Search contact</p>
+
+          <input
+            type="text"
+            placeholder="Search Contacts"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+          <div className="available-contacts">
+            {filteredContacts.map(contact => (
+              <div key={contact.id} className="contact-row" onClick={() => handleAddContact(contact)}>
+                <Avatar alt={contact.name} src={contact.image} />
+                <span className="contact-name">{contact.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      <input
-        type="text"
-        placeholder="Search Contacts"
-        value={searchTerm}
-        onChange={handleSearchChange}
-        className="search-input"
-      />
-      <table className="available-contacts">
-        <tbody>
-          {filteredContacts.map(contact => (
-            <tr key={contact.id} onClick={() => handleAddContact(contact)}>
-              <td><Avatar alt={contact.name} src={contact.image} /></td>
-              <td>{contact.name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    
     </div>
   );
 };

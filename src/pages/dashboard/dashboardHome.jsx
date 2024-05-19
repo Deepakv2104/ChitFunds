@@ -37,17 +37,9 @@ const DashboardHome = () => {
     <div className="dashboardHome w-full sm:flex p-2 items-end">
       <div className="sm:flex-grow flex justify-between">
         <div className="">
-          <div className="flex items-center">
-            <div className="text-container">
-              <div className="user-name">
-                Hello {userData ? userData.name : 'Guest'}
-              </div>
-              <div className="flex items-center ml-2">
-                <FaStar className="yellow-star" />
-              </div>
-            </div>
-          </div>
-          <div className="image-grid">
+      
+          <h2 className='section-titles'>CHIT AMOUNTS</h2>
+          <hr style={{ width: '100%', border: '1px solid black' }}/>          <div className="image-grid">
             <img src={oneLakh} alt="Image 1" className="grid-item" />
             <img src={twoLakh} alt="Image 2" className="grid-item" />
             <img src={fiveLakh} alt="Image 3" className="grid-item" />

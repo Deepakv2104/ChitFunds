@@ -70,13 +70,13 @@ const DashboardHome = () => {
               src={fiveLakh}
               alt="Image 3"
               className="grid-item"
-              onClick={() => handleImageClick('/path-five-lakh')}
+              onClick={() => handleImageClick('5lakh')}
             />
             <img
               src={tenLakh}
               alt="Image 4"
               className="grid-item"
-              onClick={() => handleImageClick('/path-ten-lakh')}
+              onClick={() => handleImageClick('10lakh')}
             />
           </div>
         </div>

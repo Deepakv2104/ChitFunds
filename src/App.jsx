@@ -35,8 +35,8 @@ const App = () => {
       <Route path="/dashboard/dashboardHome/1lakh" exact element={<OneLakhChit />} />
       <Route path="/dashboard/dashboardHome/1lakh/NewChitpage" exact element={<NewChitPage />} />
       <Route path="/dashboard/dashboardHome/2lakh" exact element={<TwoLakhChit />} />
-      
-
+      <Route path="/dashboard/dashboardHome/5lakh" exact element={<FiveLakhChit />} />
+      <Route path="/dashboard/dashboardHome/10lakh" exact element={<TenLakhChit />} />
 
 
 </Route>

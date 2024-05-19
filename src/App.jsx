@@ -7,7 +7,7 @@ import TwoLakhChit from './components/2LakhChit';
 import FiveLakhChit from './components/5LakhChit';
 import TenLakhChit from './components/10LakhChit';
 import ExistingChitPage from './pages/ExistingChitPage';
-import NewChitPage from './pages/NewChitPage';
+import NewChitPage from './pages/dashboard/NewChitPage';
 import AuthPage from './pages/AuthPage'
 import Home from './pages/Home'
 // Import other chit pages here
@@ -26,11 +26,17 @@ const App = () => {
       <Route path="/" exact element={<Home />} />
       <Route path="/signup" exact element={<AuthPage />} />
       <Route path="/signup" exact element={<AuthPage />} />
+      
 
       <Route path="/dashboard" exact element={<Dashboard />} >
       <Route path="/dashboard/dashboardHome" exact element={<DashboardHome />} />
       <Route path="/dashboard/contacts" exact element={<Contacts />} />
       <Route path="/dashboard/settings" exact element={<Settings />} />
+      <Route path="/dashboard/dashboardHome/1lakh" exact element={<OneLakhChit />} />
+      <Route path="/dashboard/dashboardHome/1lakh/NewChitpage" exact element={<NewChitPage />} />
+      <Route path="/dashboard/dashboardHome/2lakh" exact element={<TwoLakhChit />} />
+      
+
 
 
 </Route>

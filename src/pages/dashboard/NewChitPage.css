@@ -1,0 +1,84 @@
+.new-chit-page {
+    font-family: 'Arial', sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .group-name-input, .search-input {
+    width: calc(100% - 20px);
+    margin: 10px auto;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;
+  }
+  
+  .selected-contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .chip {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin: 5px;
+    background-color: #e0e0e0;
+    border-radius: 25px;
+  }
+  
+  .chip img, .chip .MuiAvatar-root {
+    margin-right: 10px;
+  }
+  
+  .chip button {
+    border: none;
+    background: none;
+    margin-left: 10px;
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+    padding: 0;
+  }
+  
+  .available-contacts {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .available-contacts tr {
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .available-contacts tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .available-contacts td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .available-contacts img, .available-contacts .MuiAvatar-root {
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+  

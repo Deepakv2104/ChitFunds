@@ -1,0 +1,25 @@
+/* Layout.css */
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh ; /* Ensure the layout takes the full viewport height */
+  }
+  
+  .navbar {
+    flex: 0 0 auto; /* Ensure the navbar takes its natural height */
+  }
+  
+  .content {
+    flex: 1 0 auto; /* Allow the content to grow and take up available space */
+    padding-top: 20px; /* Optional: Prevent content from being hidden behind the navbar */
+  }
+  
+  .footer {
+    flex: 0 0 auto; /* Ensure the footer takes its natural height */
+  }
+  
+  .content.mobile {
+    padding-bottom: 70px; /* Prevent content from being hidden behind the footer on mobile */
+  }
+  

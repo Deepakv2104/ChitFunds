@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar.jsx";
 import Footer from "./Footer.jsx";
-import DashboardFooter from "./DashboardFooter.jsx"; // Import the DashboardFooter component
+import DashboardFooter from "./DashboardFooter.jsx";
+import "./Layout.css"; // Import the CSS file
 
 const Layout = ({ children }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -21,13 +22,15 @@ const Layout = ({ children }) => {
 
   return (
     <div className="layout">
-      <Navbar />
-      <div style={{ paddingBottom: isMobile ? "70px" : "0" }}>
-        {/* Add bottom padding based on whether it's mobile or not */}
+      <div className="navbar">
+        <Navbar />
+      </div>
+      <div className={`content ${isMobile ? 'mobile' : ''}`}>
         {children}
       </div>
-      {/* Render the appropriate footer component based on screen width */}
-      {isMobile ? <DashboardFooter /> : <Footer />}
+      <div className="footer">
+        {isMobile ? <DashboardFooter /> : <Footer />}
+      </div>
     </div>
   );
 };

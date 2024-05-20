@@ -1,6 +1,10 @@
 .dashboardHome{
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     background-color: #e1d9d9;
+    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+margin-top: 10px;
     
 }
 
@@ -12,9 +16,8 @@
     cursor: pointer;
   }
   
-  .section-titles{
+  .section-title{
     font-family: 'Roboto', sans-serif; /* Apply Roboto font */
-    font-size: 1.5rem; /* Adjust the font size of the name */
     font-weight: bold; /* Make the name bold */
 
   }
@@ -42,5 +45,21 @@
     .image-grid {
       grid-template-columns: repeat(1, 1fr); /* Single column */
     }
+  }
+  
+  .dashboardHome .title {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+    font-weight: bold;
+    font-size: 24px;
+
+  }
+  
+  .dashboardHome .divider {
+    width: 100%;
+    border: 1px solid black;
+    margin: 0; /* Remove default margin */
+    margin-top: 4px; /* Adjust the margin as needed */
   }
   

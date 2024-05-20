@@ -23,6 +23,7 @@ const HomePage = () => {
       <div className="homepage">
         <div className="container">
           <div className="left-section">
+            <br></br>
             <h2>Weclome to ChitFunds !</h2>
             <br></br>
             <h1>Empowering Financial Growth: Your Partner in Chit Funds</h1>

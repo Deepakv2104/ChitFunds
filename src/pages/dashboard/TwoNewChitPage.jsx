@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
-import './NewChitPage.css';
+import './TwoNewChitPage.css';
 import { Button } from 'react-bootstrap';
 
 const ContactRow = ({ contact }) => (
@@ -81,7 +81,7 @@ const NewContactRow = ({ addContact }) => {
   );
 };
 
-const FilterableContactTable = () => {
+const TwoNewChitPage = () => {
   const [filterText, setFilterText] = useState('');
   const [contacts, setContacts] = useState([
     { key: 1, name: 'Tom Jackson', phone: '555-444-333', alternatePhone: '555-555-555', email: 'tom@gmail.com' },
@@ -100,7 +100,7 @@ const FilterableContactTable = () => {
       <br></br>
       <br></br>
       <br></br>
-      <h1><center>Client Contacts - 1 Lakh</center></h1>
+      <h1><center>Client Contacts - 2 Lakh</center></h1>
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
       <NewContactRow addContact={addContact} />
       <ContactTable contacts={contacts} filterText={filterText} />
@@ -108,4 +108,4 @@ const FilterableContactTable = () => {
   );
 };
 
-export default FilterableContactTable;
+export default TwoNewChitPage;

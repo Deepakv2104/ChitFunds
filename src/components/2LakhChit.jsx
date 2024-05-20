@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const OneLakhChit = () => {
+const TwoLakhChit = () => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', height: '100vh', marginTop: '30px'}}>
+            <br></br>
+            <br></br>
             <h2>2 Lakh Chit Page</h2>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Link
@@ -41,4 +43,4 @@ const OneLakhChit = () => {
     );
 };
 
-export default OneLakhChit;
+export default TwoLakhChit;

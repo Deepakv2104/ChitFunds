@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
-import './NewChitPage.css';
 import { Button } from 'react-bootstrap';
-const contacts = [
-  { id: 1, name: 'John Doe', image: 'https://via.placeholder.com/40' },
-  { id: 2, name: 'Jane Smith', image: 'https://via.placeholder.com/40' },
-  { id: 3, name: 'Alice Johnson', image: 'https://via.placeholder.com/40' },
-  { id: 4, name: 'Bob Brown', image: 'https://via.placeholder.com/40' },
-  { id: 5, name: 'Michael Clark', image: 'https://via.placeholder.com/40' },
-  { id: 6, name: 'Emily Davis', image: 'https://via.placeholder.com/40' }
-];
-
-const Chip = ({ contact, onRemove }) => (
-  <div className="chip">
-    <Avatar alt={contact.name} src={contact.image} />
-    <span className="chip-name">{contact.name}</span>
-    <button onClick={() => onRemove(contact.id)}>x</button>
-  </div>
-);
-
+import { collection, addDoc, getDocs, doc, setDoc } from 'firebase/firestore';
+import { db } from '../../Authentication/firebase'; // Adjust the path as necessary
 
 const NewChitPage = () => {
   const [groupName, setGroupName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedContacts, setSelectedContacts] = useState([]);
-  const [availableContacts, setAvailableContacts] = useState(contacts);
+  const [availableContacts, setAvailableContacts] = useState([]);
+  const [selectedValue, setSelectedValue] = useState('');
+
+  // Fetch contacts from Firestore on component mount
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const contactsSnapshot = await getDocs(collection(db, 'contacts'));
+        const contactsData = contactsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setAvailableContacts(contactsData);
+      } catch (error) {
+        console.error('Error fetching contacts:', error);
+      }
+    };
+
+    fetchContacts();
+  }, []);
 
   const handleAddContact = (contact) => {
     setSelectedContacts([...selectedContacts, contact]);
@@ -44,43 +44,75 @@ const NewChitPage = () => {
   const handleGroupNameChange = (event) => {
     setGroupName(event.target.value);
   };
-  const handleCreateGroup = () => {
-    // Here you can define the logic to create the group using the groupName and selectedContacts.
-    // For demonstration, let's just log the groupName and selectedContacts to console.
-    console.log("Group Name:", groupName);
-    console.log("Selected Contacts:", selectedContacts);
+
+  const handleDropdownChange = (event) => {
+    setSelectedValue(event.target.value);
   };
+
+  const handleCreateGroup = async () => {
+    try {
+      const newGroupRef = doc(collection(db, 'groups')); // Create a reference to a new document
+      const groupId = newGroupRef.id; // Get the generated ID for the new document
+
+      // Push selected group name, selected value, and selected contacts to Firebase database
+      await setDoc(newGroupRef, { 
+        groupId: groupId,
+        groupName, 
+        selectedValue, 
+        selectedContacts 
+      });
+
+      // Reset form fields
+      setGroupName('');
+      setSelectedValue('');
+      setSelectedContacts([]);
+      setSearchTerm('');
+    } catch (error) {
+      console.error('Error creating group:', error);
+    }
+  };
+
   const filteredContacts = availableContacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+    contact && contact.name && contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="new-chit-page">
       <h2>Create a New Group</h2>
       <div className="flex-container">
-      <div className="left-container">
-  <p>Group name</p>
-  <input
-    type="text"
-    placeholder="Group Name"
-    value={groupName}
-    onChange={handleGroupNameChange}
-    className="group-name-input"
-  />
-  <p>Selected Contacts</p>
-
-  <div className="selected-contacts">
-    {selectedContacts.map(contact => (
-      <Chip key={contact.id} contact={contact} onRemove={handleRemoveContact} />
-    ))}
-  </div>
-  <Button variant="success" className="create-button" onClick={handleCreateGroup}>
-    Create
-  </Button>
-</div>
+        <div className="left-container">
+          <p>Group name</p>
+          <input
+            type="text"
+            placeholder="Group Name"
+            value={groupName}
+            onChange={handleGroupNameChange}
+            className="group-name-input"
+          />
+          <p>Group Value</p>
+          <select value={selectedValue} onChange={handleDropdownChange}>
+            <option value="">Select Value</option>
+            <option value="1">1 lakh</option>
+            <option value="2">2 lakhs</option>
+            <option value="5">5 lakhs</option>
+            <option value="10">10 lakhs</option>
+          </select>
+          <p>Selected Contacts</p>
+          <div className="selected-contacts">
+            {selectedContacts.map(contact => (
+              <div key={contact.id} className="chip">
+                <Avatar alt={contact.name} src={contact.image} />
+                <span className="chip-name">{contact.name}</span>
+                <button onClick={() => handleRemoveContact(contact.id)}>x</button>
+              </div>
+            ))}
+          </div>
+          <Button variant="success" className="create-button" onClick={handleCreateGroup}>
+            Create
+          </Button>
+        </div>
         <div className="right-container">
-        <p>Search contact</p>
-
+          <p>Search contact</p>
           <input
             type="text"
             placeholder="Search Contacts"
@@ -98,7 +130,6 @@ const NewChitPage = () => {
           </div>
         </div>
       </div>
-    
     </div>
   );
 };

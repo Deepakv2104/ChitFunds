@@ -1,6 +1,8 @@
 .dashboard{
     /* margin-top: 50px; */
     min-height: 100vh;
+    background-color: #e1d9d9;
+
 }
 .yellow-star {
     color: #ffd700; /* Yellow color */

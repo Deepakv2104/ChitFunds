@@ -10,7 +10,6 @@ const contacts = [
   { id: 5, name: 'Michael Clark', image: 'https://via.placeholder.com/40' },
   { id: 6, name: 'Emily Davis', image: 'https://via.placeholder.com/40' }
 ];
-
 const Chip = ({ contact, onRemove }) => (
   <div className="chip">
     <Avatar alt={contact.name} src={contact.image} />
@@ -18,29 +17,23 @@ const Chip = ({ contact, onRemove }) => (
     <button onClick={() => onRemove(contact.id)}>x</button>
   </div>
 );
-
-
 const NewChitPage = () => {
   const [groupName, setGroupName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [availableContacts, setAvailableContacts] = useState(contacts);
-
   const handleAddContact = (contact) => {
     setSelectedContacts([...selectedContacts, contact]);
     setAvailableContacts(availableContacts.filter(c => c.id !== contact.id));
   };
-
   const handleRemoveContact = (id) => {
     const contactToRemove = selectedContacts.find(c => c.id === id);
     setAvailableContacts([...availableContacts, contactToRemove]);
     setSelectedContacts(selectedContacts.filter(c => c.id !== id));
   };
-
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
   const handleGroupNameChange = (event) => {
     setGroupName(event.target.value);
   };
@@ -53,7 +46,6 @@ const NewChitPage = () => {
   const filteredContacts = availableContacts.filter(contact =>
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   return (
     <div className="new-chit-page">
       <h2>Create a New Group</h2>
@@ -68,7 +60,6 @@ const NewChitPage = () => {
     className="group-name-input"
   />
   <p>Selected Contacts</p>
-
   <div className="selected-contacts">
     {selectedContacts.map(contact => (
       <Chip key={contact.id} contact={contact} onRemove={handleRemoveContact} />

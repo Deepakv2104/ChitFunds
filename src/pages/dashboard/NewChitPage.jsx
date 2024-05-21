@@ -3,7 +3,7 @@ import Avatar from '@mui/material/Avatar';
 import { Button } from 'react-bootstrap';
 import { collection, addDoc, getDocs, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../Authentication/firebase'; // Adjust the path as necessary
-
+import './NewChitPage.css'
 const NewChitPage = () => {
   const [groupName, setGroupName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');

@@ -66,7 +66,7 @@ const DashboardHome = () => {
 
   const handleExistingClick = () => {
     setIsModalOpen(false);
-    navigate(`/existing-path/${selectedPath}`); // Navigate to the 'existing' path with the selected path
+    navigate(`existingChits`); // Navigate to the 'existing' path with the selected path
   };
 
   return (
@@ -80,25 +80,25 @@ const DashboardHome = () => {
               src={oneLakh}
               alt="Image 1"
               className="grid-item"
-              onClick={() => handleImageClick('1lakh')}
+              onClick={() => handleImageClick('NewChitPage')}
             />
             <img
               src={twoLakh}
               alt="Image 2"
               className="grid-item"
-              onClick={() => handleImageClick('2lakh')}
+              onClick={() => handleImageClick('NewChitPage')}
             />
             <img
               src={fiveLakh}
               alt="Image 3"
               className="grid-item"
-              onClick={() => handleImageClick('5lakh')}
+              onClick={() => handleImageClick('NewChitPage')}
             />
             <img
               src={tenLakh}
               alt="Image 4"
               className="grid-item"
-              onClick={() => handleImageClick('10lakh')}
+              onClick={() => handleImageClick('NewChitPage')}
             />
           </div>
         </div>

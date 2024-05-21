@@ -2,110 +2,105 @@ import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import './NewChitPage.css';
 import { Button } from 'react-bootstrap';
+const contacts = [
+  { id: 1, name: 'John Doe', image: 'https://via.placeholder.com/40' },
+  { id: 2, name: 'Jane Smith', image: 'https://via.placeholder.com/40' },
+  { id: 3, name: 'Alice Johnson', image: 'https://via.placeholder.com/40' },
+  { id: 4, name: 'Bob Brown', image: 'https://via.placeholder.com/40' },
+  { id: 5, name: 'Michael Clark', image: 'https://via.placeholder.com/40' },
+  { id: 6, name: 'Emily Davis', image: 'https://via.placeholder.com/40' }
+];
 
-const ContactRow = ({ contact }) => (
-  <tr>
-    <td>{contact.name}</td>
-    <td>{contact.phone}</td>
-    <td>{contact.alternatePhone}</td>
-    <td>{contact.email}</td>
-  </tr>
+const Chip = ({ contact, onRemove }) => (
+  <div className="chip">
+    <Avatar alt={contact.name} src={contact.image} />
+    <span className="chip-name">{contact.name}</span>
+    <button onClick={() => onRemove(contact.id)}>x</button>
+  </div>
 );
 
-const ContactTable = ({ contacts, filterText }) => {
-  const rows = contacts
-    .filter(contact => contact.name.toLowerCase().includes(filterText.toLowerCase()))
-    .map(contact => <ContactRow key={contact.key} contact={contact} />);
-  
-  return (
-    <table className='table table-hover'>
-      <thead>
-        <tr>
-          <th><i className="fa fa-fw fa-user"></i>Name</th>
-          <th><i className="fa fa-fw fa-phone"></i>Phone</th>
-          <th><i className="fa fa-fw fa-phone"></i>Alternate Phone</th>
-          <th><i className="fa fa-fw fa-envelope"></i>Email</th>
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
-  );
-};
 
-const SearchBar = ({ filterText, onFilterTextInput }) => (
-  <form>
-    <input
-      className="form-control"
-      type="text"
-      placeholder="Search..."
-      value={filterText}
-      onChange={e => onFilterTextInput(e.target.value)}
-    />
-  </form>
-);
+const NewChitPage = () => {
+  const [groupName, setGroupName] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [availableContacts, setAvailableContacts] = useState(contacts);
 
-const NewContactRow = ({ addContact }) => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const { name, phone, alternatePhone, email } = event.target.elements;
-    const contact = {
-      name: name.value,
-      phone: phone.value,
-      alternatePhone: alternatePhone.value,
-      email: email.value,
-      key: new Date().getTime()
-    };
-    addContact(contact);
+  const handleAddContact = (contact) => {
+    setSelectedContacts([...selectedContacts, contact]);
+    setAvailableContacts(availableContacts.filter(c => c.id !== contact.id));
   };
 
+  const handleRemoveContact = (id) => {
+    const contactToRemove = selectedContacts.find(c => c.id === id);
+    setAvailableContacts([...availableContacts, contactToRemove]);
+    setSelectedContacts(selectedContacts.filter(c => c.id !== id));
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleGroupNameChange = (event) => {
+    setGroupName(event.target.value);
+  };
+  const handleCreateGroup = () => {
+    // Here you can define the logic to create the group using the groupName and selectedContacts.
+    // For demonstration, let's just log the groupName and selectedContacts to console.
+    console.log("Group Name:", groupName);
+    console.log("Selected Contacts:", selectedContacts);
+  };
+  const filteredContacts = availableContacts.filter(contact =>
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <form className="form-inline" onSubmit={handleSubmit}>
-      <div className="form-group row">
-        <div className="col-md-2">
-          <input type="text" name="name" className="form-control" placeholder="Name" />
-        </div>
-        <div className="col-md-2">
-          <input type="text" name="phone" className="form-control" placeholder="Phone" />
-        </div>
-        <div className="col-md-2">
-          <input type="text" name="alternatePhone" className="form-control" placeholder="Alternate Phone" />
-        </div>
-        <div className="col-md-2">
-          <input type="email" name="email" className="form-control" placeholder="Email" />
-        </div>
-        <div className="col-md-2">
-          <button type="submit" className="btn btn-primary"><i className="fa fa-fw fa-plus"></i>Add</button>
+    <div className="new-chit-page">
+      <h2>Create a New Group</h2>
+      <div className="flex-container">
+      <div className="left-container">
+  <p>Group name</p>
+  <input
+    type="text"
+    placeholder="Group Name"
+    value={groupName}
+    onChange={handleGroupNameChange}
+    className="group-name-input"
+  />
+  <p>Selected Contacts</p>
+
+  <div className="selected-contacts">
+    {selectedContacts.map(contact => (
+      <Chip key={contact.id} contact={contact} onRemove={handleRemoveContact} />
+    ))}
+  </div>
+  <Button variant="success" className="create-button" onClick={handleCreateGroup}>
+    Create
+  </Button>
+</div>
+        <div className="right-container">
+        <p>Search contact</p>
+
+          <input
+            type="text"
+            placeholder="Search Contacts"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+          <div className="available-contacts">
+            {filteredContacts.map(contact => (
+              <div key={contact.id} className="contact-row" onClick={() => handleAddContact(contact)}>
+                <Avatar alt={contact.name} src={contact.image} />
+                <span className="contact-name">{contact.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </form>
-  );
-};
-
-const FilterableContactTable = () => {
-  const [filterText, setFilterText] = useState('');
-  const [contacts, setContacts] = useState([
-    { key: 1, name: 'Tom Jackson', phone: '555-444-333', alternatePhone: '555-555-555', email: 'tom@gmail.com' },
-    { key: 2, name: 'Mike James', phone: '555-777-888', alternatePhone: '555-888-999', email: 'mikejames@gmail.com' },
-    { key: 3, name: 'Janet Larson', phone: '555-222-111', alternatePhone: '555-111-222', email: 'janetlarson@gmail.com' },
-    { key: 4, name: 'Clark Thompson', phone: '555-444-333', alternatePhone: '555-333-444', email: 'clark123@gmail.com' },
-    { key: 5, name: 'Emma Page', phone: '555-444-333', alternatePhone: '555-444-666', email: 'emma1page@gmail.com' },
-  ]);
-
-  const addContact = (contact) => {
-    setContacts([...contacts, contact]);
-  };
-
-  return (
-    <div>
-      <br></br>
-      <br></br>
-      <br></br>
-      <h1><center>Client Contacts - 1 Lakh</center></h1>
-      <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
-      <NewContactRow addContact={addContact} />
-      <ContactTable contacts={contacts} filterText={filterText} />
+    
     </div>
   );
 };
 
-export default FilterableContactTable;
+export default NewChitPage;

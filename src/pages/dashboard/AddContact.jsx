@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AddContact.css';
 import { db } from '../../Authentication/firebase'; // Adjust the path as necessary
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import {
   Table,
   TableBody,
@@ -20,34 +20,39 @@ import {
   Grid,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const ContactRow = ({ contact }) => (
+const ContactRow = ({ contact, onDelete }) => (
   <TableRow>
     <TableCell>{contact.name}</TableCell>
     <TableCell>{contact.phone}</TableCell>
     <TableCell>{contact.alternatePhone}</TableCell>
     <TableCell>{contact.email}</TableCell>
+    <TableCell>
+      <IconButton onClick={() => onDelete(contact.key)} color="secondary">
+        <DeleteIcon />
+      </IconButton>
+    </TableCell>
   </TableRow>
 );
 
-const ContactTable = ({ contacts, filterText }) => {
+const ContactTable = ({ contacts, filterText, onDelete }) => {
   const rows = contacts
     .filter(contact => contact.name && contact.name.toLowerCase().includes(filterText.toLowerCase()))
-    .map(contact => <ContactRow key={contact.key} contact={contact} />);
+    .map(contact => <ContactRow key={contact.key} contact={contact} onDelete={onDelete} />);
   
   return (
     <TableContainer component={Paper}  sx={{marginTop:'10px'}}>
       <Table>
-    
-      <TableHead>
-  <TableRow sx={{ backgroundColor: '#0f172a' }}>
-    <TableCell sx={{ color: 'white' }}>Name</TableCell>
-    <TableCell sx={{ color: 'white' }}>Phone</TableCell>
-    <TableCell sx={{ color: 'white' }}>Alternate Phone</TableCell>
-    <TableCell sx={{ color: 'white' }}>Email</TableCell>
-  </TableRow>
-</TableHead>
-
+        <TableHead>
+          <TableRow sx={{ backgroundColor: '#0f172a' }}>
+            <TableCell sx={{ color: 'white' }}>Name</TableCell>
+            <TableCell sx={{ color: 'white' }}>Phone</TableCell>
+            <TableCell sx={{ color: 'white' }}>Alternate Phone</TableCell>
+            <TableCell sx={{ color: 'white' }}>Email</TableCell>
+            <TableCell sx={{ color: 'white' }}>Actions</TableCell>
+          </TableRow>
+        </TableHead>
         <TableBody>{rows}</TableBody>
       </Table>
     </TableContainer>
@@ -85,6 +90,7 @@ const NewContactRow = ({ addContact }) => {
       key: new Date().getTime()
     };
     await addContact(contact);
+    event.target.reset();
   };
 
   return (
@@ -103,11 +109,10 @@ const NewContactRow = ({ addContact }) => {
           <TextField name="email" label="Email" variant="outlined" fullWidth />
         </Grid>
         <Grid item xs={12} sm={12} md={12} display="flex" justifyContent="center">
-  <Button type="submit" color="primary" fullWidth style={{ backgroundColor: 'green', color: 'white' }}>
-    Add
-  </Button>
-</Grid>
-
+          <Button type="submit" color="primary" fullWidth style={{ backgroundColor: 'green', color: 'white' }}>
+            Add
+          </Button>
+        </Grid>
       </Grid>
     </form>
   );
@@ -134,35 +139,35 @@ const AddContact = () => {
   const addContact = async (contact) => {
     try {
       // Add the contact to the Firestore database
-      await addDoc(collection(db, 'contacts'), contact);
-      // Update the local state
-      setContacts([...contacts, contact]);
+      const docRef = await addDoc(collection(db, 'contacts'), contact);
+      // Update the local state with the document ID
+      setContacts([...contacts, { ...contact, key: docRef.id }]);
     } catch (error) {
       console.error('Error adding contact: ', error);
     }
   };
 
+  const deleteContact = async (key) => {
+    try {
+      // Delete the contact from the Firestore database
+      await deleteDoc(doc(db, 'contacts', key));
+      // Update the local state
+      setContacts(contacts.filter(contact => contact.key !== key));
+    } catch (error) {
+      console.error('Error deleting contact: ', error);
+    }
+  };
+
   return (
     <div className='addContact'>
-    <p className="title">Add contacts</p>
-    <hr className="divider" />
-    <Container sx={{ marginTop: '10px' }}>
-      <Card>
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
-            </Grid>
-            <Grid item xs={12}>
-              <NewContactRow addContact={addContact} />
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-      <Divider sx={{ my: 2 }} />
-      <ContactTable contacts={contacts} filterText={filterText} />
-    </Container>
-  </div>
+         <p className="title">Add contacts</p>
+      <hr className="divider" />
+      <Container>
+        <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
+        <NewContactRow addContact={addContact} />
+        <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} />
+      </Container>
+    </div>
    
   );
 };

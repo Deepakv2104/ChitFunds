@@ -44,7 +44,6 @@
     display: block;
     box-sizing: border-box;
   }
-  
   .selected-contacts {
     display: flex;
     flex-wrap: wrap;
@@ -57,12 +56,10 @@
     left: 50%; /* Align the button horizontally */
     transform: translateX(-50%); /* Center the button horizontally */
   }
-  
   .create-button:hover {
     background-color: #218838; /* Darker green on hover */
     border-color: #218838; /* Darker green border on hover */
   }
-  
   .chip {
     display: flex;
   
@@ -75,7 +72,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s, box-shadow 0.3s, border-color 0.3s;
   }
-  
   .chip:hover {
     background-color: #f0f8ff;
     border-color: #0056b3;
@@ -140,7 +136,6 @@
         margin-bottom: 20px;
     }
   }
-  
   @media (max-width: 768px) {
     .chip {
       flex-direction: column;
@@ -148,13 +143,11 @@
       padding: 8px; /* Adjusted padding */
       margin: 5px;
     }
-  
     .chip img, .chip .MuiAvatar-root {
       margin-right: 10px; /* Adjusted margin */
       width: 32px; /* Increased avatar size */
       height: 32px; /* Increased avatar size */
     }
-  
     .chip-name {
       margin-right: 10px; /* Adjusted margin */
       font-size: 1rem; /* Increased font size */
@@ -163,7 +156,6 @@
       display: flex;
       align-items: center; /* Align button and name horizontally */
     }
-  
   
   }
   

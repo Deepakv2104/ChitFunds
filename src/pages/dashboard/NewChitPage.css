@@ -1,14 +1,16 @@
 .new-chit-page {
   font-family: 'Roboto', sans-serif;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   margin-top: 50px;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: #f7f7f7;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 h2 {
@@ -21,7 +23,7 @@ h2 {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  height: 80vh;
+  height: 100%;
 }
 
 .left-container, .right-container {
@@ -29,12 +31,14 @@ h2 {
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  /* background-color: #b9a2a2; */
   border: 2px solid #007BFF;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
-.group-name-input, .search-input {
+.group-name-input, .search-input, select {
   width: 100%;
   margin: 10px 0;
   padding: 10px;
@@ -50,27 +54,37 @@ h2 {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
+  flex-grow: 1;
 }
+
 .create-button {
-  position: absolute; /* Position the button absolutely */
-  bottom: 20px; /* Adjust this value to set the distance from the bottom */
-  left: 50%; /* Align the button horizontally */
-  transform: translateX(-50%); /* Center the button horizontally */
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .create-button:hover {
-  background-color: #218838; /* Darker green on hover */
-  border-color: #218838; /* Darker green border on hover */
+  background-color: #0056b3;
 }
 
 .chip {
   display: flex;
-
   align-items: center;
-  padding: 8px 15px; /* Adjusted padding */
-  /* margin: 5px; */
-  border: 2px solid #007BFF; /* Outlined style */
-  border-radius: 20px; /* Reduced border radius */
+  padding: 8px 15px;
+  border: 2px solid #007BFF;
+  border-radius: 20px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s, box-shadow 0.3s, border-color 0.3s;
@@ -83,32 +97,29 @@ h2 {
 }
 
 .chip img, .chip .MuiAvatar-root {
-  margin-right: 2px;
-  width: 24px; /* Reduced avatar size */
-  height: 24px; /* Reduced avatar size */
+  margin-right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
 }
 
 .chip-name {
   flex-grow: 1;
-  margin-right: 8px; /* Reduced margin */
-  font-size: 0.9rem; /* Reduced font size */
+  font-size: 1rem;
 }
 
 .chip button {
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #ff0000;
-  font-weight: bold;
+  margin-left: 8px;
   padding: 0;
+  background: none;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
   transition: color 0.3s;
 }
 
 .chip button:hover {
   color: #b30000;
-}
-.available-contacts {
-  margin-top: 20px;
 }
 
 .contact-row {
@@ -123,21 +134,54 @@ h2 {
 }
 
 .contact-row:hover {
-  background-color: #ffffff;
+  background-color: #f0f8ff;
 }
 
 .contact-name {
   margin-left: 10px;
 }
 
+.available-contacts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.contact-card:hover {
+  background-color: #f0f8ff;
+}
+
+.contact-card img, .contact-card .MuiAvatar-root {
+  margin-right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.contact-card .contact-name {
+  font-size: 1rem;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .flex-container {
-      flex-direction: column;
+    flex-direction: column;
   }
 
   .left-container, .right-container {
-      margin-bottom: 20px;
+    margin-bottom: 20px;
   }
 }
 
@@ -145,26 +189,25 @@ h2 {
   .chip {
     flex-direction: column;
     align-items: flex-start;
-    padding: 8px; /* Adjusted padding */
+    padding: 8px;
     margin: 5px;
   }
 
   .chip img, .chip .MuiAvatar-root {
-    margin-right: 10px; /* Adjusted margin */
-    width: 32px; /* Increased avatar size */
-    height: 32px; /* Increased avatar size */
+    margin-right: 10px;
+    width: 32px;
+    height: 32px;
   }
 
   .chip-name {
-    margin-right: 10px; /* Adjusted margin */
-    font-size: 1rem; /* Increased font size */
+    margin-right: 10px;
+    font-size: 1rem;
   }
+
   .chip-content {
     display: flex;
-    align-items: center; /* Align button and name horizontally */
+    align-items: center;
   }
-
-
 }
 
 @media (max-width: 480px) {

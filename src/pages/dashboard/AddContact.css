@@ -1,0 +1,23 @@
+/* AddContact component */
+.addContact {
+  margin: 10px;
+}
+
+@media (max-width: 767px) {
+
+  .title {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+  font-weight: bold;
+  font-size: 24px;
+
+}
+
+.dashboardHome .divider {
+  width: 100%;
+  border: 1px solid black;
+  margin: 0; /* Remove default margin */
+  margin-top: 4px; /* Adjust the margin as needed */
+}
+}

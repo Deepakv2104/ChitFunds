@@ -9,12 +9,14 @@ import oneLakh from '../../assets/oneLakh.svg';
 import twoLakh from '../../assets/twoLakh.svg';
 import fiveLakh from '../../assets/fiveLakh.svg';
 import tenLakh from '../../assets/tenLakh.svg';
+import AddContact from './AddContact';
 
 const DashboardHome = () => {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPath, setSelectedPath] = useState('');
+  const [isMobileView, setIsMobileView] = useState(false); // Track mobile view
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +38,21 @@ const DashboardHome = () => {
 
     fetchUserData();
   }, [currentUser]);
+
+  useEffect(() => {
+    // Check if window width is less than or equal to a certain threshold (e.g., 768px)
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 768);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize);
+    // Initial check on mount
+    handleResize();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleImageClick = (path) => {
     setSelectedPath(path);
@@ -83,12 +100,14 @@ const DashboardHome = () => {
               className="grid-item"
               onClick={() => handleImageClick('10lakh')}
             />
-
           </div>
-
         </div>
-        <p className="title">Add contacts</p>
-        <hr className="divider" />
+        {!isMobileView && ( // Render only if not in mobile view
+          <>
+           
+            <AddContact />
+          </>
+        )}
       </div>
       <ModalComponent
         isOpen={isModalOpen}

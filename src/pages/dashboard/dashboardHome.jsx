@@ -83,8 +83,12 @@ const DashboardHome = () => {
               className="grid-item"
               onClick={() => handleImageClick('10lakh')}
             />
+
           </div>
+
         </div>
+        <p className="title">Add contacts</p>
+        <hr className="divider" />
       </div>
       <ModalComponent
         isOpen={isModalOpen}

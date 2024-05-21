@@ -7,7 +7,7 @@ const OneLakhChit = () => {
             <h2>1 Lakh Chit Page</h2>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Link
-                    to="/existingchit?title=Your existing's chit"
+                    to="NewChitPage"
                     style={{
                         display: 'inline-block',    
                         padding: '10px 20px',

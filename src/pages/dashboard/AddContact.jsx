@@ -6,6 +6,9 @@ import {
   Table,
   TableBody,
   TableCell,
+  Card,
+  CardContent,
+  Divider,
   TableContainer,
   TableHead,
   TableRow,
@@ -33,7 +36,7 @@ const ContactTable = ({ contacts, filterText }) => {
     .map(contact => <ContactRow key={contact.key} contact={contact} />);
   
   return (
-    <TableContainer component={Paper} sx={{marginTop:'10px'}}>
+    <TableContainer component={Paper}  sx={{marginTop:'10px'}}>
       <Table>
     
       <TableHead>
@@ -141,14 +144,25 @@ const AddContact = () => {
 
   return (
     <div className='addContact'>
-       <p className="title">Add contacts</p>
-            <hr className="divider" />
- <Container>
-      <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
-      <NewContactRow addContact={addContact} />
+    <p className="title">Add contacts</p>
+    <hr className="divider" />
+    <Container sx={{ marginTop: '10px' }}>
+      <Card>
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
+            </Grid>
+            <Grid item xs={12}>
+              <NewContactRow addContact={addContact} />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+      <Divider sx={{ my: 2 }} />
       <ContactTable contacts={contacts} filterText={filterText} />
     </Container>
-    </div>
+  </div>
    
   );
 };

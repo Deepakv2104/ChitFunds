@@ -1,29 +1,30 @@
 /* AddContact component */
 .addContact {
-  margin: 10px;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .title {
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 28px;
+  color: #333;
 }
+
+.divider {
+  margin: 20px 0;
+}
+
 @media (max-width: 767px) {
-
   .title {
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  font-family: 'Roboto', sans-serif; /* Apply Roboto font */
-  font-weight: bold;
-  font-size: 24px;
-
-}
-
-.dashboardHome .divider {
-  width: 100%;
-  border: 1px solid black;
-  margin: 0; /* Remove default margin */
-  margin-top: 4px; /* Adjust the margin as needed */
-}
+    font-size: 24px;
+  }
+  
+  .divider {
+    width: 100%;
+    border: 1px solid #ccc;
+  }
 }

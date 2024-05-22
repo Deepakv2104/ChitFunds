@@ -10,6 +10,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    background-color: #ccd6eb; 
+
   }
   
   .existing-sidebar button {
@@ -19,7 +21,7 @@
     letter-spacing: 0.1em;
     border: none;
     border-radius: 1.1em;
-    background-color: #49b3ce; 
+    background-color: #0f172a; 
     cursor: pointer;
     color: white;
     padding: 1.5em 3em; /* Increased padding for larger buttons */
@@ -48,7 +50,7 @@
     width: 100%;
     border-collapse: collapse;
   }
-  
+
   .main-content-existing-page th, td {
     padding: 12px;
     border: 1px solid #ddd;
@@ -56,9 +58,10 @@
   }
   
   .main-content-existing-page th {
-    background-color: #49b3ce; /* Soft yellow for headers */
-    color: #2c3e50; /* Dark gray text */
+    background-color: #0f172a; /* Soft yellow for headers */
+    color: #fff; /* Dark gray text */
     font-weight: bold;
+
   }
   
   /* Responsive Design */

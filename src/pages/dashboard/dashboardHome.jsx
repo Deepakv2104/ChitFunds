@@ -104,7 +104,8 @@ const DashboardHome = () => {
         </div>
         {!isMobileView && ( // Render only if not in mobile view
           <>
-           
+             <p className="title">Add Contacts</p>
+      <hr className="divider" />
             <AddContact />
           </>
         )}

@@ -29,13 +29,16 @@ h2 {
 .left-container, .right-container {
   flex: 1;
   padding: 20px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd;
   border-radius: 8px;
   border: 2px solid #030304;
-  background-color: #fff;
+  background-color: #fff; */
   display: flex;
   flex-direction: column;
   position: relative;
+  background-color: #fffcfc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .group-name-input, .search-input, select {

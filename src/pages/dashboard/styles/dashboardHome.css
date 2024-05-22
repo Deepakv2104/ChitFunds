@@ -9,12 +9,16 @@ margin-top: 10px;
 
   
 
-  .image-grid {
-    display: grid;
-    grid-gap: 20px; /* Gap between grid items */
-    cursor: pointer;
-  }
-  
+.image-grid {
+  display: grid;
+  grid-gap: 20px; /* Gap between grid items */
+  cursor: pointer;
+}
+
+.image-grid > * { /* Target all direct children of the grid */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5)}
+
+
   .section-title{
     font-family: 'Roboto', sans-serif; /* Apply Roboto font */
     font-weight: bold; /* Make the name bold */

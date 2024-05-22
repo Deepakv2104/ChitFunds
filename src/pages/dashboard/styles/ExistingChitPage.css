@@ -1,0 +1,115 @@
+.existing-chit-page {
+    display: grid;
+    grid-template-columns: 1fr 3fr; /* Sidebar 1/4 width, main content 3/4 width */
+    height: 100vh; /* Full viewport height */
+  }
+  
+  .existing-sidebar {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  .existing-sidebar button {
+    /* --hover-shadows: 16px 16px 33px #3e5e7a, -16px -16px 33px #7b9ec8; */
+    --accent: #e74c3c; /* Coral accent */
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    border: none;
+    border-radius: 1.1em;
+    background-color: #49b3ce; 
+    cursor: pointer;
+    color: white;
+    padding: 1.5em 3em; /* Increased padding for larger buttons */
+    transition: box-shadow ease-in-out 0.3s, background-color ease-in-out 0.1s,
+      letter-spacing ease-in-out 0.1s, transform ease-in-out 0.1s;
+    /* box-shadow: 13px 13px 10px #5b87b3, -13px -13px 10px #a2c9e9; */
+  }
+  
+  .existing-sidebar button:hover {
+    box-shadow: var(--hover-shadows);
+  }
+  
+  .existing-sidebar button:active {
+    box-shadow: var(--hover-shadows), var(--accent) 0px 0px 30px 5px;
+    background-color: var(--accent);
+    transform: scale(0.95);
+  }
+  
+  .main-content-existing-page {
+    padding: 20px;
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    background-color: #ecf0f1; /* Light gray background for contrast */
+  }
+  
+  .main-content-existing-page table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .main-content-existing-page th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .main-content-existing-page th {
+    background-color: #49b3ce; /* Soft yellow for headers */
+    color: #2c3e50; /* Dark gray text */
+    font-weight: bold;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .existing-chit-page {
+      grid-template-columns: 1fr; /* Single column layout */
+    }
+  
+    .existing-sidebar {
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 10px;
+    }
+  
+    .existing-sidebar button {
+      padding: 1em 2em; /* Adjust padding for smaller screens */
+      font-size: 14px;
+    }
+  
+    .main-content-existing-page {
+      padding: 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .existing-chit-page {
+      display: grid;
+      grid-template-columns: 1fr; /* Single column layout */
+      height: 100vh; /* Full viewport height */
+    }
+  
+    .existing-sidebar {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between; /* Spread items evenly */
+      padding: 10px; /* Reduced padding */
+    }
+  
+    .existing-sidebar button {
+      padding: 0.8em 1em; /* Adjusted padding */
+      font-size: 12px; /* Reduced font size */
+      margin: 5px; /* Add some margin between buttons */
+    }
+  
+    .main-content-existing-page {
+      padding: 10px;
+    }
+  
+    .main-content-existing-page th,
+    .main-content-existing-page td {
+      padding: 8px;
+    }
+  }
+  

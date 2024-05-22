@@ -90,6 +90,7 @@ const NewChitPage = () => {
             className="group-name-input"
           />
           <p>Group Value</p>
+
           <select value={selectedValue} onChange={handleDropdownChange}>
             <option value="">Select Value</option>
             <option value="1">1 lakh</option>
@@ -97,6 +98,7 @@ const NewChitPage = () => {
             <option value="5">5 lakhs</option>
             <option value="10">10 lakhs</option>
           </select>
+          <br/>
           <p>Selected Contacts</p>
           <div className="selected-contacts">
             {selectedContacts.map(contact => (
@@ -111,6 +113,7 @@ const NewChitPage = () => {
             Create
           </Button>
         </div>
+        
         <div className="right-container">
           <p>Search contact</p>
           <input

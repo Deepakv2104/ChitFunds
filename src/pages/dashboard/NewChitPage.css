@@ -1,13 +1,13 @@
 .new-chit-page {
   font-family: 'Roboto', sans-serif;
-  max-width: 900px;
+  /* max-width: 900px; */
   margin: 0 auto;
   /* margin-top: 50px; */
   padding: 20px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   border-radius: 8px;
-  background-color: #f7f7f7;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* background-color: #f7f7f7; */
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -31,7 +31,7 @@ h2 {
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  border: 2px solid #007BFF;
+  border: 2px solid #030304;
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -54,11 +54,11 @@ h2 {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
-  flex-grow: 1;
+  /* flex-grow: 1; */
 }
 
 .create-button {
-  width: 100%;
+  width: 50%;
   padding: 12px 20px;
   font-size: 16px;
   font-weight: bold;

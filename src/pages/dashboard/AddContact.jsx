@@ -40,7 +40,6 @@ const ContactTable = ({ contacts, filterText, onDelete }) => {
   const rows = contacts
     .filter(contact => contact.name && contact.name.toLowerCase().includes(filterText.toLowerCase()))
     .map(contact => <ContactRow key={contact.key} contact={contact} onDelete={onDelete} />);
-  
   return (
     <TableContainer component={Paper}  sx={{marginTop:'10px'}}>
       <Table>
@@ -58,7 +57,6 @@ const ContactTable = ({ contacts, filterText, onDelete }) => {
     </TableContainer>
   );
 };
-
 const SearchBar = ({ filterText, onFilterTextInput }) => (
   <TextField
     fullWidth

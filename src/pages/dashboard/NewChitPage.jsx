@@ -10,6 +10,7 @@ const NewChitPage = () => {
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [availableContacts, setAvailableContacts] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
+  const [NumberOfMembers,setNumberOfMembers]  = useState('')
 
   // Fetch contacts from Firestore on component mount
   useEffect(() => {
@@ -53,15 +54,19 @@ const NewChitPage = () => {
     try {
       const newGroupRef = doc(collection(db, 'groups')); // Create a reference to a new document
       const groupId = newGroupRef.id; // Get the generated ID for the new document
-
-      // Push selected group name, selected value, and selected contacts to Firebase database
+  
+      // Calculate the number of selected contacts
+      const NumberOfMembers = selectedContacts.length;
+  
+      // Push selected group name, selected value, selected contacts, and NumberOfMembers to Firebase database
       await setDoc(newGroupRef, { 
         groupId: groupId,
         groupName, 
         selectedValue, 
-        selectedContacts 
+        selectedContacts,
+        NumberOfMembers  // Add NumberOfMembers to the data
       });
-
+  
       // Reset form fields
       setGroupName('');
       setSelectedValue('');
@@ -71,7 +76,7 @@ const NewChitPage = () => {
       console.error('Error creating group:', error);
     }
   };
-
+  
   const filteredContacts = availableContacts.filter(contact =>
     contact && contact.name && contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );

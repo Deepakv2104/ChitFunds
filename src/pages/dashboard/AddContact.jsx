@@ -43,7 +43,7 @@ const ContactTable = ({ contacts, filterText, onDelete }) => {
     <TableContainer component={Paper} sx={{ marginTop: '20px' }}>
       <Table>
         <TableHead>
-          <TableRow sx={{ backgroundColor: '#1976d2' }}>
+          <TableRow sx={{ backgroundColor: '#0f172a' }}>
             <TableCell sx={{ color: 'white' }}>Name</TableCell>
             <TableCell sx={{ color: 'white' }}>Phone</TableCell>
             <TableCell sx={{ color: 'white' }}>Alternate Phone</TableCell>
@@ -158,21 +158,15 @@ const AddContact = () => {
   };
 
   return (
-    <Box className="addContact">
-      <Box className="content">
-        <Typography variant="h4" component="h1" className="title" gutterBottom>
-          Add Contacts
-        </Typography>
-        <Divider className="divider" />
-        <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
-        <NewContactRow addContact={addContact} />
-        <ContactTable
-          contacts={contacts}
-          filterText={filterText}
-          onDelete={deleteContact}
-        />
-      </Box>
-    </Box>
+    <Container className="addContact" maxWidth={false} disableGutters>
+      <Typography variant="h4" component="h1" className="title" gutterBottom>
+        Add Contacts
+      </Typography>
+      <Divider className="divider" />
+      <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
+      <NewContactRow addContact={addContact} />
+      <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} />
+    </Container>
   );
 };
 

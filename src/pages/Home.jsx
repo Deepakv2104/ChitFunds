@@ -31,7 +31,7 @@ const HomePage = () => {
             <br></br>
             <div className="button-row">
               <Button variant="success" onClick={handleClick}>Sign Up</Button>
-              <Button variant="primary">Login</Button>
+              <Button variant="primary" onClick={handleClick}> Login</Button>
             </div>
           </div>
           <div className="right-section">

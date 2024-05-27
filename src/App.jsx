@@ -14,6 +14,7 @@ import Settings from './pages/Settings';
 import AddContact from './pages/dashboard/AddContact';
 import ExistingChits from './pages/dashboard/ExistingChits';
 import './App.css';
+import GroupDetails from './pages/dashboard/GroupDetails';
 
 const App = () => {
   return (
@@ -32,6 +33,8 @@ const App = () => {
             {/* <Route path="dashboardHome/1lakh" element={<OneLakhChit />} /> */}
             <Route path="dashboardHome/NewChitpage" element={<NewChitPage />} />
             <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
+            <Route path="dashboardHome/existingChits/:groupId" element={<GroupDetails />} />
+
           </Route>
 
         

@@ -1,10 +1,12 @@
-/* AddContact component */
 .addContact {
-  margin-top: 30px;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
+  flex-direction: column;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-height: 100vh; /* Ensure container takes full height of the viewport */
+  display: flex;
+  justify-content: space-between;
 }
 
 .title {
@@ -17,6 +19,7 @@
 .divider {
   margin: 20px 0;
 }
+
 
 @media (max-width: 767px) {
   .title {

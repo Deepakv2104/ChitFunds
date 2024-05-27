@@ -11,7 +11,6 @@ import {
   TableRow,
   Paper,
   TextField,
-  Container,
   IconButton,
   Button,
   Grid,
@@ -38,9 +37,8 @@ const ContactRow = ({ contact, onDelete }) => (
 );
 
 const ContactTable = ({ contacts, filterText, onDelete }) => {
-  const rows = contacts
-    .filter(contact => contact.name && contact.name.toLowerCase().includes(filterText.toLowerCase()))
-    .map(contact => <ContactRow key={contact.key} contact={contact} onDelete={onDelete} />);
+  const filteredContacts = contacts.filter(contact => contact.name && contact.name.toLowerCase().includes(filterText.toLowerCase()));
+  const rows = filteredContacts.map(contact => <ContactRow key={contact.key} contact={contact} onDelete={onDelete} />);
   return (
     <TableContainer component={Paper} sx={{ marginTop: '20px' }}>
       <Table>
@@ -160,15 +158,21 @@ const AddContact = () => {
   };
 
   return (
-    <Container className="addContact" maxWidth={false} disableGutters>
-      <Typography variant="h4" component="h1" className="title" gutterBottom>
-        Add Contacts
-      </Typography>
-      <Divider className="divider" />
-      <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
-      <NewContactRow addContact={addContact} />
-      <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} />
-    </Container>
+    <Box className="addContact">
+      <Box className="content">
+        <Typography variant="h4" component="h1" className="title" gutterBottom>
+          Add Contacts
+        </Typography>
+        <Divider className="divider" />
+        <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
+        <NewContactRow addContact={addContact} />
+        <ContactTable
+          contacts={contacts}
+          filterText={filterText}
+          onDelete={deleteContact}
+        />
+      </Box>
+    </Box>
   );
 };
 

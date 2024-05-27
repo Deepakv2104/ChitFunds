@@ -66,7 +66,7 @@ const DashboardHome = () => {
 
   const handleExistingClick = () => {
     setIsModalOpen(false);
-    navigate(`existingChits`); // Navigate to the 'existing' path with the selected path
+    navigate(existingChits); // Navigate to the 'existing' path with the selected path
   };
 
   return (
@@ -104,7 +104,8 @@ const DashboardHome = () => {
         </div>
         {!isMobileView && ( // Render only if not in mobile view
           <>
-           
+             <p className="title">Add Contacts</p>
+      <hr className="divider" />
             <AddContact />
           </>
         )}

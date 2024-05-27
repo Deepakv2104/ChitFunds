@@ -12,14 +12,14 @@ import { GoogleAuthProvider } from "firebase/auth";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyD9M_c2YHON8qaFZuFet7Tcx2jE6zQFKm8",
-    authDomain: "chitfunds-aba77.firebaseapp.com",
-    projectId: "chitfunds-aba77",
-    storageBucket: "chitfunds-aba77.appspot.com",
-    messagingSenderId: "448835297957",
-    appId: "1:448835297957:web:557d5c1a97ac0ffe15a34c",
-    measurementId: "G-0N4SYWYHW6"
-  };
+  apiKey: "AIzaSyDA8R5Z8aqUfSqDVgXCLp-ew-l2FxEOhOM",
+  authDomain: "chitfunds-b98e0.firebaseapp.com",
+  projectId: "chitfunds-b98e0",
+  storageBucket: "chitfunds-b98e0.appspot.com",
+  messagingSenderId: "947012840849",
+  appId: "1:947012840849:web:7e4849a907ae3f334cbe30",
+  measurementId: "G-0WWH4K4WCM"
+};
 // Initialize Firebase
 const firebase = initializeApp(firebaseConfig);
 const db = getFirestore(firebase);

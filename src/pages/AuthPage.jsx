@@ -38,10 +38,10 @@ const AuthPage = () => {
       });
   
       navigate('/dashboard/dashboardHome');
-      toast.success('Signed up successfully!'); // Display success toast
+      toast.success('Signed up successfully!', { autoClose: 700 }); // Display success toast
     } catch (error) {
       console.error('Error signing up:', error);
-      toast.error('Error signing up. Please try again.'); // Display error toast
+      toast.error('Error signing up. Please try again.', { autoClose: 700 }); // Display error toast
     }
   };
   
@@ -52,10 +52,10 @@ const AuthPage = () => {
     try {
       await signInWithEmailAndPassword(auth, email.value, password.value);
       navigate('/dashboard/dashboardHome');
-      toast.success('Logged in successfully!'); // Display success toast
+      toast.success('Logged in successfully!', { autoClose: 700 }); // Display success toast
     } catch (error) {
       console.error('Error logging in:', error);
-      toast.error('Invalid email or password. Please try again.'); // Display error toast
+      toast.error('Invalid email or password. Please try again.', { autoClose: 700 }); // Display error toast
     }
   };
   

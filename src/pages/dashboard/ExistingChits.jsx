@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import './styles/ExistingChitPage.css';
 import { firebase, db } from '../../Authentication/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 const ExistingChits = () => {
   const [groups, setGroups] = useState([]);
-  const [selectedValue, setSelectedValue] = useState('1'); // Set default selectedValue to '1'
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [selectedValue, setSelectedValue] = useState('1'); 
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -28,7 +28,6 @@ const ExistingChits = () => {
   };
 
   const handleRowClick = (groupId) => {
-    // Navigate to another page and pass the groupId as a parameter
     navigate(`${groupId}`);
   };
 
@@ -59,7 +58,6 @@ const ExistingChits = () => {
               <th>Group Name</th>
               <th>Number of members</th>
               <th>Chits Picked</th>
-              {/* <th>Date of Creation</th> */}
             </tr>
           </thead>
           <tbody>

@@ -10,7 +10,6 @@ import twoLakh from '../../assets/twoLakh.svg';
 import fiveLakh from '../../assets/fiveLakh.svg';
 import tenLakh from '../../assets/tenLakh.svg';
 import AddContact from './AddContact';
-
 const DashboardHome = () => {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);

@@ -3,14 +3,17 @@ import Avatar from '@mui/material/Avatar';
 import { Button } from 'react-bootstrap';
 import { collection, addDoc, getDocs, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../Authentication/firebase'; // Adjust the path as necessary
-import './NewChitPage.css'
+import './NewChitPage.css';
+
 const NewChitPage = () => {
   const [groupName, setGroupName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [availableContacts, setAvailableContacts] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
-  const [NumberOfMembers,setNumberOfMembers]  = useState('')
+  const [startMonth, setStartMonth] = useState('');
+  const [endMonth, setEndMonth] = useState('');
+  const [NumberOfMembers, setNumberOfMembers] = useState('');
 
   // Fetch contacts from Firestore on component mount
   useEffect(() => {
@@ -50,36 +53,49 @@ const NewChitPage = () => {
     setSelectedValue(event.target.value);
   };
 
+  const handleStartMonthChange = (event) => {
+    const selectedStartMonth = event.target.value;
+    setStartMonth(selectedStartMonth);
+    setEndMonth(calculateEndMonth(selectedStartMonth));
+  };
+
   const handleCreateGroup = async () => {
     try {
       const newGroupRef = doc(collection(db, 'groups')); // Create a reference to a new document
       const groupId = newGroupRef.id; // Get the generated ID for the new document
-  
+
       // Calculate the number of selected contacts
       const NumberOfMembers = selectedContacts.length;
-  
-      // Push selected group name, selected value, selected contacts, and NumberOfMembers to Firebase database
-      await setDoc(newGroupRef, { 
+
+      // Push selected group name, selected value, selected contacts, startMonth, endMonth, and NumberOfMembers to Firebase database
+      await setDoc(newGroupRef, {
         groupId: groupId,
-        groupName, 
-        selectedValue, 
+        groupName,
+        selectedValue,
         selectedContacts,
-        NumberOfMembers  // Add NumberOfMembers to the data
+        startMonth,
+        endMonth,
+        NumberOfMembers // Add NumberOfMembers to the data
       });
-  
+
       // Reset form fields
       setGroupName('');
       setSelectedValue('');
       setSelectedContacts([]);
       setSearchTerm('');
+      setStartMonth('');
+      setEndMonth('');
     } catch (error) {
       console.error('Error creating group:', error);
     }
   };
-  
+
   const filteredContacts = availableContacts.filter(contact =>
     contact && contact.name && contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Generate months starting from the current month
+  const months = generateMonths(20); // Adjust the number of months as needed
 
   return (
     <div className="new-chit-page">
@@ -103,7 +119,18 @@ const NewChitPage = () => {
             <option value="5">5 lakhs</option>
             <option value="10">10 lakhs</option>
           </select>
-          <br/>
+          <br />
+          <p>Start Month</p>
+          <select value={startMonth} onChange={handleStartMonthChange}>
+            <option value="">Select Start Month</option>
+            {months.map((month, index) => (
+              <option key={index} value={month}>{month}</option>
+            ))}
+          </select>
+          <br />
+          <p>End Month</p>
+          <input type="text" value={endMonth} readOnly className="end-month-input" />
+          <br />
           <p>Selected Contacts</p>
           <div className="selected-contacts">
             {selectedContacts.map(contact => (
@@ -118,7 +145,7 @@ const NewChitPage = () => {
             Create
           </Button>
         </div>
-        
+
         <div className="right-container">
           <p>Search contact</p>
           <input
@@ -143,3 +170,27 @@ const NewChitPage = () => {
 };
 
 export default NewChitPage;
+
+// dateUtils.js
+ const generateMonths = (numMonths) => {
+  const months = [];
+  const date = new Date();
+
+  for (let i = 0; i < numMonths; i++) {
+    const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+    const year = date.getFullYear();
+    months.push(`${month}${year}`);
+    date.setMonth(date.getMonth() + 1);
+  }
+
+  return months;
+};
+
+ const calculateEndMonth = (startMonth) => {
+  const months = generateMonths(40); // Generate enough months to ensure the end month is within the range
+  const startIndex = months.indexOf(startMonth);
+  if (startIndex === -1) return '';
+
+  const endIndex = startIndex + 20;
+  return months[endIndex] || '';
+};

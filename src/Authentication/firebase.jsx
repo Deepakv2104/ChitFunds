@@ -1,11 +1,9 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "@firebase/firestore";
 import { getStorage } from 'firebase/storage';
-import { getAuth , setPersistence, browserSessionPersistence} from "firebase/auth";
+import { getAuth , setPersistence, browserSessionPersistence, GoogleAuthProvider } from "firebase/auth";
 import {getMessaging } from 'firebase/messaging';
-import { GoogleAuthProvider } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -24,9 +22,10 @@ const firebaseConfig = {
 const firebase = initializeApp(firebaseConfig);
 const db = getFirestore(firebase);
 const analytics = getAnalytics(firebase);
-// const auth = getAuth(firebase);
-// const googleProvider = new GoogleAuthProvider(auth);
+const auth = getAuth(firebase);
+const googleProvider = new GoogleAuthProvider(auth);
 const storage = getStorage(firebase);
 const messaging = getMessaging(firebase);
-// setPersistence(auth, browserSessionPersistence)
-export  {firebase,db};
+setPersistence(auth, browserSessionPersistence);
+
+export { firebase, db, auth, googleProvider, storage, messaging };

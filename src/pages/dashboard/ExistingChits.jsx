@@ -63,14 +63,16 @@ const ExistingChits = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredGroups.map(group => (
-              <tr key={group.id} onClick={() => handleRowClick(group.id)}> {/* Call handleRowClick on row click */}
-                <td>{group.groupName}</td>
-                <td>{group.NumberOfMembers || 0}</td>
-                <td></td>
-              </tr>
-            ))}
-          </tbody>
+  {filteredGroups.map(group => (
+    <tr key={group.id} onClick={() => handleRowClick(group.id)}>
+      <td>{group.groupName}</td>
+      <td>{group.NumberOfMembers || 0}</td>
+      <td></td>
+    </tr>
+  ))}
+</tbody>
+
+
         </table>
       </div>
     </div>

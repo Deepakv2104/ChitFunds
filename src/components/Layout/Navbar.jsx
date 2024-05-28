@@ -56,15 +56,7 @@ import { FaBell } from 'react-icons/fa'; // Import the icons
       </ul>
      
     </nav>
-    {/* <div  className="text-nav">
-    <div className="user-name">
-      Hello {userData ? userData.name : 'Guest'}
-    </div>
-    <div className="flex items-center ml-2">
-      <FaStar className="yellow-star" />
-  </div>
-  
-    </div> */}
+
     </div>
   );
 };

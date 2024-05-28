@@ -6,17 +6,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Styles/LoginPage.css'; // Import your custom CSS for styling the signup form
 import img from '../assets/financeLogin.jpg';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { firebase, db } from '.././Authentication/firebase';
+import { firebase, db, auth } from '.././Authentication/firebase';
 import { collection, doc,setDoc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const AuthPage = () => {
-  const auth = getAuth(firebase);
+ 
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(true);
   const [userData, setUserData] = useState({ name: '', email: '', password: '' });
 
   const toggleAuthPage = () => {
-    setIsSignUp(!isSignUp);
+    setIsSignUp(!isSignUp); 
   };
 
   const handleSignUp = async (e) => {
@@ -24,37 +27,38 @@ const AuthPage = () => {
     const { name, email, password } = e.target.elements;
   
     try {
-      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-      const {user} = userCredentials;
-
-      const userDocRef = doc(db, "users", user.uid);  
-      await setDoc(userDocRef,{
+      const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+      const user = userCredential.user;
+  
+      const userDocRef = doc(db, "users", user.uid);
+      await setDoc(userDocRef, {
         userId: user.uid,
-        name: name,
-        email:email
-      })    
-      console.log('User signed up successfully!');
-      // You can redirect the user to another page or do other actions upon successful sign-up
+        name: name.value,
+        email: email.value
+      });
+  
+      navigate('/dashboard/dashboardHome');
+      toast.success('Signed up successfully!'); // Display success toast
     } catch (error) {
       console.error('Error signing up:', error);
-      // Handle error here, display error message to the user, etc.
+      toast.error('Error signing up. Please try again.'); // Display error toast
     }
   };
+  
   const handleLogin = async (e) => {
     e.preventDefault();
     const { email, password } = e.target.elements;
-
+  
     try {
       await signInWithEmailAndPassword(auth, email.value, password.value);
-      console.log('User logged in successfully!');
-      navigate('/dashboard/dashboardHome')
-      // You can redirect the user to another page or do other actions upon successful login
+      navigate('/dashboard/dashboardHome');
+      toast.success('Logged in successfully!'); // Display success toast
     } catch (error) {
       console.error('Error logging in:', error);
-      // Handle error here, display error message to the user, etc.
+      toast.error('Invalid email or password. Please try again.'); // Display error toast
     }
   };
-
+  
   return (
     <Layout>
       <div className='signup-page'>

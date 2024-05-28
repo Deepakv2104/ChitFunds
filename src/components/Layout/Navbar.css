@@ -1,6 +1,6 @@
-.active{
-  background-color: #1d4ed8;
-}
+/* Navbar.css */
+
+/* Keep existing styles for desktop view */
 
 nav {
   display: flex;
@@ -8,44 +8,35 @@ nav {
   align-items: center;
   background-color: #0f172a;
   color: white;
-  /* position: sticky; */
   top: 0;
-    z-index: 2;
+  z-index: 2;
   height: 50px;
-  /* margin-bottom: 50px; */
-  position:fixed;
+  position: fixed;
   width: 100%;
-  
-
-
 }
-.text-nav{
+
+.text-nav {
   width: 100%;
   background-color: rgb(12, 59, 43);
   display: flex;
   padding: 10px;
-
 }
 
-
 .user-name {
-  font-family: 'Roboto', sans-serif; /* Apply Roboto font */
-  font-size: 1.5rem; /* Adjust the font size of the name */
-  font-weight: bold; /* Make the name bold */
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
   color: rgb(255, 255, 255);
 }
 
 .yellow-star {
-  color: #e3c411; /* Yellow color */
-  font-size: 1.5rem; /* Adjust the size of the star icon */
+  color: #e3c411;
+  font-size: 1.5rem;
   margin-left: 5px;
 }
 
-
-
 nav .title {
   font-size: 1.5rem;
-  margin: 1rem;
   font-weight: bold;
   text-decoration: none;
   color: white;
@@ -56,7 +47,7 @@ nav ul {
 }
 
 nav ul li {
- list-style: none; 
+  list-style: none;
 }
 
 nav ul li a {
@@ -69,8 +60,10 @@ nav ul li a {
 }
 
 nav ul li a:not(.active):hover {
-  background-color:#172554 ;
+  background-color: #172554;
 }
+
+/* Adjustments for mobile view toggle */
 
 nav .menu {
   display: none;
@@ -90,34 +83,39 @@ nav .menu span {
   border-radius: 0.2rem;
 }
 
-
 @media (max-width: 480px) {
   nav .menu {
-      display: flex;
+    display: flex;
+    
   }
 
   nav {
-      flex-direction: column;
-      align-items: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+    
   }
 
   nav ul {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      margin-bottom: 0.25rem;
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0.25rem;
+    background-color: #0f172a;
+
   }
 
   nav ul.open {
-      display: flex;
+    display: flex;
+    flex-direction: column;
+
   }
 
   nav ul li {
-      width: 100%;
-      text-align: center;
+    width: 100%;
+    text-align: center;
   }
 
   nav ul li a {
-      margin: 0.2rem 0.5rem;
+    margin: 0.2rem 0.5rem;
   }
 }

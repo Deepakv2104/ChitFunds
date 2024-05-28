@@ -4,7 +4,7 @@
   border-radius: 8px;
   flex-direction: column;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: 100vh; /* Ensure container takes full height of the viewport */
+  min-height: calc(100vh - 64px); /* Ensure container takes full height of the viewport minus header height */
   display: flex;
   justify-content: space-between;
 }
@@ -15,11 +15,15 @@
   font-size: 28px;
   color: #333;
 }
-
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: auto; /* Pushes the pagination to the bottom */
+  margin-bottom: 20px; /* Adjusts space at the bottom */
+}
 .divider {
   margin: 20px 0;
 }
-
 
 @media (max-width: 767px) {
   .title {

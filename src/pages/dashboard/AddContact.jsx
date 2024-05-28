@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './AddContact.css';
-import { db } from '../../Authentication/firebase'; // Adjust the path as necessary
+import { db } from '../../Authentication/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import {
   Table,
@@ -21,6 +20,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import Pagination from '@mui/material/Pagination';
 
 const ContactRow = ({ contact, onDelete }) => (
   <TableRow>
@@ -158,6 +158,13 @@ const AddContact = () => {
     }
   };
 
+  // Pagination
+  const itemsPerPage = 10;
+  const [page, setPage] = useState(1);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
   return (
     <Container className="addContact" maxWidth={false} disableGutters>
       <Typography variant="h4" component="h1" className="title" gutterBottom>
@@ -166,7 +173,10 @@ const AddContact = () => {
       <Divider className="divider" />
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
       <NewContactRow addContact={addContact} />
-      <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} />
+      <ContactTable contacts={contacts.slice((page - 1) * itemsPerPage, page * itemsPerPage)} filterText={filterText} onDelete={deleteContact} />
+      <Box className="pagination-container">
+        <Pagination count={Math.ceil(contacts.length / itemsPerPage)} page={page} onChange={handleChangePage} color="primary" />
+      </Box>
     </Container>
   );
 };

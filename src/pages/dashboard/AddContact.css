@@ -6,7 +6,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-height: calc(100vh - 64px); /* Ensure container takes full height of the viewport minus header height */
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .title {
@@ -15,12 +15,16 @@
   font-size: 28px;
   color: #333;
 }
+
 .pagination-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  margin-top: auto; /* Pushes the pagination to the bottom */
-  margin-bottom: 20px; /* Adjusts space at the bottom */
+  align-items: center;
+  margin-top: 20px; /* Add space above pagination */
+  margin-bottom: 20px; /* Adjust space at the bottom */
 }
+
 .divider {
   margin: 20px 0;
 }

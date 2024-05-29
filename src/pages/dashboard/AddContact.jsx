@@ -130,7 +130,7 @@ const AddContact = () => {
     const fetchContacts = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'contacts'));
-        const contactsData = querySnapshot.docs.map(doc => ({ ...doc.data(), key: doc.id }));
+        const contactsData = querySnapshot.docs.map(doc => ({ ...doc.data(), memberId: doc.id, key: doc.id })); // Include memberId as document ID
         setContacts(contactsData);
       } catch (error) {
         console.error('Error fetching contacts: ', error);
@@ -143,7 +143,7 @@ const AddContact = () => {
   const addContact = async (contact) => {
     try {
       const docRef = await addDoc(collection(db, 'contacts'), contact);
-      setContacts([...contacts, { ...contact, key: docRef.id }]);
+      setContacts([...contacts, { ...contact, memberId: docRef.id, key: docRef.id }]); // Include memberId as document ID
     } catch (error) {
       console.error('Error adding contact: ', error);
     }
@@ -173,8 +173,8 @@ const AddContact = () => {
       <Divider className="divider" />
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
       <NewContactRow addContact={addContact} />
-      <ContactTable contacts={contacts.slice((page - 1) * itemsPerPage, page * itemsPerPage)} filterText={filterText} onDelete={deleteContact} />
       <Box className="pagination-container">
+        <ContactTable contacts={contacts.slice((page - 1) * itemsPerPage, page * itemsPerPage)} filterText={filterText} onDelete={deleteContact} />
         <Pagination count={Math.ceil(contacts.length / itemsPerPage)} page={page} onChange={handleChangePage} color="primary" />
       </Box>
     </Container>

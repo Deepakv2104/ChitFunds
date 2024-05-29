@@ -15,7 +15,7 @@ import AddContact from './pages/dashboard/AddContact';
 import ExistingChits from './pages/dashboard/ExistingChits';
 import './App.css';
 import GroupDetails from './pages/dashboard/GroupDetails';
-
+import ChitFundDetails from './pages/dashboard/ChitfundsDetails';
 const App = () => {
   return (
     <Router>
@@ -27,6 +27,8 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />}>
             <Route path="dashboardHome" element={<DashboardHome />} />
             <Route path="dashboardHome/addContact" element={<AddContact />} />
+            <Route path="dashboardHome/addContact" element={<AddContact />} />
+            <Route path="dashboardHome/chitdetails" element={<ChitFundDetails chitfundId="pt9sm7ZHI2L3sx54uv4T" />} />
 
             <Route path="contacts" element={<Contacts />} />
             <Route path="settings" element={<Settings />} />

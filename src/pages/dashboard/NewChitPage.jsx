@@ -78,6 +78,24 @@ const NewChitPage = () => {
         NumberOfMembers // Add NumberOfMembers to the data
       });
 
+      // Initialize monthly contributions for each month
+      const months = generateMonths(20); // Generate 20 months from the start month
+      const contributionsCollectionRef = collection(db, 'contributions');
+
+      for (const month of months) {
+        await setDoc(doc(contributionsCollectionRef), {
+          chitFundId: groupId,
+          month: month,
+          contributions: selectedContacts.map(contact => ({
+            memberId: contact.id,
+            amount: 0,
+            paymentMode: '',
+            balance: 0
+          })),
+          winner: {}
+        });
+      }
+
       // Reset form fields
       setGroupName('');
       setSelectedValue('');
@@ -94,9 +112,6 @@ const NewChitPage = () => {
     contact && contact.name && contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Generate months starting from the current month
-  const months = generateMonths(20); // Adjust the number of months as needed
-
   return (
     <div className="new-chit-page">
       <h2>Create a New Group</h2>
@@ -111,7 +126,6 @@ const NewChitPage = () => {
             className="group-name-input"
           />
           <p>Group Value</p>
-
           <select value={selectedValue} onChange={handleDropdownChange}>
             <option value="">Select Value</option>
             <option value="1">1 lakh</option>
@@ -123,7 +137,7 @@ const NewChitPage = () => {
           <p>Start Month</p>
           <select value={startMonth} onChange={handleStartMonthChange}>
             <option value="">Select Start Month</option>
-            {months.map((month, index) => (
+            {generateMonths(20).map((month, index) => (
               <option key={index} value={month}>{month}</option>
             ))}
           </select>
@@ -145,7 +159,6 @@ const NewChitPage = () => {
             Create
           </Button>
         </div>
-
         <div className="right-container">
           <p>Search contact</p>
           <input
@@ -186,7 +199,7 @@ export default NewChitPage;
   return months;
 };
 
- const calculateEndMonth = (startMonth) => {
+const calculateEndMonth = (startMonth) => {
   const months = generateMonths(40); // Generate enough months to ensure the end month is within the range
   const startIndex = months.indexOf(startMonth);
   if (startIndex === -1) return '';

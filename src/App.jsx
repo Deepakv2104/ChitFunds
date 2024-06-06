@@ -28,7 +28,7 @@ const App = () => {
             <Route path="dashboardHome" element={<DashboardHome />} />
             <Route path="dashboardHome/addContact" element={<AddContact />} />
             <Route path="dashboardHome/addContact" element={<AddContact />} />
-            <Route path="dashboardHome/chitdetails" element={<ChitFundDetails chitfundId="pt9sm7ZHI2L3sx54uv4T" />} />
+            <Route path="dashboardHome/chitdetails" element={<ChitFundDetails chitfundId="m7NUxLz3HgLwlNxUkNoa" />} />
 
             <Route path="contacts" element={<Contacts />} />
             <Route path="settings" element={<Settings />} />

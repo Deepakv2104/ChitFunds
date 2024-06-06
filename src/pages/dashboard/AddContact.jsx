@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../Authentication/firebase';
-import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import {
   Table,
   TableBody,
@@ -143,6 +143,7 @@ const AddContact = () => {
   const addContact = async (contact) => {
     try {
       const docRef = await addDoc(collection(db, 'contacts'), contact);
+      await updateDoc(docRef, { memberId: docRef.id }); // Update the document to include memberId
       setContacts([...contacts, { ...contact, memberId: docRef.id, key: docRef.id }]); // Include memberId as document ID
     } catch (error) {
       console.error('Error adding contact: ', error);

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/ExistingChitPage.css';
-import { firebase, db } from '../../Authentication/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../Authentication/firebase';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 
 const ExistingChits = () => {
   const [groups, setGroups] = useState([]);
   const [selectedValue, setSelectedValue] = useState('1'); 
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [groupToDelete, setGroupToDelete] = useState(null);
   const navigate = useNavigate(); 
 
   useEffect(() => {
@@ -31,6 +33,29 @@ const ExistingChits = () => {
     navigate(`${groupId}`);
   };
 
+  const handleDeleteClick = (group) => {
+    setGroupToDelete(group);
+    setShowDeleteDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (groupToDelete) {
+      try {
+        await deleteDoc(doc(db, 'groups', groupToDelete.id));
+        setGroups(groups.filter(group => group.id !== groupToDelete.id));
+        setShowDeleteDialog(false);
+        setGroupToDelete(null);
+      } catch (error) {
+        console.error('Error deleting group:', error);
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteDialog(false);
+    setGroupToDelete(null);
+  };
+
   const filteredGroups = groups.filter(group => group.selectedValue === selectedValue);
 
   return (
@@ -49,6 +74,8 @@ const ExistingChits = () => {
           <div className={`option ${selectedValue === '10' ? 'active' : ''}`} onClick={() => handleOptionClick('10')}>
             10L
           </div>
+          <div className="option back" onClick={() => navigate('/dashboard/dashboardHome')}>Back</div>
+
         </div>
       </div>
       <div className='main-content-existing-page'>
@@ -58,21 +85,33 @@ const ExistingChits = () => {
               <th>Group Name</th>
               <th>Number of members</th>
               <th>Chits Picked</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-  {filteredGroups.map(group => (
-    <tr key={group.id} onClick={() => handleRowClick(group.id)}>
-      <td>{group.groupName}</td>
-      <td>{group.NumberOfMembers || 0}</td>
-      <td></td>
-    </tr>
-  ))}
-</tbody>
-
-
+            {filteredGroups.map(group => (
+              <tr key={group.id}>
+                <td onClick={() => handleRowClick(group.id)}>{group.groupName}</td>
+                <td onClick={() => handleRowClick(group.id)}>{group.NumberOfMembers || 0}</td>
+                <td onClick={() => handleRowClick(group.id)}></td>
+                <td>
+                  <button onClick={() => handleDeleteClick(group)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
+
+      {showDeleteDialog && (
+        <div className="delete-dialog">
+          <div className="delete-dialog-content">
+            <p>Are you sure you want to permanently delete this chit?</p>
+            <button onClick={handleConfirmDelete}>Yes</button>
+            <button onClick={handleCancelDelete}>No</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

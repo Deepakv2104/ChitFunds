@@ -2,7 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import { Button } from 'react-bootstrap';
 import { collection, addDoc, getDocs, doc, setDoc } from 'firebase/firestore';
-import { db } from '../../Authentication/firebase'; // Adjust the path as necessary
+import { db } from '../../Authentication/firebase';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  IconButton,
+  Grid
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './NewChitPage.css';
 
 const NewChitPage = () => {
@@ -13,9 +25,16 @@ const NewChitPage = () => {
   const [selectedValue, setSelectedValue] = useState('');
   const [startMonth, setStartMonth] = useState('');
   const [endMonth, setEndMonth] = useState('');
-  const [NumberOfMembers, setNumberOfMembers] = useState('');
+  const [numberOfMembers, setNumberOfMembers] = useState('');
+  const [open, setOpen] = useState(false);
+  const [newContact, setNewContact] = useState({
+    name: '',
+    phone: '',
+    alternatePhone: '',
+    aadharCardNo: '',
+    chequeNo: ''
+  });
 
-  // Fetch contacts from Firestore on component mount
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -61,31 +80,27 @@ const NewChitPage = () => {
 
   const handleCreateGroup = async () => {
     try {
-      const newGroupRef = doc(collection(db, 'groups')); // Create a reference to a new document
-      const groupId = newGroupRef.id; // Get the generated ID for the new document
+      const newGroupRef = doc(collection(db, 'groups'));
+      const groupId = newGroupRef.id;
+      const numberOfMembers = selectedContacts.length;
 
-      // Calculate the number of selected contacts
-      const NumberOfMembers = selectedContacts.length;
-
-      // Push selected group name, selected value, selected contacts, startMonth, endMonth, and NumberOfMembers to Firebase database
       await setDoc(newGroupRef, {
-        groupId: groupId,
+        groupId,
         groupName,
         selectedValue,
         selectedContacts,
         startMonth,
         endMonth,
-        NumberOfMembers // Add NumberOfMembers to the data
+        numberOfMembers
       });
 
-      // Initialize monthly contributions for each month
-      const months = generateMonths(20); // Generate 20 months from the start month
+      const months = generateMonths(20);
       const contributionsCollectionRef = collection(db, 'contributions');
 
       for (const month of months) {
         await setDoc(doc(contributionsCollectionRef), {
           chitFundId: groupId,
-          month: month,
+          month,
           contributions: selectedContacts.map(contact => ({
             memberId: contact.id,
             amount: 0,
@@ -96,7 +111,8 @@ const NewChitPage = () => {
         });
       }
 
-      // Reset form fields
+      toast.success(`${groupName} group created`);
+
       setGroupName('');
       setSelectedValue('');
       setSelectedContacts([]);
@@ -105,6 +121,39 @@ const NewChitPage = () => {
       setEndMonth('');
     } catch (error) {
       console.error('Error creating group:', error);
+      toast.error('Failed to create group');
+    }
+  };
+
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+    setNewContact({
+      name: '',
+      phone: '',
+      alternatePhone: '',
+      aadharCardNo: '',
+      chequeNo: ''
+    });
+  };
+
+  const handleNewContactChange = (event) => {
+    const { name, value } = event.target;
+    setNewContact(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleAddNewContact = async () => {
+    try {
+      const docRef = await addDoc(collection(db, 'contacts'), newContact);
+      await setDoc(doc(db, 'contacts', docRef.id), { ...newContact, memberId: docRef.id });
+
+      setAvailableContacts([...availableContacts, { ...newContact, id: docRef.id }]);
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error adding new contact:', error);
     }
   };
 
@@ -114,6 +163,7 @@ const NewChitPage = () => {
 
   return (
     <div className="new-chit-page">
+      <ToastContainer />
       <h2>Create a New Group</h2>
       <div className="flex-container">
         <div className="left-container">
@@ -168,6 +218,9 @@ const NewChitPage = () => {
             onChange={handleSearchChange}
             className="search-input"
           />
+          <Button variant="primary" className="add-contact-button" onClick={handleOpenDialog}>
+            <AddIcon /> New Contact
+          </Button>
           <div className="available-contacts">
             {filteredContacts.map(contact => (
               <div key={contact.id} className="contact-row" onClick={() => handleAddContact(contact)}>
@@ -178,6 +231,71 @@ const NewChitPage = () => {
           </div>
         </div>
       </div>
+      <Dialog open={open} onClose={handleCloseDialog}>
+        <DialogTitle>Add New Contact</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                name="name"
+                label="Name"
+                variant="outlined"
+                fullWidth
+                value={newContact.name}
+                onChange={handleNewContactChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="phone"
+                label="Phone"
+                variant="outlined"
+                fullWidth
+                value={newContact.phone}
+                onChange={handleNewContactChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="alternatePhone"
+                label="Alternate Phone"
+                variant="outlined"
+                fullWidth
+                value={newContact.alternatePhone}
+                onChange={handleNewContactChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="aadharCardNo"
+                label="Aadhar Card No"
+                variant="outlined"
+                fullWidth
+                value={newContact.aadharCardNo}
+                onChange={handleNewContactChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="chequeNo"
+                label="Cheque No"
+                variant="outlined"
+                fullWidth
+                value={newContact.chequeNo}
+                onChange={handleNewContactChange}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="secondary" onClick={handleCloseDialog}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleAddNewContact}>
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
@@ -185,7 +303,7 @@ const NewChitPage = () => {
 export default NewChitPage;
 
 // dateUtils.js
- const generateMonths = (numMonths) => {
+const generateMonths = (numMonths) => {
   const months = [];
   const date = new Date();
 
@@ -200,7 +318,7 @@ export default NewChitPage;
 };
 
 const calculateEndMonth = (startMonth) => {
-  const months = generateMonths(40); // Generate enough months to ensure the end month is within the range
+  const months = generateMonths(40);
   const startIndex = months.indexOf(startMonth);
   if (startIndex === -1) return '';
 

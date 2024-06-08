@@ -1,80 +1,110 @@
-/* ExistingChitPage.css */
-
 /* Container styles */
 .group-details {
-    display: flex;
-    flex-direction: column;
-    background-color: #f2f2f2;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Group info styles */
+.group-details .group-info {
+  margin-bottom: 20px;
+}
+
+.group-details .group-info h2 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.group-details .group-info p {
+  margin: 0;
+  font-size: 18px;
+  color: #666;
+}
+
+/* SearchBar styles */
+.group-details .search-bar {
+  margin-bottom: 20px;
+}
+
+/* ContactTable styles */
+.group-details .contact-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.group-details .contact-table th,
+.group-details .contact-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.group-details .contact-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #333;
+}
+
+.group-details .contact-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.group-details .contact-table tr:hover {
+  background-color: #f0f0f0;
+}
+
+/* MonthSlider styles */
+.group-details .month-slider {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Media Query for Mobile View */
+@media only screen and (max-width: 768px) {
+  .group-details {
+      padding: 10px;
   }
-  
-  /* Group info styles */
-  .group-details .group-info {
-    margin-bottom: 20px;
-  }
-  
+
   .group-details .group-info h2 {
-    margin-top: 0;
-    font-size: 24px;
-    color: #333;
+      font-size: 20px;
   }
-  
+
   .group-details .group-info p {
-    margin: 0;
-    font-size: 18px;
-    color: #666;
+      font-size: 16px;
   }
-  
-  /* SearchBar styles */
+
   .group-details .search-bar {
-    margin-bottom: 20px;
+      margin-bottom: 10px;
   }
-  
-  /* ContactTable styles */
-  .group-details .contact-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
+
   .group-details .contact-table th,
   .group-details .contact-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
+      padding: 8px;
   }
-  
-  .group-details .contact-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .group-details .contact-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .group-details .contact-table tr:hover {
-    background-color: #f0f0f0;
-  }
-  
-  /* Media Query for Mobile View */
-  @media only screen and (max-width: 768px) {
-    /* .group-details {
-      padding: 10px;
-    } */
-  
-    .group-details .group-info h2 {
-      font-size: 20px;
-    }
-  
-    .group-details .group-info p {
-      font-size: 16px;
-    }
-  
-    .group-details .search-bar {
-      margin-bottom: 10px;
-    }
-  }
-  
+}
+.month-options {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.month-options button {
+    flex: 0 0 auto;
+    margin-right: 10px;
+}
+
+/* Scrollbar styling for better appearance */
+.month-options::-webkit-scrollbar {
+    height: 8px;
+}
+
+.month-options::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+}

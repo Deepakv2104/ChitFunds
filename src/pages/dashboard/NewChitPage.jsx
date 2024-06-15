@@ -34,6 +34,8 @@ const NewChitPage = () => {
     aadharCardNo: '',
     chequeNo: ''
   });
+  const [isCustomStartMonth, setIsCustomStartMonth] = useState(false);
+  const [isCustomEndMonth, setIsCustomEndMonth] = useState(false);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -74,8 +76,14 @@ const NewChitPage = () => {
 
   const handleStartMonthChange = (event) => {
     const selectedStartMonth = event.target.value;
-    setStartMonth(selectedStartMonth);
-    setEndMonth(calculateEndMonth(selectedStartMonth));
+    if (selectedStartMonth === 'Other') {
+      setIsCustomStartMonth(true);
+      setStartMonth('');
+    } else {
+      setIsCustomStartMonth(false);
+      setStartMonth(selectedStartMonth);
+      setEndMonth(calculateEndMonth(selectedStartMonth));
+    }
   };
 
   const handleCreateGroup = async () => {
@@ -190,10 +198,30 @@ const NewChitPage = () => {
             {generateMonths(20).map((month, index) => (
               <option key={index} value={month}>{month}</option>
             ))}
+            <option value="Other">Other</option>
           </select>
+          {isCustomStartMonth && (
+            <TextField
+              value={startMonth}
+              onChange={(e) => setStartMonth(e.target.value)}
+              label="Enter Start Month"
+              variant="outlined"
+              fullWidth
+            />
+          )}
           <br />
           <p>End Month</p>
-          <input type="text" value={endMonth} readOnly className="end-month-input" />
+          {isCustomStartMonth ? (
+            <TextField
+              value={endMonth}
+              onChange={(e) => setEndMonth(e.target.value)}
+              label="Enter End Month"
+              variant="outlined"
+              fullWidth
+            />
+          ) : (
+            <input type="text" value={endMonth} readOnly className="end-month-input" />
+          )}
           <br />
           <p>Selected Contacts</p>
           <div className="selected-contacts">

@@ -64,7 +64,7 @@ h2 {
   transition: background-color 0.3s;
   position: absolute;
   bottom: 20px;
-  left: 25%; /* Adjusted to prevent overlap */
+  left: 50%; /* Changed to center the button */
   transform: translateX(-50%);
 }
 
@@ -193,6 +193,10 @@ h2 {
 
   .left-container, .right-container {
     margin-bottom: 20px;
+  }
+
+  .create-button {
+    left: 50%; /* Centering the create button in mobile view */
   }
 }
 

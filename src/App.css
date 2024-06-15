@@ -9,12 +9,12 @@
     scroll-behavior: smooth;
     scroll-padding-top: 75px;
   }
-  .header {
+  /* .header {
     background-color: #007bff;
     padding: 10px;
     color: #fff;
   }
-  
+   */
   body {
     font-weight: 400;
     overflow-x: hidden;

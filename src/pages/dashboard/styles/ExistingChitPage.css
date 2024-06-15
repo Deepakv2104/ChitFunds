@@ -15,7 +15,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 /* Option styles */
-.option {
+.existing-chit-page .option {
   text-align: center;
   display: block;
   padding: 15px 20px;
@@ -28,22 +28,22 @@
   transition: background-color 0.3s, color 0.3s;
 }
 
-.option:hover {
+.existing-chit-page .option:hover {
   background-color: #b5e1ff; /* Darker shade on hover */
   color: #000; /* Changed text color on hover */
 }
 
-.option.active {
+.existing-chit-page .option.active {
   background-color: #b5e1ff; /* Darker shade for active */
   color: #000; /* Changed text color for active */
 }
 
-.option.back {
+.existing-chit-page .option.back {
   background-color: #007bff; /* Changed background color */
   color: #fff; /* Changed text color */
 }
 
-.option.back:hover {
+.existing-chit-page .option.back:hover {
   background-color: #0056b3; /* Darker shade on hover */
 }
 
@@ -84,7 +84,7 @@
 }
 
 /* Delete Button Styles */
-button {
+.existing-chit-page button {
   background-color: #d9534f;
   color: white;
   border: none;
@@ -94,12 +94,12 @@ button {
   transition: background-color 0.3s;
 }
 
-button:hover {
+.existing-chit-page button:hover {
   background-color: #c9302c;
 }
 
 /* Delete Dialog Styles */
-.delete-dialog {
+.existing-chit-page .delete-dialog {
   position: fixed;
   top: 0;
   left: 0;
@@ -111,21 +111,21 @@ button:hover {
   background: rgba(0, 0, 0, 0.5);
 }
 
-.delete-dialog-content {
+.existing-chit-page .delete-dialog-content {
   background: white;
   padding: 20px;
   border-radius: 8px;
   text-align: center;
 }
 
-.delete-dialog-content button {
+.existing-chit-page .delete-dialog-content button {
   margin: 0 10px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
 }
 
-.delete-dialog-content button:first-of-type {
+.existing-chit-page .delete-dialog-content button:first-of-type {
   background-color: #d9534f;
   color: white;
   border: none;
@@ -181,7 +181,7 @@ button:hover {
     width: 100%;
   }
 
-  .option.active {
+  .existing-chit-page .option.active {
     background-color: #b5e1ff;
     color: white;
   }

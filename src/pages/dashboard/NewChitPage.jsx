@@ -34,8 +34,6 @@ const NewChitPage = () => {
     aadharCardNo: '',
     chequeNo: ''
   });
-  const [isCustomStartMonth, setIsCustomStartMonth] = useState(false);
-  const [isCustomEndMonth, setIsCustomEndMonth] = useState(false);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -76,14 +74,8 @@ const NewChitPage = () => {
 
   const handleStartMonthChange = (event) => {
     const selectedStartMonth = event.target.value;
-    if (selectedStartMonth === 'Other') {
-      setIsCustomStartMonth(true);
-      setStartMonth('');
-    } else {
-      setIsCustomStartMonth(false);
-      setStartMonth(selectedStartMonth);
-      setEndMonth(calculateEndMonth(selectedStartMonth));
-    }
+    setStartMonth(selectedStartMonth);
+    setEndMonth(calculateEndMonth(selectedStartMonth));
   };
 
   const handleCreateGroup = async () => {
@@ -91,7 +83,7 @@ const NewChitPage = () => {
       const newGroupRef = doc(collection(db, 'groups'));
       const groupId = newGroupRef.id;
       const numberOfMembers = selectedContacts.length;
-  
+
       await setDoc(newGroupRef, {
         groupId,
         groupName,
@@ -101,13 +93,12 @@ const NewChitPage = () => {
         endMonth,
         numberOfMembers
       });
-  
+
       const months = generateMonths(20);
       const contributionsCollectionRef = collection(db, 'contributions');
-  
-      for (const [index, month] of months.entries()) {
-        const contributionDocRef = doc(contributionsCollectionRef, groupId, month);
-        await setDoc(contributionDocRef, {
+
+      for (const month of months) {
+        await setDoc(doc(contributionsCollectionRef), {
           chitFundId: groupId,
           month,
           contributions: selectedContacts.map(contact => ({
@@ -119,9 +110,9 @@ const NewChitPage = () => {
           winner: {}
         });
       }
-  
+
       toast.success(`${groupName} group created`);
-  
+
       setGroupName('');
       setSelectedValue('');
       setSelectedContacts([]);
@@ -133,7 +124,7 @@ const NewChitPage = () => {
       toast.error('Failed to create group');
     }
   };
-  
+
   const handleOpenDialog = () => {
     setOpen(true);
   };
@@ -199,30 +190,10 @@ const NewChitPage = () => {
             {generateMonths(20).map((month, index) => (
               <option key={index} value={month}>{month}</option>
             ))}
-            <option value="Other">Other</option>
           </select>
-          {isCustomStartMonth && (
-            <TextField
-              value={startMonth}
-              onChange={(e) => setStartMonth(e.target.value)}
-              label="Enter Start Month"
-              variant="outlined"
-              fullWidth
-            />
-          )}
           <br />
           <p>End Month</p>
-          {isCustomStartMonth ? (
-            <TextField
-              value={endMonth}
-              onChange={(e) => setEndMonth(e.target.value)}
-              label="Enter End Month"
-              variant="outlined"
-              fullWidth
-            />
-          ) : (
-            <input type="text" value={endMonth} readOnly className="end-month-input" />
-          )}
+          <input type="text" value={endMonth} readOnly className="end-month-input" />
           <br />
           <p>Selected Contacts</p>
           <div className="selected-contacts">

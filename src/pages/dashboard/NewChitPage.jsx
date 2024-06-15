@@ -91,7 +91,7 @@ const NewChitPage = () => {
       const newGroupRef = doc(collection(db, 'groups'));
       const groupId = newGroupRef.id;
       const numberOfMembers = selectedContacts.length;
-
+  
       await setDoc(newGroupRef, {
         groupId,
         groupName,
@@ -101,12 +101,13 @@ const NewChitPage = () => {
         endMonth,
         numberOfMembers
       });
-
+  
       const months = generateMonths(20);
       const contributionsCollectionRef = collection(db, 'contributions');
-
-      for (const month of months) {
-        await setDoc(doc(contributionsCollectionRef), {
+  
+      for (const [index, month] of months.entries()) {
+        const contributionDocRef = doc(contributionsCollectionRef, groupId, month);
+        await setDoc(contributionDocRef, {
           chitFundId: groupId,
           month,
           contributions: selectedContacts.map(contact => ({
@@ -118,9 +119,9 @@ const NewChitPage = () => {
           winner: {}
         });
       }
-
+  
       toast.success(`${groupName} group created`);
-
+  
       setGroupName('');
       setSelectedValue('');
       setSelectedContacts([]);
@@ -132,7 +133,7 @@ const NewChitPage = () => {
       toast.error('Failed to create group');
     }
   };
-
+  
   const handleOpenDialog = () => {
     setOpen(true);
   };

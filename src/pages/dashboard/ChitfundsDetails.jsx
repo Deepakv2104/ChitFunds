@@ -16,6 +16,22 @@ const ChitFundDetails = ({ chitfundId }) => {
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
+    const fetchContributions = async (groupId) => {
+      try {
+        const contributionsCollectionRef = collection(db, 'contributions');
+        const querySnapshot = await getDocs(query(collection(contributionsCollectionRef, groupId).orderBy('month')));
+    
+        const contributions = querySnapshot.docs.map(doc => doc.data());
+    
+        // Now contributions should be in the order of months
+        console.log('Contributions:', contributions);
+        
+        // Further processing of contributions...
+      } catch (error) {
+        console.error('Error fetching contributions:', error);
+      }
+    };
+    
     const fetchMonths = async () => {
       try {
         const contributionsQuery = query(collection(db, 'contributions'), where('chitFundId', '==', chitfundId));
@@ -32,6 +48,7 @@ const ChitFundDetails = ({ chitfundId }) => {
     };
 
     fetchMonths();
+    fetchContributions();
   }, [chitfundId]);
 
   useEffect(() => {

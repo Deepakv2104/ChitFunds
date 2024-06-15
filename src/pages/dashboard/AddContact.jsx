@@ -20,7 +20,6 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import Pagination from '@mui/material/Pagination';
 
 const ContactRow = ({ contact, onDelete }) => (
   <TableRow>
@@ -159,13 +158,6 @@ const AddContact = () => {
     }
   };
 
-  // Pagination
-  const itemsPerPage = 10;
-  const [page, setPage] = useState(1);
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
   return (
     <Container className="addContact" maxWidth={false} disableGutters>
       <Typography variant="h4" component="h1" className="title" gutterBottom>
@@ -175,8 +167,7 @@ const AddContact = () => {
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
       <NewContactRow addContact={addContact} />
       <Box className="pagination-container">
-        <ContactTable contacts={contacts.slice((page - 1) * itemsPerPage, page * itemsPerPage)} filterText={filterText} onDelete={deleteContact} />
-        <Pagination count={Math.ceil(contacts.length / itemsPerPage)} page={page} onChange={handleChangePage} color="primary" />
+        <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} />
       </Box>
     </Container>
   );

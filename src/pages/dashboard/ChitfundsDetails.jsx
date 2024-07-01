@@ -1,202 +1,260 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../../Authentication/firebase'; // Adjust the path as necessary
-import './ChitfundsDetails.css';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
-import { IconButton } from '@mui/material';
+import { doc, getDoc, collection, getDocs, updateDoc } from 'firebase/firestore';
+import { db } from '../../Authentication/firebase';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Typography,
+  Container,
+  Box,
+  TextField,
+  Button,
+  Tabs,
+  Tab
+} from '@mui/material';
 
-const ChitFundDetails = ({ chitfundId }) => {
-  const [months, setMonths] = useState([]);
+const ChitFundDetails = ({ groupId }) => {
+  const [groupData, setGroupData] = useState(null);
+  const [contributionsData, setContributionsData] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState('');
-  const [members, setMembers] = useState([]);
-  const [loadingMonths, setLoadingMonths] = useState(true);
-  const [loadingMembers, setLoadingMembers] = useState(false);
+  const [monthlyData, setMonthlyData] = useState(null);
   const [error, setError] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [members, setMembers] = useState({});
+  const [editableData, setEditableData] = useState({});
+  const [tabValue, setTabValue] = useState(0);
+  const [subTabValue, setSubTabValue] = useState(0);
 
   useEffect(() => {
-    const fetchContributions = async (groupId) => {
-      try {
-        const contributionsCollectionRef = collection(db, 'contributions');
-        const querySnapshot = await getDocs(query(collection(contributionsCollectionRef, groupId).orderBy('month')));
-    
-        const contributions = querySnapshot.docs.map(doc => doc.data());
-    
-        // Now contributions should be in the order of months
-        console.log('Contributions:', contributions);
-        
-        // Further processing of contributions...
-      } catch (error) {
-        console.error('Error fetching contributions:', error);
+    const fetchGroupData = async () => {
+      if (!groupId) {
+        setError("No group ID provided");
+        setLoading(false);
+        return;
       }
-    };
-    
-    const fetchMonths = async () => {
+
       try {
-        const contributionsQuery = query(collection(db, 'contributions'), where('chitFundId', '==', chitfundId));
-        const contributionsSnapshot = await getDocs(contributionsQuery);
-        const monthsData = [...new Set(contributionsSnapshot.docs.map(doc => doc.data().month))]; // Ensure uniqueness
-        setMonths(monthsData);
-        console.log(months)
-      } catch (error) {
-        console.error('Error fetching months:', error);
-        setError('Failed to load months.');
-      } finally {
-        setLoadingMonths(false);
-      }
-    };
+        const groupRef = doc(db, 'groups', groupId);
+        const groupSnap = await getDoc(groupRef);
 
-    fetchMonths();
-    fetchContributions();
-  }, [chitfundId]);
+        if (groupSnap.exists()) {
+          const groupDataFetched = groupSnap.data();
+          setGroupData(groupDataFetched);
 
-  useEffect(() => {
-    const fetchMembers = async () => {
-      if (selectedMonth) {
-        setLoadingMembers(true);
-        try {
-          const contributionsQuery = query(collection(db, 'contributions'), where('chitFundId', '==', chitfundId), where('month', '==', selectedMonth));
-          const contributionsSnapshot = await getDocs(contributionsQuery);
-          if (contributionsSnapshot.empty) {
-            // Handle case when no contributions found for selected month
-            setMembers([]);
-            return;
-          }
-          const contributionsData = contributionsSnapshot.docs[0].data().contributions;
-          setMembers(contributionsData);
-        } catch (error) {
-          console.error('Error fetching members:', error);
-          setError('Failed to load members.');
-        } finally {
-          setLoadingMembers(false);
+          // Fetch member details only for group members
+          const membersData = {};
+          const contactsRef = collection(db, 'contacts');
+          const contactsSnap = await getDocs(contactsRef);
+          contactsSnap.forEach(doc => {
+            if (groupDataFetched.memberIds.includes(doc.id)) {
+              membersData[doc.id] = doc.data().name;
+            }
+          });
+          setMembers(membersData);
+
+          // Initialize editable data
+          const initialEditableData = {};
+          Object.keys(membersData).forEach(memberId => {
+            initialEditableData[memberId] = { amount: '', paymentMode: '' };
+          });
+          setEditableData(initialEditableData);
+
+        } else {
+          setError("No such group found");
+          setLoading(false);
+          return;
         }
+
+        const contributionsRef = doc(db, 'contributions', groupId);
+        const contributionsSnap = await getDoc(contributionsRef);
+
+        if (contributionsSnap.exists()) {
+          setContributionsData(contributionsSnap.data());
+          const months = Object.keys(contributionsSnap.data().months).sort((a, b) => {
+            const [aMonth, aYear] = a.split(' ');
+            const [bMonth, bYear] = b.split(' ');
+            return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
+          });
+          if (months.length > 0) {
+            setSelectedMonth(months[0]);
+          }
+        } else {
+          // If no contributions data, create an empty structure
+          setContributionsData({ months: {} });
+        }
+      } catch (error) {
+        console.error("Error fetching group data:", error);
+        setError(`Error fetching group data: ${error.message}`);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchMembers();
-  }, [selectedMonth, chitfundId]);
+    fetchGroupData();
+  }, [groupId]);
 
-  const handleAmountChange = (index, event) => {
-    const updatedMembers = [...members];
-    updatedMembers[index].amount = parseFloat(event.target.value);
-    setMembers(updatedMembers);
+  useEffect(() => {
+    if (contributionsData && selectedMonth) {
+      setMonthlyData(contributionsData.months[selectedMonth] || {});
+      // Update editable data with existing values
+      const newEditableData = {};
+      Object.entries(contributionsData.months[selectedMonth]?.memberContributions || {}).forEach(([memberId, data]) => {
+        newEditableData[memberId] = { amount: data.amount || '', paymentMode: data.paymentMode || '' };
+      });
+      setEditableData(newEditableData);
+    }
+  }, [contributionsData, selectedMonth]);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+    const sortedMonths = Object.keys(contributionsData?.months || {}).sort((a, b) => {
+      const [aMonth, aYear] = a.split(' ');
+      const [bMonth, bYear] = b.split(' ');
+      return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
+    });
+    setSelectedMonth(sortedMonths[newValue]);
+    setSubTabValue(0); // Reset sub-tab value when main tab changes
   };
 
-  const handlePaymentModeChange = (index, event) => {
-    const updatedMembers = [...members];
-    updatedMembers[index].paymentMode = event.target.value;
-    setMembers(updatedMembers);
+  const handleSubTabChange = (event, newValue) => {
+    setSubTabValue(newValue);
   };
 
-  const handleBalanceChange = (index, event) => {
-    const updatedMembers = [...members];
-    updatedMembers[index].balance = parseFloat(event.target.value);
-    setMembers(updatedMembers);
+  const handleInputChange = (memberId, field, value) => {
+    setEditableData(prev => ({
+      ...prev,
+      [memberId]: { ...prev[memberId], [field]: value }
+    }));
   };
 
-  const handleSaveChanges = async () => {
+  const handleSave = async () => {
     try {
-      const contributionsQuery = query(collection(db, 'contributions'), where('chitFundId', '==', chitfundId), where('month', '==', selectedMonth));
-      const contributionsSnapshot = await getDocs(contributionsQuery);
-      const contributionsDoc = contributionsSnapshot.docs[0];
-      await updateDoc(doc(db, 'contributions', contributionsDoc.id), { contributions: members });
-      console.log('Changes saved successfully!');
-      setEditMode(false); // Exit edit mode after saving
+      const contributionsRef = doc(db, 'contributions', groupId);
+      await updateDoc(contributionsRef, {
+        [`months.${selectedMonth}.memberContributions`]: editableData
+      });
+      setMonthlyData({ ...monthlyData, memberContributions: editableData });
+      alert('Data saved successfully!');
     } catch (error) {
-      console.error('Error saving changes:', error);
-      setError('Failed to save changes.');
+      console.error("Error saving data:", error);
+      alert('Failed to save data. Please try again.');
     }
   };
 
+  if (loading) {
+    return (
+      <Container>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <Typography color="error">{error}</Typography>
+      </Container>
+    );
+  }
+
+  if (!groupData) {
+    return (
+      <Container>
+        <Typography>No data available</Typography>
+      </Container>
+    );
+  }
+
+  const sortedMonths = Object.keys(contributionsData?.months || {}).sort((a, b) => {
+    const [aMonth, aYear] = a.split(' ');
+    const [bMonth, bYear] = b.split(' ');
+    return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
+  });
+
   return (
-<div className="chitfund-details">
-  <h2>Chitfund ID: {chitfundId}</h2>
-  {loadingMonths ? (
-    <p>Loading months...</p>
-  ) : (
-    <>
-      <div className="subnav">
-        {months.sort((a, b) => {
-          const [aMonth, aYear] = a.split(' ');
-          const [bMonth, bYear] = b.split(' ');
-          const monthsMap = {
-            Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6,
-            Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12
-          };
-          if (aYear === bYear) {
-            return monthsMap[aMonth] - monthsMap[bMonth];
-          }
-          return parseInt(aYear) - parseInt(bYear);
-        }).map((month, index) => (
-          <button key={index} onClick={() => setSelectedMonth(month)} className={month === selectedMonth ? 'active' : ''}>
-            {month}
-          </button>
-        ))}
-      </div>
-      {error && <p className="error">{error}</p>}
-    </>
-  )}
-  {selectedMonth && (
-    <div className="members-table">
-      <div className="month-title">
-        <h3>Month: {selectedMonth}</h3>
-        <div className="edit-toggle">
-          <IconButton onClick={() => setEditMode(!editMode)}>
-            {editMode ? <SaveIcon /> : <EditIcon />}
-          </IconButton>
-        </div>
-      </div>
-      {loadingMembers ? (
-        <p>Loading members...</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Member ID</th>
-              <th>Amount</th>
-              <th>Payment Mode</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {members.map((member, index) => (
-              <tr key={index}>
-                <td>{member.memberId}</td>
-                <td>
-                  {editMode ? (
-                    <input type="number" value={member.amount} onChange={(event) => handleAmountChange(index, event)} />
-                  ) : (
-                    member.amount
-                  )}
-                </td>
-                <td>
-                  {editMode ? (
-                    <input type="text" value={member.paymentMode} onChange={(event) => handlePaymentModeChange(index, event)} />
-                  ) : (
-                    member.paymentMode
-                  )}
-                </td>
-                <td>
-                  {editMode ? (
-                    <input type="number" value={member.balance} onChange={(event) => handleBalanceChange(index, event)} />
-                  ) : (
-                    member.balance
-                  )}
-                </td>
-              </tr>
+    <Container>
+      <Typography variant="h4" gutterBottom>{groupData.groupName}</Typography>
+      <Typography variant="body1">Value: {groupData.selectedValue} lakhs</Typography>
+      <Typography variant="body1">Members: {groupData.numberOfMembers}</Typography>
+      <Typography variant="body1">Duration: {groupData.startMonth} - {groupData.endMonth}</Typography>
+
+      <Box my={3} style={{ overflowX: 'auto' }}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+        >
+          {sortedMonths.map((month, index) => (
+            <Tab key={month} label={month} />
+          ))}
+        </Tabs>
+
+        <Tabs
+          value={subTabValue}
+          onChange={handleSubTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+        >
+          {sortedMonths[tabValue] && Object.keys(contributionsData.months[sortedMonths[tabValue]].memberContributions || {}).map((memberId, index) => (
+            <Tab key={memberId} label={members[memberId]} />
+          ))}
+        </Tabs>
+      </Box>
+
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Member Name</TableCell>
+              <TableCell>Amount</TableCell>
+              <TableCell>Payment Mode</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Object.entries(members).map(([memberId, memberName]) => (
+              <TableRow key={memberId}>
+                <TableCell>{memberName}</TableCell>
+                <TableCell>
+                  <TextField
+                    value={editableData[memberId]?.amount || ''}
+                    onChange={(e) => handleInputChange(memberId, 'amount', e.target.value)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    value={editableData[memberId]?.paymentMode || ''}
+                    onChange={(e) => handleInputChange(memberId, 'paymentMode', e.target.value)}
+                  />
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Box mt={2}>
+        <Button variant="contained" color="primary" onClick={handleSave}>
+          Save Changes
+        </Button>
+      </Box>
+
+      {monthlyData && monthlyData.winner && (
+        <Box mt={3}>
+          <Typography variant="h6">Winner for {selectedMonth}</Typography>
+          <Typography>Member Name: {members[monthlyData.winner.memberId] || 'Unknown'}</Typography>
+          <Typography>Amount: {monthlyData.winner.amount}</Typography>
+        </Box>
       )}
-      {editMode && <button className="save-button" onClick={handleSaveChanges}>Save Changes</button>}
-    </div>
-  )}
-</div>
-
-
-
-
+    </Container>
   );
 };
 

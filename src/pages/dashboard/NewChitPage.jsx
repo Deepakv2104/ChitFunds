@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import { Button } from 'react-bootstrap';
-import { collection, addDoc, getDocs, doc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, setDoc, writeBatch } from 'firebase/firestore';
 import { db } from '../../Authentication/firebase';
 import {
   Dialog,
@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  IconButton,
   Grid
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -25,7 +24,6 @@ const NewChitPage = () => {
   const [selectedValue, setSelectedValue] = useState('');
   const [startMonth, setStartMonth] = useState('');
   const [endMonth, setEndMonth] = useState('');
-  const [numberOfMembers, setNumberOfMembers] = useState('');
   const [open, setOpen] = useState(false);
   const [newContact, setNewContact] = useState({
     name: '',
@@ -80,50 +78,74 @@ const NewChitPage = () => {
 
   const handleCreateGroup = async () => {
     try {
-      const newGroupRef = doc(collection(db, 'groups'));
+      const batch = writeBatch(db);
+  
+      // Create the group document
+      const groupsRef = collection(db, 'groups');
+      const newGroupRef = doc(groupsRef);
       const groupId = newGroupRef.id;
-      const numberOfMembers = selectedContacts.length;
-
-      await setDoc(newGroupRef, {
+  
+      // Get the months array from startMonth to endMonth
+      const monthsArray = generateMonths(40);
+      const startMonthIndex = monthsArray.indexOf(startMonth);
+      const endMonthIndex = monthsArray.indexOf(endMonth);
+      const selectedMonths = monthsArray.slice(startMonthIndex, endMonthIndex + 1);
+  
+      // Prepare months object with months in order
+      const monthsData = {};
+      selectedMonths.forEach(month => {
+        monthsData[month] = {
+          winner: null,
+          memberContributions: {}
+        };
+      });
+  
+      // Store the months array in the group document
+      const monthsArrayData = selectedMonths.map(month => ({ name: month }));
+      const groupData = {
         groupId,
         groupName,
         selectedValue,
-        selectedContacts,
+        memberIds: selectedContacts.map(contact => contact.id),
         startMonth,
         endMonth,
-        numberOfMembers
+        numberOfMembers: selectedContacts.length,
+        monthsArray: monthsArrayData // Store the array of months
+      };
+  
+      batch.set(newGroupRef, groupData);
+  
+      // Create the initial contributions document
+      const contributionsRef = doc(collection(db, 'contributions'), groupId);
+      batch.set(contributionsRef, {
+        months: monthsData // Ensure only the selected months are stored
       });
-
-      const months = generateMonths(20);
-      const contributionsCollectionRef = collection(db, 'contributions');
-
-      for (const month of months) {
-        await setDoc(doc(contributionsCollectionRef), {
-          chitFundId: groupId,
-          month,
-          contributions: selectedContacts.map(contact => ({
-            memberId: contact.id,
-            amount: 0,
-            paymentMode: '',
-            balance: 0
-          })),
-          winner: {}
-        });
-      }
-
+  
+      // Commit the batch
+      await batch.commit();
+  
       toast.success(`${groupName} group created`);
-
+  
+      // Reset form state
       setGroupName('');
       setSelectedValue('');
       setSelectedContacts([]);
       setSearchTerm('');
       setStartMonth('');
       setEndMonth('');
+  
+      // Redirect to ChitFundDetails page passing groupId, startMonth, and endMonth
+      // You can use React Router for this purpose
+      // Example: history.push(`/chit-details/${groupId}`);
+      // For now, let's alert the data
+      alert(`Group ${groupName} created with start month: ${startMonth} and end month: ${endMonth}`);
+  
     } catch (error) {
       console.error('Error creating group:', error);
       toast.error('Failed to create group');
     }
   };
+  
 
   const handleOpenDialog = () => {
     setOpen(true);
@@ -322,6 +344,6 @@ const calculateEndMonth = (startMonth) => {
   const startIndex = months.indexOf(startMonth);
   if (startIndex === -1) return '';
 
-  const endIndex = startIndex + 20;
+  const endIndex = startIndex + 19;
   return months[endIndex] || '';
 };

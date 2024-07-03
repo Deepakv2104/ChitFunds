@@ -18,7 +18,6 @@ import GroupDetails from './pages/dashboard/GroupDetails';
 import ChitFundDetails from './pages/dashboard/ChitfundsDetails';
 import Testing from './pages/dashboard/Testing'
 
-import './tailwind.css';
 
 const App = () => {
   return (

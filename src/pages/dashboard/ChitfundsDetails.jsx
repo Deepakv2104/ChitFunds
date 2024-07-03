@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { doc, getDoc, collection, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../../Authentication/firebase';
 import { Checkbox } from '@mui/material';
@@ -7,7 +8,7 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography, Container, Box, TextField, Button, Tabs, Tab, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 
-const ChitFundDetails = ({ groupId }) => {
+const ChitFundDetails = () => {
   const [groupData, setGroupData] = useState(null);
   const [contributionsData, setContributionsData] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState('');
@@ -19,7 +20,7 @@ const ChitFundDetails = ({ groupId }) => {
   const [tabValue, setTabValue] = useState(0);
   const [currentWinner, setCurrentWinner] = useState('');
   const monthlyAmount = 5000;
-
+const {groupId} = useParams();
   useEffect(() => {
     const fetchData = async () => {
       if (!groupId) {

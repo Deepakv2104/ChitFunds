@@ -16,6 +16,10 @@ import ExistingChits from './pages/dashboard/ExistingChits';
 import './App.css';
 import GroupDetails from './pages/dashboard/GroupDetails';
 import ChitFundDetails from './pages/dashboard/ChitfundsDetails';
+import Testing from './pages/dashboard/Testing'
+
+import './tailwind.css';
+
 const App = () => {
   return (
     <Router>
@@ -23,6 +27,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<AuthPage />} />
+          <Route path="/testing" element={<Testing />} />
           
           <Route path="/dashboard" element={<Dashboard />}>
             <Route path="dashboardHome" element={<DashboardHome />} />

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc, collection, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../../Authentication/firebase';
+import { Checkbox } from '@mui/material';
+import './ChitfundsDetails.css';
 import {
   Table,
   TableBody,
@@ -16,7 +18,11 @@ import {
   TextField,
   Button,
   Tabs,
-  Tab
+  Tab,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 
 const ChitFundDetails = ({ groupId }) => {
@@ -30,6 +36,7 @@ const ChitFundDetails = ({ groupId }) => {
   const [editableData, setEditableData] = useState({});
   const [tabValue, setTabValue] = useState(0);
   const [subTabValue, setSubTabValue] = useState(0);
+  const monthlyAmount = 5000;
 
   useEffect(() => {
     const fetchGroupData = async () => {
@@ -43,44 +50,52 @@ const ChitFundDetails = ({ groupId }) => {
         const groupRef = doc(db, 'groups', groupId);
         const groupSnap = await getDoc(groupRef);
 
-        if (groupSnap.exists()) {
-          const groupDataFetched = groupSnap.data();
-          setGroupData(groupDataFetched);
-
-          // Fetch member details only for group members
-          const membersData = {};
-          const contactsRef = collection(db, 'contacts');
-          const contactsSnap = await getDocs(contactsRef);
-          contactsSnap.forEach(doc => {
-            if (groupDataFetched.memberIds.includes(doc.id)) {
-              membersData[doc.id] = doc.data().name;
-            }
-          });
-          setMembers(membersData);
-
-          // Initialize editable data
-          const initialEditableData = {};
-          Object.keys(membersData).forEach(memberId => {
-            initialEditableData[memberId] = { amount: '', paymentMode: '' };
-          });
-          setEditableData(initialEditableData);
-
-        } else {
+        if (!groupSnap.exists()) {
           setError("No such group found");
           setLoading(false);
           return;
         }
+
+        const groupDataFetched = groupSnap.data();
+        setGroupData(groupDataFetched);
+
+        // Fetch member details only for group members
+        const membersData = {};
+        const contactsRef = collection(db, 'contacts');
+        const contactsSnap = await getDocs(contactsRef);
+        contactsSnap.forEach(doc => {
+          if (groupDataFetched.memberIds.includes(doc.id)) {
+            membersData[doc.id] = doc.data().name;
+          }
+        });
+        setMembers(membersData);
+
+        // Initialize editable data
+        const initialEditableData = {};
+        Object.keys(membersData).forEach(memberId => {
+          initialEditableData[memberId] = {
+            amount: '',
+            paymentMode: '', // Initialize paymentMode as empty string
+            balance: 0,
+            paid: false,
+            advancePayment: 0
+          };
+        });
+        setEditableData(initialEditableData);
 
         const contributionsRef = doc(db, 'contributions', groupId);
         const contributionsSnap = await getDoc(contributionsRef);
 
         if (contributionsSnap.exists()) {
           setContributionsData(contributionsSnap.data());
+
+          // Sort months from start month to end month
           const months = Object.keys(contributionsSnap.data().months).sort((a, b) => {
             const [aMonth, aYear] = a.split(' ');
             const [bMonth, bYear] = b.split(' ');
             return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
           });
+
           if (months.length > 0) {
             setSelectedMonth(months[0]);
           }
@@ -101,11 +116,19 @@ const ChitFundDetails = ({ groupId }) => {
 
   useEffect(() => {
     if (contributionsData && selectedMonth) {
-      setMonthlyData(contributionsData.months[selectedMonth] || {});
+      const selectedMonthData = contributionsData.months[selectedMonth] || {};
+      setMonthlyData(selectedMonthData);
+
       // Update editable data with existing values
       const newEditableData = {};
-      Object.entries(contributionsData.months[selectedMonth]?.memberContributions || {}).forEach(([memberId, data]) => {
-        newEditableData[memberId] = { amount: data.amount || '', paymentMode: data.paymentMode || '' };
+      Object.entries(selectedMonthData.memberContributions || {}).forEach(([memberId, data]) => {
+        newEditableData[memberId] = {
+          amount: data.amount || '',
+          paymentMode: data.paymentMode || '', // Initialize paymentMode from data
+          balance: data.balance || 0,
+          advancePayment: data.advancePayment || 0,
+          paid: data.balance === 0 // Set paid based on balance
+        };
       });
       setEditableData(newEditableData);
     }
@@ -127,19 +150,66 @@ const ChitFundDetails = ({ groupId }) => {
   };
 
   const handleInputChange = (memberId, field, value) => {
-    setEditableData(prev => ({
-      ...prev,
-      [memberId]: { ...prev[memberId], [field]: value }
+    setEditableData(prevEditableData => ({
+      ...prevEditableData,
+      [memberId]: {
+        ...prevEditableData[memberId],
+        [field]: value
+      }
     }));
-  };
 
+    // Update balance, advancePayment, and paid based on amount and paymentMode
+    if (field === 'amount') {
+      const amount = parseFloat(value);
+      const ma = parseFloat(monthlyAmount || 0);
+      const advancePayment = parseFloat(editableData[memberId]?.advancePayment || 0);
+      let balance = ma - amount;
+      let newAdvancePayment = advancePayment;
+  
+      // If the amount exceeds the monthly amount, assign the excess to advancePayment
+      if (amount > ma) {
+        newAdvancePayment += amount - ma;
+        balance = 0; // Balance is zero since the excess is considered an advance
+      } else {
+        // Reset advance payment if the amount is reduced below the monthly amount
+        newAdvancePayment = 0;
+      }
+  
+      setEditableData(prevEditableData => ({
+        ...prevEditableData,
+        [memberId]: {
+          ...prevEditableData[memberId],
+          balance: isNaN(balance) ? 0 : balance,
+          advancePayment: newAdvancePayment,
+          paid: balance === 0 // Set paid based on balance
+        }
+      }));
+    }
+  };
+  
   const handleSave = async () => {
     try {
       const contributionsRef = doc(db, 'contributions', groupId);
       await updateDoc(contributionsRef, {
         [`months.${selectedMonth}.memberContributions`]: editableData
       });
-      setMonthlyData({ ...monthlyData, memberContributions: editableData });
+      
+      // Update local state with saved data
+      setMonthlyData({
+        ...monthlyData,
+        memberContributions: editableData
+      });
+  
+      // Fetch updated contributions data from Firebase to reflect changes
+      const updatedContributionsSnap = await getDoc(contributionsRef);
+      const updatedContributionsData = updatedContributionsSnap.data();
+  
+      // Update contributionsData state with the updated data
+      setContributionsData(updatedContributionsData);
+  
+      // Optionally update selectedMonth if needed
+      // setSelectedMonth(selectedMonth);
+  
       alert('Data saved successfully!');
     } catch (error) {
       console.error("Error saving data:", error);
@@ -178,7 +248,7 @@ const ChitFundDetails = ({ groupId }) => {
     const [bMonth, bYear] = b.split(' ');
     return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
   });
-
+console.log(sortedMonths)
   return (
     <Container>
       <Typography variant="h4" gutterBottom>{groupData.groupName}</Typography>
@@ -193,67 +263,71 @@ const ChitFundDetails = ({ groupId }) => {
           variant="scrollable"
           scrollButtons="auto"
         >
+          
           {sortedMonths.map((month, index) => (
             <Tab key={month} label={month} />
           ))}
         </Tabs>
-
-        <Tabs
-          value={subTabValue}
-          onChange={handleSubTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          {sortedMonths[tabValue] && Object.keys(contributionsData.months[sortedMonths[tabValue]].memberContributions || {}).map((memberId, index) => (
-            <Tab key={memberId} label={members[memberId]} />
-          ))}
-        </Tabs>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Member Name</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Payment Mode</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.entries(members).map(([memberId, memberName]) => (
-              <TableRow key={memberId}>
-                <TableCell>{memberName}</TableCell>
-                <TableCell>
-                  <TextField
-                    value={editableData[memberId]?.amount || ''}
-                    onChange={(e) => handleInputChange(memberId, 'amount', e.target.value)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    value={editableData[memberId]?.paymentMode || ''}
-                    onChange={(e) => handleInputChange(memberId, 'paymentMode', e.target.value)}
-                  />
-                </TableCell>
+      {selectedMonth && (
+        <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Payment Mode</TableCell>
+                <TableCell>Balance</TableCell>
+                <TableCell>Advance Payment</TableCell>
+                <TableCell>Paid</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {Object.keys(members).map((memberId) => (
+                <TableRow key={memberId}>
+                  <TableCell>{members[memberId]}</TableCell>
+                  <TableCell>
+                  <TextField
+  type="number"
+  value={editableData[memberId]?.amount || ''}
+  onChange={(e) => handleInputChange(memberId, 'amount', e.target.value)}
+/>
 
-      <Box mt={2}>
+                  </TableCell>
+                  <TableCell>
+                    <FormControl fullWidth>
+                      <InputLabel>Payment Mode</InputLabel>
+                      <Select
+                        value={editableData[memberId]?.paymentMode || ''}
+                        onChange={(e) => handleInputChange(memberId, 'paymentMode', e.target.value)}
+                      >
+                        <MenuItem value="Cash">Cash</MenuItem>
+                        <MenuItem value="Online">Online</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </TableCell>
+                  <TableCell>{editableData[memberId]?.balance}</TableCell>
+                  <TableCell>{editableData[memberId]?.advancePayment}</TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={editableData[memberId]?.paid}
+                      disabled
+                      style={{ transform: 'scale(1.5)', marginLeft: '6px', color: 'green' }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
+      <Box mt={3} display="flex" justifyContent="flex-end">
         <Button variant="contained" color="primary" onClick={handleSave}>
-          Save Changes
+          Save
         </Button>
       </Box>
-
-      {monthlyData && monthlyData.winner && (
-        <Box mt={3}>
-          <Typography variant="h6">Winner for {selectedMonth}</Typography>
-          <Typography>Member Name: {members[monthlyData.winner.memberId] || 'Unknown'}</Typography>
-          <Typography>Amount: {monthlyData.winner.amount}</Typography>
-        </Box>
-      )}
     </Container>
   );
 };

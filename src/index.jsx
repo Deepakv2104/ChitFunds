@@ -5,7 +5,8 @@ import { ToastContainer, toast } from 'react-toastify'; // Import from react-toa
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for styling
 import App from './App';
 import { AuthProvider } from './Authentication/authContext';
-import './tailwind.css';
+// src/index.js or src/App.js
+import './index.css'
 
 // Use createRoot from ReactDOM/client
 const root = createRoot(document.getElementById('root'));

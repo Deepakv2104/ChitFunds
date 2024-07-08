@@ -4,7 +4,6 @@ import Login from './components/Login';
 import SelectOptions from './components/SelectOptions';
 
 import NewChitPage from './pages/dashboard/NewChitPage';
-// import TwoNewChitPage from './pages/dashboard/TwoNewChitPage';
 import AuthPage from './pages/AuthPage';
 import Home from './pages/Home';
 import Dashboard from './pages/dashboard/dashboard';
@@ -16,8 +15,7 @@ import ExistingChits from './pages/dashboard/ExistingChits';
 import './App.css';
 import GroupDetails from './pages/dashboard/GroupDetails';
 import ChitFundDetails from './pages/dashboard/ChitfundsDetails';
-import Testing from './pages/dashboard/Testing'
-
+import Testing from './pages/dashboard/Testing';
 
 const App = () => {
   return (
@@ -25,26 +23,20 @@ const App = () => {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<AuthPage />} />
           <Route path="/testing" element={<Testing />} />
           
           <Route path="/dashboard" element={<Dashboard />}>
             <Route path="dashboardHome" element={<DashboardHome />} />
             <Route path="dashboardHome/addContact" element={<AddContact />} />
-            <Route path="dashboardHome/addContact" element={<AddContact />} />
             <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="PKRgZZLGJBhf2XttNT6C" />} />
-
             <Route path="contacts" element={<Contacts />} />
             <Route path="settings" element={<Settings />} />
-            {/* <Route path="dashboardHome/1lakh" element={<OneLakhChit />} /> */}
             <Route path="dashboardHome/NewChitpage" element={<NewChitPage />} />
             <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
             <Route path="dashboardHome/existingChits/:groupId" element={<GroupDetails />} />
-
           </Route>
-
-        
-          {/* <Route path="/TwoNewChitPage" element={<TwoNewChitPage />} /> */}
         </Routes>
       </div>
     </Router>

@@ -36,14 +36,14 @@ const App = () => {
       <Route path="dashboardHome" element={<DashboardHome />} />
       <Route path="dashboardHome/addContact" element={<AddContact />} />
       <Route path="dashboardHome/addContact" element={<AddContact />} />
-      <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="PKRgZZLGJBhf2XttNT6C" />} />
+      <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="gyltVx8F517nu95Yy7rp" />} />
 
       <Route path="contacts" element={<Contacts />} />
       <Route path="settings" element={<Settings />} />
       {/* <Route path="dashboardHome/1lakh" element={<OneLakhChit />} /> */}
       <Route path="dashboardHome/NewChitpage" element={<NewChitPage />} />
       <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
-      <Route path="dashboardHome/existingChits/:groupId" element={<GroupDetails />} />
+      <Route path="dashboardHome/existingChits/:groupId" element={<ChitFundDetails />} />
 
     </Route>
 

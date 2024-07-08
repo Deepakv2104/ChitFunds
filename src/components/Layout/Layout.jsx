@@ -23,7 +23,7 @@ const Layout = ({ children }) => {
   return (
     <div className="layout">
       <div className="navbar">
-        <Navbar />
+        {/* <Navbar /> */}
       </div>
       <div className={`content ${isMobile ? 'mobile' : ''}`}>
         {children}

@@ -17,37 +17,44 @@ import './App.css';
 import GroupDetails from './pages/dashboard/GroupDetails';
 import ChitFundDetails from './pages/dashboard/ChitfundsDetails';
 import Testing from './pages/dashboard/Testing'
+import { ToastContainer } from 'react-bootstrap';
 
 
 const App = () => {
   return (
+    <div>
+      <ToastContainer/>
     <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<AuthPage />} />
-          <Route path="/testing" element={<Testing />} />
-          
-          <Route path="/dashboard" element={<Dashboard />}>
-            <Route path="dashboardHome" element={<DashboardHome />} />
-            <Route path="dashboardHome/addContact" element={<AddContact />} />
-            <Route path="dashboardHome/addContact" element={<AddContact />} />
-            <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="PKRgZZLGJBhf2XttNT6C" />} />
 
-            <Route path="contacts" element={<Contacts />} />
-            <Route path="settings" element={<Settings />} />
-            {/* <Route path="dashboardHome/1lakh" element={<OneLakhChit />} /> */}
-            <Route path="dashboardHome/NewChitpage" element={<NewChitPage />} />
-            <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
-            <Route path="dashboardHome/existingChits/:groupId" element={<GroupDetails />} />
+<div className="App">
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/signup" element={<AuthPage />} />
+    <Route path="/testing" element={<Testing />} />
+    
+    <Route path="/dashboard" element={<Dashboard />}>
+      <Route path="dashboardHome" element={<DashboardHome />} />
+      <Route path="dashboardHome/addContact" element={<AddContact />} />
+      <Route path="dashboardHome/addContact" element={<AddContact />} />
+      <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="PKRgZZLGJBhf2XttNT6C" />} />
 
-          </Route>
+      <Route path="contacts" element={<Contacts />} />
+      <Route path="settings" element={<Settings />} />
+      {/* <Route path="dashboardHome/1lakh" element={<OneLakhChit />} /> */}
+      <Route path="dashboardHome/NewChitpage" element={<NewChitPage />} />
+      <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
+      <Route path="dashboardHome/existingChits/:groupId" element={<GroupDetails />} />
 
-        
-          {/* <Route path="/TwoNewChitPage" element={<TwoNewChitPage />} /> */}
-        </Routes>
-      </div>
-    </Router>
+    </Route>
+
+  
+    {/* <Route path="/TwoNewChitPage" element={<TwoNewChitPage />} /> */}
+  </Routes>
+</div>
+</Router>
+
+    </div>
+
   );
 };
 

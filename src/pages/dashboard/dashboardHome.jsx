@@ -10,12 +10,13 @@ import twoLakh from '../../assets/twoLakh.svg';
 import fiveLakh from '../../assets/fiveLakh.svg';
 import tenLakh from '../../assets/tenLakh.svg';
 import AddContact from './AddContact';
+
 const DashboardHome = () => {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPath, setSelectedPath] = useState('');
-  const [isMobileView, setIsMobileView] = useState(false); // Track mobile view
+  const [isMobileView, setIsMobileView] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,17 +40,13 @@ const DashboardHome = () => {
   }, [currentUser]);
 
   useEffect(() => {
-    // Check if window width is less than or equal to a certain threshold (e.g., 768px)
     const handleResize = () => {
       setIsMobileView(window.innerWidth <= 768);
     };
 
-    // Add event listener for window resize
     window.addEventListener('resize', handleResize);
-    // Initial check on mount
     handleResize();
 
-    // Remove event listener on cleanup
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -60,12 +57,12 @@ const DashboardHome = () => {
 
   const handleNewClick = () => {
     setIsModalOpen(false);
-    navigate(`${selectedPath}`); // Navigate to the 'new' path with the selected path
+    navigate(`${selectedPath}`);
   };
 
   const handleExistingClick = () => {
     setIsModalOpen(false);
-    navigate(`existingChits`); // Navigate to the 'existing' path with the selected path
+    navigate(`existingChits`);
   };
 
   return (
@@ -101,10 +98,10 @@ const DashboardHome = () => {
             />
           </div>
         </div>
-        {!isMobileView && ( // Render only if not in mobile view
+        {!isMobileView && (
           <>
-             <br></br>
-      <hr className="divider" />
+            <br />
+            <hr className="divider" />
             <AddContact />
           </>
         )}

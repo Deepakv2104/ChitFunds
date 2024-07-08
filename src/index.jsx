@@ -14,7 +14,6 @@ const root = createRoot(document.getElementById('root'));
 // Render your app within createRoot, wrapped with ToastContainer
 root.render(
   <React.StrictMode>
-    <ToastContainer /> {/* Render ToastContainer to provide toast functionality */}
     <AuthProvider>
       <App />
     </AuthProvider>

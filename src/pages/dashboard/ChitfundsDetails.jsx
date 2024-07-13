@@ -2,26 +2,39 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc, collection, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../../Authentication/firebase';
+import { Check, Close } from '@mui/icons-material';
 import { Checkbox } from '@mui/material';
 import './ChitfundsDetails.css';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography, Container, Box, TextField, Button, Tabs, Tab, FormControl, InputLabel, Select, MenuItem
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography, Container, Box, TextField, Button, Tabs, Tab, FormControl, InputLabel, Select, MenuItem,
+  Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle
 } from '@mui/material';
-
 const ChitFundDetails = () => {
   const { groupId } = useParams();
-
-  const [groupData, setGroupData] = useState(null);
-  const [contributionsData, setContributionsData] = useState(null);
+  const [data, setData] = useState({
+    groupData: null,
+    contributionsData: null,
+    members: {},
+    previousWinners: [],
+  });
+  const [selectedWinner, setSelectedWinner] = useState({ memberId: null, value: false });
   const [selectedMonth, setSelectedMonth] = useState('');
-  const [monthlyData, setMonthlyData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [members, setMembers] = useState({});
   const [editableData, setEditableData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [tabValue, setTabValue] = useState(0);
-  const [currentWinner, setCurrentWinner] = useState('');
-  const monthlyAmount = 5000;
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const monthlyAmount = 5000; // Consider moving this to a config file or fetching from Firestore
+
+  const sortedMonths = useMemo(() => {
+    if (!data.groupData?.monthsArray) return [];
+    return [...data.groupData.monthsArray].sort((a, b) => {
+      const [aMonth, aYear] = a.split(' ');
+      const [bMonth, bYear] = b.split(' ');
+      return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
+    });
+  }, [data.groupData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +45,7 @@ const ChitFundDetails = () => {
       }
 
       try {
+        // Fetch group data
         const groupRef = doc(db, 'groups', groupId);
         const groupSnap = await getDoc(groupRef);
 
@@ -41,14 +55,14 @@ const ChitFundDetails = () => {
           return;
         }
 
-        const groupDataFetched = groupSnap.data();
-        setGroupData(groupDataFetched);
+        const groupData = groupSnap.data();
 
+        // Fetch members data
         const membersData = {};
         const contactsRef = collection(db, 'contacts');
         const contactsSnap = await getDocs(contactsRef);
         contactsSnap.forEach(doc => {
-          if (groupDataFetched.memberIds.includes(doc.id)) {
+          if (groupData.memberIds.includes(doc.id)) {
             const data = doc.data();
             membersData[doc.id] = {
               name: data.name,
@@ -57,31 +71,32 @@ const ChitFundDetails = () => {
             };
           }
         });
-        setMembers(membersData);
 
+        // Fetch contributions data
         const contributionsRef = doc(db, 'contributions', groupId);
         const contributionsSnap = await getDoc(contributionsRef);
+        const contributionsData = contributionsSnap.exists() ? contributionsSnap.data() : { months: {} };
 
-        if (contributionsSnap.exists()) {
-          const contributions = contributionsSnap.data();
-          setContributionsData(contributions);
-
-          const months = Object.keys(contributions.months).sort((a, b) => {
-            const [aMonth, aYear] = a.split(' ');
-            const [bMonth, bYear] = b.split(' ');
-            return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
+        // Calculate previous winners
+        const previousWinners = Object.values(contributionsData.months).reduce((acc, month) => {
+          Object.entries(month.memberContributions || {}).forEach(([memberId, data]) => {
+            if (data.winner) acc.add(memberId);
           });
+          return acc;
+        }, new Set());
 
-          if (months.length > 0) {
-            setSelectedMonth(months[0]);
-          }
-        } else {
-          setContributionsData({ months: {} });
-        }
+        // Update all state at once
+        setData({
+          groupData,
+          contributionsData,
+          members: membersData,
+          previousWinners: Array.from(previousWinners),
+        });
+
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError(`Error fetching data: ${error.message}`);
-      } finally {
         setLoading(false);
       }
     };
@@ -90,119 +105,121 @@ const ChitFundDetails = () => {
   }, [groupId]);
 
   useEffect(() => {
-    if (contributionsData && selectedMonth) {
-      const selectedMonthData = contributionsData.months[selectedMonth] || {};
-      setMonthlyData(selectedMonthData);
+    if (sortedMonths.length > 0 && !selectedMonth) {
+      setSelectedMonth(sortedMonths[0]);
+    }
+  }, [sortedMonths, selectedMonth]);
 
+  useEffect(() => {
+    if (data.contributionsData && selectedMonth) {
+      const selectedMonthData = data.contributionsData.months[selectedMonth] || {};
       const newEditableData = {};
-      Object.entries(selectedMonthData.memberContributions || {}).forEach(([memberId, data]) => {
+      Object.entries(selectedMonthData.memberContributions || {}).forEach(([memberId, memberData]) => {
         newEditableData[memberId] = {
-          amount: data.amount || '',
-          paymentMode: data.paymentMode || '',
-          balance: data.balance || 0,
-          advancePayment: data.advancePayment || 0,
-          paid: data.balance === 0,
-          winner: data.winner || ''
+          amount: memberData.amount || '',
+          paymentMode: memberData.paymentMode || '',
+          balance: memberData.balance || 0,
+          advancePayment: memberData.advancePayment || 0,
+          paid: memberData.balance === 0,
+          winner: memberData.winner || false
         };
-
-        if (data.winner) {
-          setCurrentWinner(memberId);
-        }
       });
       setEditableData(newEditableData);
     }
-  }, [contributionsData, selectedMonth]);
+  }, [data.contributionsData, selectedMonth]);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
     setSelectedMonth(sortedMonths[newValue]);
   };
-  
 
   const handleInputChange = (memberId, field, value) => {
-    setEditableData(prevEditableData => {
-      const newEditableData = {
-        ...prevEditableData,
-        [memberId]: {
-          ...prevEditableData[memberId],
-          [field]: value
-        }
-      };
-
-      if (field === 'amount') {
-        const amount = parseFloat(value);
-        const ma = parseFloat(monthlyAmount || 0);
-        const advancePayment = parseFloat(prevEditableData[memberId]?.advancePayment || 0);
-        let balance = ma - amount;
-        let newAdvancePayment = advancePayment;
-
-        if (amount > ma) {
-          newAdvancePayment += amount - ma;
-          balance = 0;
-        } else {
-          newAdvancePayment = 0;
-        }
-
-        newEditableData[memberId].balance = isNaN(balance) ? 0 : balance;
-        newEditableData[memberId].advancePayment = newAdvancePayment;
-        newEditableData[memberId].paid = balance === 0;
+    setEditableData(prevData => ({
+      ...prevData,
+      [memberId]: {
+        ...prevData[memberId],
+        [field]: value,
+        ...(field === 'amount' && calculateBalanceAndPayment(value, prevData[memberId]))
       }
+    }));
+  };
 
-      return newEditableData;
-    });
+  const calculateBalanceAndPayment = (amount, prevData) => {
+    const parsedAmount = parseFloat(amount);
+    const balance = monthlyAmount - parsedAmount;
+    let adjustedBalance = Math.max(balance, 0);  // Ensure balance is never negative
+    const advancePayment = parsedAmount > monthlyAmount ? parsedAmount - monthlyAmount : 0;
+    return {
+      balance: adjustedBalance,
+      advancePayment,
+      paid: balance <= 0
+    };
   };
 
   const handleWinnerChange = (memberId, value) => {
-    setEditableData(prevEditableData => {
-      const newEditableData = {
-        ...prevEditableData,
-        [memberId]: {
-          ...prevEditableData[memberId],
-          winner: value
-        }
-      };
-
-      if (value) {
-        Object.keys(newEditableData).forEach(id => {
-          if (id !== memberId) {
-            newEditableData[id].winner = false;
-          }
-        });
-        setCurrentWinner(memberId);
-      } else {
-        setCurrentWinner(false);
-      }
-
-      return newEditableData;
-    });
+    if (data.previousWinners.includes(memberId)) {
+      alert("This member has already won and is not eligible to win again.");
+      return;
+    }
+  
+    // Save memberId and value to state
+    setSelectedWinner({ memberId, value });
+  
+    // Open the confirmation dialog
+    setDialogOpen(true);
   };
 
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedWinner({ memberId: null, value: false }); // Reset selected winner
+  };
+  
+
+  const handleConfirmWinner = () => {
+    const { memberId, value } = selectedWinner;
+  
+    // Proceed with setting the winner
+    setEditableData(prevData => {
+      const newData = { ...prevData };
+      Object.keys(newData).forEach(id => {
+        newData[id] = { ...newData[id], winner: id === memberId ? value : false };
+      });
+      return newData;
+    });
+  
+    // Close the dialog after confirmation
+    setDialogOpen(false);
+  };
+  
+
+  
   const handleSave = async () => {
     try {
       const contributionsRef = doc(db, 'contributions', groupId);
-      await updateDoc(contributionsRef, {
-        [`months.${selectedMonth}.memberContributions`]: editableData,
-        // [`months.${selectedMonth}.winner`]: currentWinner
-      });
+      const updatedMonths = { 
+        ...data.contributionsData.months,
+        [selectedMonth]: {
+          ...data.contributionsData.months[selectedMonth],
+          memberContributions: editableData,
+        }
+      };
 
-      setMonthlyData({
-        ...monthlyData,
-        memberContributions: editableData,
-        // winner: currentWinner
-      });
+      await updateDoc(contributionsRef, { months: updatedMonths });
 
-      const updatedContributionsSnap = await getDoc(contributionsRef);
-      const updatedContributionsData = updatedContributionsSnap.data();
+      setData(prevData => ({
+        ...prevData,
+        contributionsData: {
+          ...prevData.contributionsData,
+          months: updatedMonths
+        },
+        previousWinners: [
+          ...prevData.previousWinners,
+          ...Object.entries(editableData)
+            .filter(([, data]) => data.winner)
+            .map(([memberId]) => memberId)
+        ]
+      }));
 
-      setContributionsData(updatedContributionsData);
-
-      const sortedMonths = Object.keys(updatedContributionsData.months).sort((a, b) => {
-        const [aMonth, aYear] = a.split(' ');
-        const [bMonth, bYear] = b.split(' ');
-        return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
-      });
-
-      
       alert('Data saved successfully!');
     } catch (error) {
       console.error("Error saving data:", error);
@@ -210,130 +227,121 @@ const ChitFundDetails = () => {
     }
   };
 
-  const sortedMonths = useMemo(() => {
-    return (groupData?.monthsArray || []).sort((a, b) => {
-      const [aMonth, aYear] = a.split(' ');
-      const [bMonth, bYear] = b.split(' ');
-      return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
-    });
-  }, [groupData]);
-  
-
-  if (loading) {
-    return (
-      <Container>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <Typography color="error">{error}</Typography>
-      </Container>
-    );
-  }
-
-  if (!groupData) {
-    return (
-      <Container>
-        <Typography>No data available</Typography>
-      </Container>
-    );
-  }
+  if (loading) return <CircularProgress />;
+  if (error) return <Typography color="error">{error}</Typography>;
+  if (!data.groupData) return <Typography>No data available</Typography>;
 
   return (
-    <div style={{ padding: '10px', margin: '10px' }}>
-      <Container>
-        <Typography variant="h4" gutterBottom>{groupData.groupName}</Typography>
-        <Typography variant="body1">Value: {groupData.selectedValue} lakhs</Typography>
-        <Typography variant="body1">Members: {groupData.numberOfMembers}</Typography>
-        <Typography variant="body1">Duration: {groupData.startMonth} - {groupData.endMonth}</Typography>
+    <Container>
+      <Typography variant="h4" gutterBottom>{data.groupData.groupName}</Typography>
+      <Typography variant="body1">Value: {data.groupData.selectedValue} lakhs</Typography>
+      <Typography variant="body1">Members: {data.groupData.numberOfMembers}</Typography>
+      <Typography variant="body1">Duration: {data.groupData.startMonth} - {data.groupData.endMonth}</Typography>
 
-        <Box my={3} style={{ overflowX: 'auto' }}>
-          <Tabs value={tabValue} onChange={handleTabChange} variant='scrollable'>
-            {sortedMonths.map((month, index) => (
-              <Tab key={index} label={month} />
-            ))}
-          </Tabs>
-        </Box>
+      <Box my={3} style={{ overflowX: 'auto' }}>
+        <Tabs value={tabValue} onChange={handleTabChange} variant='scrollable'>
+          {sortedMonths.map((month, index) => (
+            <Tab key={index} label={month} />
+          ))}
+        </Tabs>
+      </Box>
 
-        {selectedMonth && (
-          <TableContainer component={Paper} style={{ marginTop: '20px' }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Phone</TableCell>
-                  <TableCell>Alternate Phone</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Payment Mode</TableCell>
-                  <TableCell>Balance</TableCell>
-                  {/* <TableCell>Advance Payment</TableCell> */}
-                  <TableCell>Paid</TableCell>
-                  <TableCell>Picked</TableCell>
+      {selectedMonth && (
+        <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>Alternate Phone</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Payment Mode</TableCell>
+                <TableCell>Balance</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>Picked</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Object.entries(data.members).map(([memberId, memberData]) => (
+                <TableRow key={memberId}>
+                  <TableCell>{memberData.name}</TableCell>
+                  <TableCell>{memberData.phone}</TableCell>
+                  <TableCell>{memberData.alternatePhone}</TableCell>
+                  <TableCell>
+                    <TextField
+                      type="number"
+                      value={editableData[memberId]?.amount || ''}
+                      onChange={(e) => handleInputChange(memberId, 'amount', e.target.value)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      value={editableData[memberId]?.paymentMode || ''}
+                      onChange={(e) => handleInputChange(memberId, 'paymentMode', e.target.value)}
+                    >
+                      <MenuItem value="Cash">Cash</MenuItem>
+                      <MenuItem value="Online">Online</MenuItem>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    {editableData[memberId]?.balance > 0 
+                      ? editableData[memberId].balance 
+                      : (editableData[memberId]?.advancePayment > 0 
+                        ? `+${editableData[memberId].advancePayment}` 
+                        : '0')}
+                  </TableCell>
+                  <TableCell>
+                  <Checkbox
+                      checked={editableData[memberId]?.paid || false}
+                      disabled
+                      style={{ color: 'green' }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={editableData[memberId]?.winner || false}
+                      onChange={(e) => handleWinnerChange(memberId, e.target.checked)}
+                      disabled={data.previousWinners.includes(memberId)}
+                      style={{ color: data.previousWinners.includes(memberId) ? 'grey' : 'blue' }}
+                    />
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-              {Object.keys(members).map((memberId) => (
-  <TableRow key={memberId}>
-    <TableCell>{members[memberId].name}</TableCell>
-    <TableCell>{members[memberId].phone}</TableCell>
-    <TableCell>{members[memberId].alternatePhone}</TableCell>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
-    <TableCell>
-      <TextField
-        type="number"
-        value={editableData[memberId]?.amount || ''}
-        onChange={(e) => handleInputChange(memberId, 'amount', e.target.value)}
-      />
-    </TableCell>
-    <TableCell>
-      <FormControl fullWidth>
-        <InputLabel>Payment Mode</InputLabel>
-        <Select
-          value={editableData[memberId]?.paymentMode || ''}
-          onChange={(e) => handleInputChange(memberId, 'paymentMode', e.target.value)}
-        >
-          <MenuItem value="Cash">Cash</MenuItem>
-          <MenuItem value="Online">Online</MenuItem>
-        </Select>
-      </FormControl>
-    </TableCell>
-    <TableCell>{editableData[memberId]?.balance}</TableCell>
-    {/* <TableCell>{editableData[memberId]?.advancePayment}</TableCell> */}
-    <TableCell>
-      <Checkbox
-        checked={editableData[memberId]?.paid || false}
-        disabled
-        style={{ transform: 'scale(1.5)', marginLeft: '6px', color: 'green' }}
-      />
-    </TableCell>
-    <TableCell>
-      <Checkbox
-        checked={editableData[memberId]?.winner || false}
-        onChange={(e) => handleWinnerChange(memberId, e.target.checked)}
-        style={{ transform: 'scale(1.5)', marginLeft: '6px', color: 'blue' }}
-      />
-    </TableCell>
-  </TableRow>
-))}
+      <Box mt={3} display="flex" justifyContent="flex-end">
+        <Button variant="contained" color="primary" onClick={handleSave}>
+          Save
+        </Button>
+      </Box>
 
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-
-        <Box mt={3} display="flex" justifyContent="flex-end">
-          <Button variant="contained" color="primary" onClick={handleSave}>
-            Save
+      <Dialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Winner</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to set this member as a winner?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
           </Button>
-        </Box>
-      </Container>
-    </div>
+          <Button onClick={handleConfirmWinner} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
+     
+  
   );
 };
 

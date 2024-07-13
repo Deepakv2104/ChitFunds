@@ -9,6 +9,7 @@ const ExistingChits = () => {
   const [selectedValue, setSelectedValue] = useState('1'); 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [groupToDelete, setGroupToDelete] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate(); 
 
   useEffect(() => {
@@ -57,7 +58,13 @@ const ExistingChits = () => {
     setGroupToDelete(null);
   };
 
-  const filteredGroups = groups.filter(group => group.selectedValue === selectedValue);
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredGroups = groups
+    .filter(group => group.selectedValue === selectedValue)
+    .filter(group => group.groupName.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className='existing-chit-page'>
@@ -76,10 +83,18 @@ const ExistingChits = () => {
             10L
           </div>
           <div className="option back" onClick={() => navigate('/dashboard/dashboardHome')}>Back</div>
-
         </div>
       </div>
       <div className='main-content-existing-page'>
+        <div className='search-container'>
+          <input
+            type="text"
+            placeholder="Search by Group Name"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className='search-input'
+          />
+        </div>
         <table>
           <thead>
             <tr>

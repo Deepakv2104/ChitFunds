@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import { Button } from 'react-bootstrap';
 import { collection, addDoc, getDocs, doc, setDoc, writeBatch } from 'firebase/firestore';
@@ -15,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './NewChitPage.css';
+
 const monthStringToNumber = (month) => {
   const monthMap = {
     JAN: 0,
@@ -49,6 +51,8 @@ const NewChitPage = () => {
     aadharCardNo: '',
     chequeNo: ''
   });
+
+  const navigate = useNavigate(); // Add this line to use navigate
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -96,18 +100,18 @@ const NewChitPage = () => {
   const handleCreateGroup = async () => {
     try {
       const batch = writeBatch(db);
-  
+
       // Create the group document
       const groupsRef = collection(db, 'groups');
       const newGroupRef = doc(groupsRef);
       const groupId = newGroupRef.id;
-  
+
       // Get the months array from startMonth to endMonth
       const monthsArray = generateMonths(40);
       const startMonthIndex = monthsArray.indexOf(startMonth);
       const endMonthIndex = monthsArray.indexOf(endMonth);
       const selectedMonths = monthsArray.slice(startMonthIndex, endMonthIndex + 1);
-  
+
       // Create the group data
       const groupData = {
         groupId,
@@ -119,16 +123,16 @@ const NewChitPage = () => {
         numberOfMembers: selectedContacts.length,
         monthsArray: selectedMonths // Store the array of months as strings
       };
-  
+
       batch.set(newGroupRef, groupData);
-  
+
       // Create the initial contributions document
       const contributionsRef = doc(collection(db, 'contributions'), groupId);
       const monthsData = selectedMonths.reduce((acc, month) => {
         acc[month] = { memberContributions: {} };
         return acc;
       }, {});
-  
+
       // Ensure monthsData is ordered
       const orderedMonthsData = Object.keys(monthsData).sort((a, b) => {
         const dateA = new Date(parseInt(a.slice(3)), monthStringToNumber(a.slice(0, 3)));
@@ -138,16 +142,20 @@ const NewChitPage = () => {
         obj[key] = monthsData[key];
         return obj;
       }, {});
-  
+
       batch.set(contributionsRef, {
         months: orderedMonthsData // Ensure only the selected months are stored in order
       });
-  
+
       // Commit the batch
       await batch.commit();
-  
-      toast.success(`${groupName} group created`);
-  
+
+      toast.success(`${groupName} group created`, {
+        onClose: () => {
+          navigate(`/dashboard/dashboardHome/existingChits/${groupId}`);
+        }
+      });
+
       // Reset form state
       setGroupName('');
       setSelectedValue('');
@@ -155,22 +163,12 @@ const NewChitPage = () => {
       setSearchTerm('');
       setStartMonth('');
       setEndMonth('');
-  
-      // Redirect to ChitFundDetails page passing groupId, startMonth, and endMonth
-      // You can use React Router for this purpose
-      // Example: history.push(`/chit-details/${groupId}`);
-      // For now, let's alert the data
-      alert(`Group ${groupName} created with start month: ${startMonth} and end month: ${endMonth}`);
-  
+
     } catch (error) {
       console.error('Error creating group:', error);
       toast.error('Failed to create group');
     }
   };
-  
-  
-  
-  
 
   const handleOpenDialog = () => {
     setOpen(true);

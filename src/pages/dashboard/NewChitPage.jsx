@@ -15,6 +15,23 @@ import AddIcon from '@mui/icons-material/Add';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './NewChitPage.css';
+const monthStringToNumber = (month) => {
+  const monthMap = {
+    JAN: 0,
+    FEB: 1,
+    MAR: 2,
+    APR: 3,
+    MAY: 4,
+    JUN: 5,
+    JUL: 6,
+    AUG: 7,
+    SEP: 8,
+    OCT: 9,
+    NOV: 10,
+    DEC: 11
+  };
+  return monthMap[month];
+};
 
 const NewChitPage = () => {
   const [groupName, setGroupName] = useState('');
@@ -91,17 +108,7 @@ const NewChitPage = () => {
       const endMonthIndex = monthsArray.indexOf(endMonth);
       const selectedMonths = monthsArray.slice(startMonthIndex, endMonthIndex + 1);
   
-      // Prepare months object with months in order
-      const monthsData = {};
-      selectedMonths.forEach(month => {
-        monthsData[month] = {
-          winner: null,
-          memberContributions: {}
-        };
-      });
-  
-      // Store the months array in the group document
-      const monthsArrayData = selectedMonths.map(month => ({ name: month }));
+      // Create the group data
       const groupData = {
         groupId,
         groupName,
@@ -110,15 +117,30 @@ const NewChitPage = () => {
         startMonth,
         endMonth,
         numberOfMembers: selectedContacts.length,
-        monthsArray: monthsArrayData // Store the array of months
+        monthsArray: selectedMonths // Store the array of months as strings
       };
   
       batch.set(newGroupRef, groupData);
   
       // Create the initial contributions document
       const contributionsRef = doc(collection(db, 'contributions'), groupId);
+      const monthsData = selectedMonths.reduce((acc, month) => {
+        acc[month] = { memberContributions: {} };
+        return acc;
+      }, {});
+  
+      // Ensure monthsData is ordered
+      const orderedMonthsData = Object.keys(monthsData).sort((a, b) => {
+        const dateA = new Date(parseInt(a.slice(3)), monthStringToNumber(a.slice(0, 3)));
+        const dateB = new Date(parseInt(b.slice(3)), monthStringToNumber(b.slice(0, 3)));
+        return dateA - dateB;
+      }).reduce((obj, key) => {
+        obj[key] = monthsData[key];
+        return obj;
+      }, {});
+  
       batch.set(contributionsRef, {
-        months: monthsData // Ensure only the selected months are stored
+        months: orderedMonthsData // Ensure only the selected months are stored in order
       });
   
       // Commit the batch
@@ -145,6 +167,9 @@ const NewChitPage = () => {
       toast.error('Failed to create group');
     }
   };
+  
+  
+  
   
 
   const handleOpenDialog = () => {

@@ -9,6 +9,8 @@ import {
 } from '@mui/material';
 
 const ChitFundDetails = () => {
+  const { groupId } = useParams();
+
   const [groupData, setGroupData] = useState(null);
   const [contributionsData, setContributionsData] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState('');
@@ -20,7 +22,7 @@ const ChitFundDetails = () => {
   const [tabValue, setTabValue] = useState(0);
   const [currentWinner, setCurrentWinner] = useState('');
   const monthlyAmount = 5000;
-const {groupId} = useParams();
+
   useEffect(() => {
     const fetchData = async () => {
       if (!groupId) {
@@ -45,7 +47,6 @@ const {groupId} = useParams();
         const membersData = {};
         const contactsRef = collection(db, 'contacts');
         const contactsSnap = await getDocs(contactsRef);
-        console.log(contactsSnap);
         contactsSnap.forEach(doc => {
           if (groupDataFetched.memberIds.includes(doc.id)) {
             const data = doc.data();
@@ -114,13 +115,9 @@ const {groupId} = useParams();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
-    const sortedMonths = Object.keys(contributionsData?.months || {}).sort((a, b) => {
-      const [aMonth, aYear] = a.split(' ');
-      const [bMonth, bYear] = b.split(' ');
-      return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
-    });
     setSelectedMonth(sortedMonths[newValue]);
   };
+  
 
   const handleInputChange = (memberId, field, value) => {
     setEditableData(prevEditableData => {
@@ -173,7 +170,7 @@ const {groupId} = useParams();
         });
         setCurrentWinner(memberId);
       } else {
-        setCurrentWinner('');
+        setCurrentWinner(false);
       }
 
       return newEditableData;
@@ -185,13 +182,13 @@ const {groupId} = useParams();
       const contributionsRef = doc(db, 'contributions', groupId);
       await updateDoc(contributionsRef, {
         [`months.${selectedMonth}.memberContributions`]: editableData,
-        [`months.${selectedMonth}.winner`]: currentWinner
+        // [`months.${selectedMonth}.winner`]: currentWinner
       });
 
       setMonthlyData({
         ...monthlyData,
         memberContributions: editableData,
-        winner: currentWinner
+        // winner: currentWinner
       });
 
       const updatedContributionsSnap = await getDoc(contributionsRef);
@@ -205,36 +202,7 @@ const {groupId} = useParams();
         return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
       });
 
-      const nextMonthIndex = sortedMonths.indexOf(selectedMonth) + 1;
-
-      if (nextMonthIndex < sortedMonths.length) {
-        const nextMonth = sortedMonths[nextMonthIndex];
-        const nextMonthData = updatedContributionsData.months[nextMonth] || {};
-
-        const newNextMonthData = { ...nextMonthData };
-
-        if (currentWinner) {
-          newNextMonthData.memberContributions = newNextMonthData.memberContributions || {};
-          newNextMonthData.memberContributions[currentWinner] = {
-            ...newNextMonthData.memberContributions[currentWinner],
-            winner: true
-          };
-        }
-
-        await updateDoc(contributionsRef, {
-          [`months.${nextMonth}.memberContributions`]: newNextMonthData.memberContributions,
-          [`months.${nextMonth}.winner`]: currentWinner
-        });
-
-        setContributionsData({
-          ...updatedContributionsData,
-          months: {
-            ...updatedContributionsData.months,
-            [nextMonth]: newNextMonthData
-          }
-        });
-      }
-
+      
       alert('Data saved successfully!');
     } catch (error) {
       console.error("Error saving data:", error);
@@ -243,12 +211,13 @@ const {groupId} = useParams();
   };
 
   const sortedMonths = useMemo(() => {
-    return Object.keys(contributionsData?.months || {}).sort((a, b) => {
+    return (groupData?.monthsArray || []).sort((a, b) => {
       const [aMonth, aYear] = a.split(' ');
       const [bMonth, bYear] = b.split(' ');
       return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
     });
-  }, [contributionsData]);
+  }, [groupData]);
+  
 
   if (loading) {
     return (
@@ -285,18 +254,14 @@ const {groupId} = useParams();
         <Typography variant="body1">Duration: {groupData.startMonth} - {groupData.endMonth}</Typography>
 
         <Box my={3} style={{ overflowX: 'auto' }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            variant="scrollable"
-            scrollButtons="auto"
-          >
+          <Tabs value={tabValue} onChange={handleTabChange} variant='scrollable'>
             {sortedMonths.map((month, index) => (
-              <Tab key={month} label={month} />
+              <Tab key={index} label={month} />
             ))}
           </Tabs>
         </Box>
-  {selectedMonth && (
+
+        {selectedMonth && (
           <TableContainer component={Paper} style={{ marginTop: '20px' }}>
             <Table>
               <TableHead>
@@ -307,55 +272,56 @@ const {groupId} = useParams();
                   <TableCell>Amount</TableCell>
                   <TableCell>Payment Mode</TableCell>
                   <TableCell>Balance</TableCell>
-                  <TableCell>Advance Payment</TableCell>
+                  {/* <TableCell>Advance Payment</TableCell> */}
                   <TableCell>Paid</TableCell>
                   <TableCell>Picked</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Object.keys(members).map((memberId) => (
-                  <TableRow key={memberId}>
-                    <TableCell>{members[memberId].name}</TableCell>
-                    <TableCell>{members[memberId].phone}</TableCell>
-                    <TableCell>{members[memberId].alternatePhone}</TableCell>
+              {Object.keys(members).map((memberId) => (
+  <TableRow key={memberId}>
+    <TableCell>{members[memberId].name}</TableCell>
+    <TableCell>{members[memberId].phone}</TableCell>
+    <TableCell>{members[memberId].alternatePhone}</TableCell>
 
-                    <TableCell>
-                      <TextField
-                        type="number"
-                        value={editableData[memberId]?.amount || ''}
-                        onChange={(e) => handleInputChange(memberId, 'amount', e.target.value)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <FormControl fullWidth>
-                        <InputLabel>Payment Mode</InputLabel>
-                        <Select
-                          value={editableData[memberId]?.paymentMode || ''}
-                          onChange={(e) => handleInputChange(memberId, 'paymentMode', e.target.value)}
-                        >
-                          <MenuItem value="Cash">Cash</MenuItem>
-                          <MenuItem value="Online">Online</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell>{editableData[memberId]?.balance}</TableCell>
-                    <TableCell>{editableData[memberId]?.advancePayment}</TableCell>
-                    <TableCell>
-                      <Checkbox
-                        checked={editableData[memberId]?.paid || false}
-                        disabled
-                        style={{ transform: 'scale(1.5)', marginLeft: '6px', color: 'green' }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Checkbox
-                        checked={editableData[memberId]?.winner || false}
-                        onChange={(e) => handleWinnerChange(memberId, e.target.checked)}
-                        style={{ transform: 'scale(1.5)', marginLeft: '6px', color: 'blue' }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+    <TableCell>
+      <TextField
+        type="number"
+        value={editableData[memberId]?.amount || ''}
+        onChange={(e) => handleInputChange(memberId, 'amount', e.target.value)}
+      />
+    </TableCell>
+    <TableCell>
+      <FormControl fullWidth>
+        <InputLabel>Payment Mode</InputLabel>
+        <Select
+          value={editableData[memberId]?.paymentMode || ''}
+          onChange={(e) => handleInputChange(memberId, 'paymentMode', e.target.value)}
+        >
+          <MenuItem value="Cash">Cash</MenuItem>
+          <MenuItem value="Online">Online</MenuItem>
+        </Select>
+      </FormControl>
+    </TableCell>
+    <TableCell>{editableData[memberId]?.balance}</TableCell>
+    {/* <TableCell>{editableData[memberId]?.advancePayment}</TableCell> */}
+    <TableCell>
+      <Checkbox
+        checked={editableData[memberId]?.paid || false}
+        disabled
+        style={{ transform: 'scale(1.5)', marginLeft: '6px', color: 'green' }}
+      />
+    </TableCell>
+    <TableCell>
+      <Checkbox
+        checked={editableData[memberId]?.winner || false}
+        onChange={(e) => handleWinnerChange(memberId, e.target.checked)}
+        style={{ transform: 'scale(1.5)', marginLeft: '6px', color: 'blue' }}
+      />
+    </TableCell>
+  </TableRow>
+))}
+
               </TableBody>
             </Table>
           </TableContainer>

@@ -17,6 +17,7 @@ const ExistingChits = () => {
         const snapshot = await getDocs(collection(db, 'groups'));
         const groupData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setGroups(groupData);
+        console.log(groupData)
       } catch (error) {
         console.error('Error fetching groups:', error);
       }

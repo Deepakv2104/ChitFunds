@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './components/Login';
+
 import SelectOptions from './components/SelectOptions';
 
 import NewChitPage from './pages/dashboard/NewChitPage';
@@ -17,13 +17,12 @@ import './App.css';
 import GroupDetails from './pages/dashboard/GroupDetails';
 import ChitFundDetails from './pages/dashboard/ChitfundsDetails';
 import Testing from './pages/dashboard/Testing'
-import { ToastContainer } from 'react-bootstrap';
+import Login from './pages/Login'
+
 
 
 const App = () => {
   return (
-    <div>
-      <ToastContainer/>
     <Router>
 
 <div className="App">
@@ -31,6 +30,7 @@ const App = () => {
     <Route path="/" element={<Home />} />
     <Route path="/signup" element={<AuthPage />} />
     <Route path="/testing" element={<Testing />} />
+    <Route path="/login" element={<Login />} />
     
     <Route path="/dashboard" element={<Dashboard />}>
       <Route path="dashboardHome" element={<DashboardHome />} />
@@ -45,16 +45,13 @@ const App = () => {
       <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
       <Route path="dashboardHome/existingChits/:groupId" element={<ChitFundDetails />} />
 
-    </Route>
+          </Route>
 
-  
-    {/* <Route path="/TwoNewChitPage" element={<TwoNewChitPage />} /> */}
-  </Routes>
-</div>
-</Router>
-
-    </div>
-
+        
+          {/* <Route path="/TwoNewChitPage" element={<TwoNewChitPage />} /> */}
+        </Routes>
+      </div>
+    </Router>
   );
 };
 

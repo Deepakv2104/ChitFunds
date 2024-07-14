@@ -3,6 +3,9 @@
     min-height: 100vh;
 
 }
+.outlet{
+    padding: 1rem;
+}
 .yellow-star {
     color: #ffd700; /* Yellow color */
   }

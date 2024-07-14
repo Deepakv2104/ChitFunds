@@ -16,7 +16,14 @@ import {
   Grid,
   Typography,
   Divider,
-  Box
+  Box,
+  Avatar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TablePagination
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -39,30 +46,66 @@ const validationSchema = yup.object({
   chequeNo: yup.string().required('Cheque No is required'),
 });
 
-const ContactRow = ({ contact, onDelete }) => (
-  <TableRow>
-    <TableCell>{contact.name}</TableCell>
-    <TableCell>{contact.phone}</TableCell>
-    <TableCell>{contact.alternatePhone}</TableCell>
-    <TableCell>{contact.aadharCardNo}</TableCell>
-    <TableCell>{contact.chequeNo}</TableCell>
-    <TableCell>
-      <IconButton onClick={() => onDelete(contact.key)} color="secondary">
-        <DeleteIcon />
-      </IconButton>
-    </TableCell>
-  </TableRow>
-);
+const ContactRow = ({ contact, onDelete }) => {
+  const [open, setOpen] = useState(false);
 
-const ContactTable = ({ contacts, filterText, onDelete }) => {
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <TableRow>
+        <TableCell>
+          <IconButton onClick={handleClickOpen}>
+            <Avatar src={contact.profilePicUrl} alt={contact.name} />
+          </IconButton>
+        </TableCell>
+        <TableCell>{contact.name}</TableCell>
+        <TableCell>{contact.phone}</TableCell>
+        <TableCell>{contact.alternatePhone}</TableCell>
+        <TableCell>{contact.aadharCardNo}</TableCell>
+        <TableCell>{contact.chequeNo}</TableCell>
+        <TableCell>
+          <IconButton onClick={() => onDelete(contact.key)} color="secondary">
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Contact Details</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <strong>Name:</strong> {contact.name} <br />
+            <strong>Phone:</strong> {contact.phone} <br />
+            <strong>Alternate Phone:</strong> {contact.alternatePhone} <br />
+            <strong>Aadhar Card No:</strong> {contact.aadharCardNo} <br />
+            <strong>Cheque No:</strong> {contact.chequeNo} <br />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">Close</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+
+const ContactTable = ({ contacts, filterText, onDelete, page, rowsPerPage }) => {
   const filteredContacts = contacts.filter(contact => contact.name && contact.name.toLowerCase().includes(filterText.toLowerCase()));
-  const rows = filteredContacts.map(contact => <ContactRow key={contact.key} contact={contact} onDelete={onDelete} />);
-  
+  const displayedContacts = filteredContacts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const rows = displayedContacts.map(contact => <ContactRow key={contact.key} contact={contact} onDelete={onDelete} />);
+
   return (
     <TableContainer component={Paper} className="table-container">
       <Table>
         <TableHead className="table-head">
           <TableRow>
+            <TableCell>Profile</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Phone</TableCell>
             <TableCell>Alternate Phone</TableCell>
@@ -104,6 +147,7 @@ const NewContactRow = ({ addContact }) => {
       alternatePhone: '',
       aadharCardNo: '',
       chequeNo: '',
+      profilePicUrl: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -185,6 +229,7 @@ const NewContactRow = ({ addContact }) => {
             helperText={formik.touched.chequeNo && formik.errors.chequeNo}
           />
         </Grid>
+        
         <Grid item xs={12} sm={6} md={2}>
           <Button type="submit" color="primary" fullWidth variant="contained" sx={{ backgroundColor: '#1976d2' }}>
             <AddIcon /> Add
@@ -199,6 +244,8 @@ const NewContactRow = ({ addContact }) => {
 const AddContact = () => {
   const [filterText, setFilterText] = useState('');
   const [contacts, setContacts] = useState([]);
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -213,6 +260,10 @@ const AddContact = () => {
 
     fetchContacts();
   }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
   const addContact = async (contact) => {
     try {
@@ -245,7 +296,15 @@ const AddContact = () => {
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
       <NewContactRow addContact={addContact} />
       <Box className="pagination-container">
-        <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} />
+        <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} page={page} rowsPerPage={rowsPerPage} />
+        <TablePagination
+          rowsPerPageOptions={[10]}
+          component="div"
+          count={contacts.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+        />
       </Box>
     </Container>
   );

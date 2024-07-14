@@ -1,68 +1,125 @@
-.dashboardHome{
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
-margin-top: 10px;
-    
+.dashboardHome {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+  margin-top: 10px;
+  padding: 0 15px; /* Add some padding to avoid content touching the edges */
 }
-
-  
 
 .image-grid {
   display: grid;
-  grid-gap: 20px; /* Gap between grid items */
+  grid-gap: 20px;
   cursor: pointer;
 }
 
-.image-grid > * { /* Target all direct children of the grid */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5)}
+.image-grid > * {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+}
 
+.image-grid img {
+  width: 100%; /* Make images responsive */
+  height: auto; /* Maintain aspect ratio */
+}
 
-  .section-title{
-    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
-    font-weight: bold; /* Make the name bold */
+.section-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+}
 
-  }
-  /* Large devices (laptops, desktops) */
-  @media (min-width: 1024px) {
-    .image-grid {
-      grid-template-columns: repeat(4, 1fr); /* Two columns */
-    }
-    
-    .grid-item {
-      width: calc(100% - 10px); /* Adjust the width of grid items */
-      height: auto;
-      transition: transform 0.3s ease; /* Add transition effect for smooth scaling */
-      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Add box shadow */
-    }
-    
-    .grid-item:hover {
-      transform: scale(1.1); /* Scale up on hover */
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
-    }
-  }
-  
-  /* Small devices (mobile phones) */
-  @media (max-width: 767px) {
-    .image-grid {
-      grid-template-columns: repeat(1, 1fr); /* Single column */
-    }
-  }
-  
-  .dashboardHome .title {
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
-    font-weight: bold;
-    font-size: 24px;
+.dashboardHome .title {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center; /* Center align the title */
+}
 
+.dashboardHome .divider {
+  width: 100%;
+  border: 1px solid black;
+  margin: 10px 0; /* Adjust margin to create space above and below */
+}
+
+/* Large devices (desktops, laptops) */
+@media (min-width: 1024px) {
+  .image-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
-  
-  .dashboardHome .divider {
+
+  .grid-item {
     width: 100%;
-    border: 1px solid black;
-    margin: 0; /* Remove default margin */
-    margin-top: 4px; /* Adjust the margin as needed */
+    height: auto;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
   }
-  
+
+  .grid-item:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .dashboardHome .sm\\:flex-grow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .image-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboardHome .sm\\:flex-grow {
+    flex-direction: column;
+  }
+}
+
+/* Small devices (mobile phones) */
+@media (max-width: 767px) {
+  .image-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .image-grid img {
+    width: 100vw; /* Fit the image to the viewport width */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  .dashboardHome .sm\\:flex-grow {
+    flex-direction: column;
+    align-items: center; /* Center align items in mobile view */
+  }
+
+  .dashboardHome .title {
+    font-size: 20px; /* Adjust font size for smaller screens */
+  }
+
+  .dashboardHome .divider {
+    margin: 10px 0; /* Ensure margin is not too tight on smaller screens */
+  }
+}
+
+/* Extra Small Devices (very narrow screens) */
+@media (max-width: 479px) {
+  .image-grid {
+    grid-template-columns: repeat(1, 1fr); /* Single column layout */
+  }
+
+  .image-grid img {
+    max-width: 90vw; /* Ensure images are not too large */
+    max-height: 150px; /* Limit height to fit screen */
+  }
+
+  .dashboardHome .title {
+    font-size: 18px; /* Smaller font size for very small screens */
+  }
+
+  .dashboardHome .divider {
+    margin: 8px 0; /* Adjust margin for very small screens */
+  }
+}

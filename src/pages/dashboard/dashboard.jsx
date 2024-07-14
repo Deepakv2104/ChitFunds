@@ -8,8 +8,10 @@ const Dashboard = () => {
     <div className='dashboard'>
     <Layout>
    
+<div className='outlet'>
+<Outlet />
 
-      <Outlet />
+</div>
     </Layout>
   </div>
   )

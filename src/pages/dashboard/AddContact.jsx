@@ -16,7 +16,13 @@ import {
   Grid,
   Typography,
   Divider,
-  Box
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TablePagination,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -39,25 +45,61 @@ const validationSchema = yup.object({
   chequeNo: yup.string().required('Cheque No is required'),
 });
 
-const ContactRow = ({ contact, onDelete }) => (
-  <TableRow>
-    <TableCell>{contact.name}</TableCell>
-    <TableCell>{contact.phone}</TableCell>
-    <TableCell>{contact.alternatePhone}</TableCell>
-    <TableCell>{contact.aadharCardNo}</TableCell>
-    <TableCell>{contact.chequeNo}</TableCell>
-    <TableCell>
-      <IconButton onClick={() => onDelete(contact.key)} color="secondary">
-        <DeleteIcon />
-      </IconButton>
-    </TableCell>
-  </TableRow>
-);
+const ContactRow = ({ contact, onDelete, index }) => {
+  const [open, setOpen] = useState(false);
 
-const ContactTable = ({ contacts, filterText, onDelete }) => {
-  const filteredContacts = contacts.filter(contact => contact.name && contact.name.toLowerCase().includes(filterText.toLowerCase()));
-  const rows = filteredContacts.map(contact => <ContactRow key={contact.key} contact={contact} onDelete={onDelete} />);
-  
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <TableRow onClick={handleClickOpen} sx={{ cursor: 'pointer', height: '40px', backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff' }}>
+        <TableCell>{contact.name}</TableCell>
+        <TableCell>{contact.phone}</TableCell>
+        <TableCell>{contact.alternatePhone}</TableCell>
+        <TableCell>{contact.aadharCardNo}</TableCell>
+        <TableCell>{contact.chequeNo}</TableCell>
+        <TableCell>
+          <IconButton onClick={(e) => { e.stopPropagation(); onDelete(contact.key); }} color="secondary">
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Contact Details</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <strong>Name:</strong> {contact.name} <br />
+            <strong>Phone:</strong> {contact.phone} <br />
+            <strong>Alternate Phone:</strong> {contact.alternatePhone} <br />
+            <strong>Aadhar Card No:</strong> {contact.aadharCardNo} <br />
+            <strong>Cheque No:</strong> {contact.chequeNo} <br />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">Close</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+
+const ContactTable = ({ contacts, filterText, onDelete, page, rowsPerPage }) => {
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filterText.toLowerCase()) ||
+    contact.phone.includes(filterText) ||
+    contact.alternatePhone.includes(filterText) ||
+    contact.aadharCardNo.includes(filterText) ||
+    contact.chequeNo.includes(filterText)
+  );
+  const displayedContacts = filteredContacts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const rows = displayedContacts.map((contact, index) => <ContactRow key={contact.key} contact={contact} onDelete={onDelete} index={index} />);
+
   return (
     <TableContainer component={Paper} className="table-container">
       <Table>
@@ -104,12 +146,13 @@ const NewContactRow = ({ addContact }) => {
       alternatePhone: '',
       aadharCardNo: '',
       chequeNo: '',
+      profilePicUrl: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
       const contact = {
         ...values,
-        key: new Date().getTime()
+        key: new Date().getTime(),
       };
       await addContact(contact);
       toast.success('Contact added successfully!');
@@ -119,7 +162,7 @@ const NewContactRow = ({ addContact }) => {
 
   return (
     <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 2 }}>
-      <Grid container spacing={2} alignItems="center">
+      <Grid container spacing={1} alignItems="center">
         <Grid item xs={12} sm={6} md={2}>
           <TextField
             name="name"
@@ -131,6 +174,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.name && Boolean(formik.errors.name)}
             helperText={formik.touched.name && formik.errors.name}
+            sx={{ height: '40px', border: '1px solid #ccc' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -144,6 +188,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.phone && Boolean(formik.errors.phone)}
             helperText={formik.touched.phone && formik.errors.phone}
+            sx={{ height: '40px', border: '1px solid #ccc' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -157,6 +202,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.alternatePhone && Boolean(formik.errors.alternatePhone)}
             helperText={formik.touched.alternatePhone && formik.errors.alternatePhone}
+            sx={{ height: '40px', border: '1px solid #ccc' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -170,6 +216,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.aadharCardNo && Boolean(formik.errors.aadharCardNo)}
             helperText={formik.touched.aadharCardNo && formik.errors.aadharCardNo}
+            sx={{ height: '40px', border: '1px solid #ccc' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -183,6 +230,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.chequeNo && Boolean(formik.errors.chequeNo)}
             helperText={formik.touched.chequeNo && formik.errors.chequeNo}
+            sx={{ height: '40px', border: '1px solid #ccc' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -197,8 +245,11 @@ const NewContactRow = ({ addContact }) => {
 };
 
 const AddContact = () => {
-  const [filterText, setFilterText] = useState('');
   const [contacts, setContacts] = useState([]);
+  const [filterText, setFilterText] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage] = useState(10);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -214,11 +265,16 @@ const AddContact = () => {
     fetchContacts();
   }, []);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
   const addContact = async (contact) => {
     try {
       const docRef = await addDoc(collection(db, 'contacts'), contact);
       await updateDoc(docRef, { memberId: docRef.id });
       setContacts([...contacts, { ...contact, memberId: docRef.id, key: docRef.id }]);
+      setDialogOpen(false); // Close dialog after adding
     } catch (error) {
       console.error('Error adding contact: ', error);
       toast.error('Error adding contact. Please try again.');
@@ -243,9 +299,47 @@ const AddContact = () => {
       </Typography>
       <Divider className="divider" />
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
-      <NewContactRow addContact={addContact} />
+      <Box sx={{ display: { xs: 'block', md: 'none' }, textAlign: 'center' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          sx={{ mb: 2, backgroundColor: '#1976d2' }}
+          onClick={() => setDialogOpen(true)}
+        >
+          <AddIcon sx={{ fontSize: 18 }} /> Add Contact
+        </Button>
+        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth>
+          <DialogTitle>Add Contact</DialogTitle>
+          <DialogContent>
+            <NewContactRow addContact={addContact} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDialogOpen(false)} color="primary">Close</Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <NewContactRow addContact={addContact} />
+      </Box>
       <Box className="pagination-container">
-        <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} />
+        <TablePagination
+          rowsPerPageOptions={[10]}
+          component="div"
+          count={contacts.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+        />
+        <ContactTable contacts={contacts} filterText={filterText} onDelete={deleteContact} page={page} rowsPerPage={rowsPerPage} />
+        <TablePagination
+          rowsPerPageOptions={[10]}
+          component="div"
+          count={contacts.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+        />
       </Box>
     </Container>
   );

@@ -7,8 +7,13 @@
     padding: 1rem;
 }
 .yellow-star {
-    color: #ffd700; /* Yellow color */
+    color: #ffd700;
+    font-size: 1.5rem; /* Base size */
   }
   
-  /* Add any additional styling for the text here */
+  @media (max-width: 767px) {
+    .yellow-star {
+      font-size: 1.2rem; /* Smaller size for smaller screens */
+    }
+  }
   

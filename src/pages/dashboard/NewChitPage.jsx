@@ -101,12 +101,9 @@ const NewChitPage = () => {
     try {
       const batch = writeBatch(db);
 
-      // Create the group document
       const groupsRef = collection(db, 'groups');
       const newGroupRef = doc(groupsRef);
       const groupId = newGroupRef.id;
-
-      // Get the months array from startMonth to endMonth
       const monthsArray = generateMonths(40);
       const startMonthIndex = monthsArray.indexOf(startMonth);
       const endMonthIndex = monthsArray.indexOf(endMonth);
@@ -126,14 +123,12 @@ const NewChitPage = () => {
 
       batch.set(newGroupRef, groupData);
 
-      // Create the initial contributions document
       const contributionsRef = doc(collection(db, 'contributions'), groupId);
       const monthsData = selectedMonths.reduce((acc, month) => {
         acc[month] = { memberContributions: {} };
         return acc;
       }, {});
 
-      // Ensure monthsData is ordered
       const orderedMonthsData = Object.keys(monthsData).sort((a, b) => {
         const dateA = new Date(parseInt(a.slice(3)), monthStringToNumber(a.slice(0, 3)));
         const dateB = new Date(parseInt(b.slice(3)), monthStringToNumber(b.slice(0, 3)));
@@ -147,7 +142,6 @@ const NewChitPage = () => {
         months: orderedMonthsData // Ensure only the selected months are stored in order
       });
 
-      // Commit the batch
       await batch.commit();
 
       toast.success(`${groupName} group created`, {
@@ -156,7 +150,6 @@ const NewChitPage = () => {
         }
       });
 
-      // Reset form state
       setGroupName('');
       setSelectedValue('');
       setSelectedContacts([]);

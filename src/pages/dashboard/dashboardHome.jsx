@@ -67,7 +67,7 @@ const DashboardHome = () => {
 
   return (
     <div className="dashboardHome w-full sm:flex p-2 items-end">
-      <p className="title">Chit Amounts</p>
+      <p className="title">MCR CHITS </p>
       <hr className="divider" />
       <div className="sm:flex-grow flex justify-between p-2">
         <div>

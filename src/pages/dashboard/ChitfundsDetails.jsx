@@ -33,7 +33,7 @@ const ChitFundDetails = () => {
     return [...data.groupData.monthsArray].sort((a, b) => {
       const [aMonth, aYear] = a.split(' ');
       const [bMonth, bYear] = b.split(' ');
-      return new Date(`${aMonth} 1, ${aYear}`) - new Date(`${bMonth} 1, ${bYear}`);
+      return new Date(`${aMonth}` , `${aYear}`) - new Date(`${bMonth}`, `${bYear}`);
     });
   }, [data.groupData]);
 
@@ -97,7 +97,7 @@ const ChitFundDetails = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError(`Error fetching data: ${error.message}`);
+        setError("Error fetching data:" `${error.message}`);
         setLoading(false);
       }
     };
@@ -107,37 +107,25 @@ const ChitFundDetails = () => {
 
   useEffect(() => {
     if (data && data.groupData) {
-      console.log("selectedValue:", data.groupData.selectedValue); // Log the selectedValue for debugging
-      switch (data.groupData.selectedValue) {
-        case "1":
-          setMonthlyAmount(5000);
-          console.log("case1")
-          break;
-        case "2":
-          setMonthlyAmount(10000);
-          console.log("case2")
-
-          break;
-        case "5":
-          setMonthlyAmount(25000);
-          console.log("case5")
-
-          break;
-        case "10":
-          setMonthlyAmount(50000);
-          console.log("case10")
-
-          break;
-        default:
-          setMonthlyAmount(0);
-          console.log("default")
-        // Default case if none of the above values match
-      }
+      const baseAmount = {
+        "1": 5000,
+        "2": 10000,
+        "5": 25000,
+        "10": 50000
+      }[data.groupData.selectedValue] || 0;
+  
+      setMonthlyAmount(baseAmount);
     }
   }, [data]);
 
-
-
+  const calculateMonthlyAmount = (memberId, month) => {
+    const baseAmount = monthlyAmount;
+    const monthIndex = sortedMonths.indexOf(month);
+    const isWinner = data.previousWinners.includes(memberId);
+    const isAfterFirstMonth = monthIndex > 0;
+    const additionalAmount = (isWinner && isAfterFirstMonth) ? 1000 * parseInt(data.groupData.selectedValue) : 0;
+    return baseAmount + additionalAmount;
+  }
 
   useEffect(() => {
     if (sortedMonths.length > 0 && !selectedMonth) {
@@ -157,7 +145,8 @@ const ChitFundDetails = () => {
           advancePayment: memberData.advancePayment || 0,
           paid: memberData.balance === 0,
           winner: memberData.winner || false,
-          totalBalance: memberData.totalBalance || 0  // Add this line
+          totalBalance: memberData.totalBalance || 0,
+          monthlyAmount: memberData.monthlyAmount || calculateMonthlyAmount(memberId, selectedMonth)
         };
       });
       setEditableData(newEditableData);
@@ -175,16 +164,17 @@ const ChitFundDetails = () => {
       [memberId]: {
         ...prevData[memberId],
         [field]: field === 'totalBalance' ? (parseFloat(value) || 0) : value,
-        ...(field === 'amount' && calculateBalanceAndPayment(value, prevData[memberId])),
+        ...(field === 'amount' && calculateBalanceAndPayment(value, prevData[memberId], memberId, selectedMonth)),
       }
     }));
   };
 
-  const calculateBalanceAndPayment = (amount, prevData) => {
+  const calculateBalanceAndPayment = (amount, prevData, memberId, month) => {
+    const memberMonthlyAmount = calculateMonthlyAmount(memberId, month);
     const parsedAmount = parseFloat(amount);
-    const balance = monthlyAmount - parsedAmount;
-    let adjustedBalance = Math.max(balance, 0);  // Ensure balance is never negative
-    const advancePayment = parsedAmount > monthlyAmount ? parsedAmount - monthlyAmount : 0;
+    const balance = memberMonthlyAmount - parsedAmount;
+    let adjustedBalance = Math.max(balance, 0);
+    const advancePayment = parsedAmount > memberMonthlyAmount ? parsedAmount - memberMonthlyAmount : 0;
     return {
       balance: adjustedBalance,
       advancePayment,
@@ -252,8 +242,15 @@ const ChitFundDetails = () => {
       // Update current month
       updatedMonths[selectedMonth] = {
         ...updatedMonths[selectedMonth],
-        memberContributions: filteredEditableData,
+        memberContributions: Object.entries(filteredEditableData).reduce((acc, [memberId, memberData]) => {
+          acc[memberId] = {
+            ...memberData,
+            monthlyAmount: calculateMonthlyAmount(memberId, selectedMonth)
+          };
+          return acc;
+        }, {})
       };
+  
 
       // Carry over total balance to next month
       const currentMonthIndex = sortedMonths.indexOf(selectedMonth);
@@ -292,7 +289,7 @@ const ChitFundDetails = () => {
       alert('Data saved successfully!');
     } catch (error) {
       console.error("Error saving data:", error);
-      alert(`Failed to save data. Error: ${error.message}`);
+      alert("Failed to save data. Error:" `${error.message}`);
     }
   };
 
@@ -313,7 +310,7 @@ const ChitFundDetails = () => {
               { label: 'Value', value: `${data.groupData.selectedValue} lakhs` },
               { label: 'Members', value: data.groupData.numberOfMembers },
               { label: 'Duration', value: `${data.groupData.startMonth} - ${data.groupData.endMonth}` }
-            ].map((item, index) => (
+                        ].map((item, index) => (
               <Grid item xs={12} sm={4} key={index}>
                 <Card elevation={2}>
                   <CardContent>
@@ -353,6 +350,7 @@ const ChitFundDetails = () => {
                     <TableCell sx={{ color: 'common.white', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Amount</TableCell>
                     <TableCell sx={{ color: 'common.white', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Mode</TableCell>
                     <TableCell sx={{ color: 'common.white', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Balance</TableCell>
+                    <TableCell sx={{ color: 'common.white', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Monthly Amount</TableCell>
                     <TableCell sx={{ color: 'common.white', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Paid</TableCell>
                     <TableCell sx={{ color: 'common.white', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Picked</TableCell>
                     <TableCell sx={{ color: 'common.white', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Total Balance</TableCell>
@@ -400,6 +398,9 @@ const ChitFundDetails = () => {
                           sx={{ color: 'success.main', '&.Mui-checked': { color: 'success.main' } }}
                         />
                       </TableCell>
+
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{calculateMonthlyAmount(memberId, selectedMonth)}</TableCell>
+                  
                       <TableCell>
                         <Checkbox
                           checked={editableData[memberId]?.winner || false}

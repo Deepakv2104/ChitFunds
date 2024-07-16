@@ -111,7 +111,7 @@
   }
 
   .image-grid img {
-    max-width: 90vw; /* Ensure images are not too large */
+    max-width:100%; /* Ensure images are not too large */
     max-height: 150px; /* Limit height to fit screen */
   }
 

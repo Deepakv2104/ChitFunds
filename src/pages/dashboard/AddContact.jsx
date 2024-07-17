@@ -174,7 +174,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.name && Boolean(formik.errors.name)}
             helperText={formik.touched.name && formik.errors.name}
-            sx={{ height: '40px', border: '1px solid #ccc' }}
+            sx={{ height: '40px' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -188,7 +188,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.phone && Boolean(formik.errors.phone)}
             helperText={formik.touched.phone && formik.errors.phone}
-            sx={{ height: '40px', border: '1px solid #ccc' }}
+            sx={{ height: '40px' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -202,7 +202,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.alternatePhone && Boolean(formik.errors.alternatePhone)}
             helperText={formik.touched.alternatePhone && formik.errors.alternatePhone}
-            sx={{ height: '40px', border: '1px solid #ccc' }}
+            sx={{ height: '40px' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -216,7 +216,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.aadharCardNo && Boolean(formik.errors.aadharCardNo)}
             helperText={formik.touched.aadharCardNo && formik.errors.aadharCardNo}
-            sx={{ height: '40px', border: '1px solid #ccc' }}
+            sx={{ height: '40px' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>
@@ -230,7 +230,7 @@ const NewContactRow = ({ addContact }) => {
             onBlur={formik.handleBlur}
             error={formik.touched.chequeNo && Boolean(formik.errors.chequeNo)}
             helperText={formik.touched.chequeNo && formik.errors.chequeNo}
-            sx={{ height: '40px', border: '1px solid #ccc' }}
+            sx={{ height: '40px' }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2}>

@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from '../../Authentication/authContext';
 import { FaStar } from 'react-icons/fa';
-import { db,auth } from '../../Authentication/firebase';
+import { db, auth } from '../../Authentication/firebase';
 import { signOut } from 'firebase/auth';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { doc, getDoc } from 'firebase/firestore';
 import "./Navbar.css";
 import { NavLink } from "react-router-dom";
-import { FaBell } from 'react-icons/fa'; // Import the icons
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { FaBell } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
-  const { currentUser, logout } = useAuth(); // Add logout function from useAuth
+  const { currentUser, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userData, setUserData] = useState(null);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log(currentUser)
       if (currentUser) {
         try {
           const userRef = doc(db, 'users', currentUser.uid);
@@ -39,7 +38,6 @@ const Navbar = () => {
   }, [currentUser]);
 
   const handleTitleClick = () => {
-    // Navigate conditionally based on user authentication
     if (currentUser) {
       navigate("/dashboard/dashboardHome");
     } else {
@@ -48,13 +46,10 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    console.log('clicked')
     try {
       await signOut(auth);
-
       navigate("/");
-      toast.success('Logged out successfully!', { autoClose: 700 }); // Display success toast
-
+      toast.success('Logged out successfully!', { autoClose: 700 });
     } catch (error) {
       console.error('Error logging out:', error.message);
     }
@@ -63,7 +58,6 @@ const Navbar = () => {
   return (
     <div>
       <nav>
-        {/* Add onClick event to handle title click */}
         <div onClick={handleTitleClick} className="title">
           CHITFUNDS
         </div>
@@ -74,15 +68,11 @@ const Navbar = () => {
         </div>
         <ul className={menuOpen ? "open" : ""}>
           <li>
-            <NavLink to="/about">About</NavLink>
+            <NavLink to="/dashboard/dashboardHome/NewChitpage">New Chit</NavLink>
           </li>
           <li>
-            <NavLink to="/services">Services</NavLink>
+            <NavLink to="/dashboard/dashboardHome/existingChits">Existing Chit</NavLink>
           </li>
-          <li>
-            <NavLink to="/contact">Contact</NavLink>
-          </li>
-          {/* Conditionally render logout option when user is logged in */}
           {currentUser && (
             <li>
               <button onClick={handleLogout}>Logout</button>

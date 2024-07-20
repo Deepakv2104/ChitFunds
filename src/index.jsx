@@ -9,8 +9,7 @@ import { AuthProvider } from './Authentication/authContext';
 import './index.css'
 
 // Use createRoot from ReactDOM/client
-const root = createRoot(document.getElementById('root'));
-
+const root = ReactDOM.createRoot(document.getElementById('root'));
 // Render your app within createRoot, wrapped with ToastContainer
 root.render(
   <React.StrictMode>

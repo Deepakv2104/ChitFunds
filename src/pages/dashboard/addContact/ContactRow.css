@@ -1,0 +1,64 @@
+/* ContactRow.css */
+.custom-dialog {
+    background: linear-gradient(135deg, #f6f8fa, #eef2f6);
+    border-radius: 10px;
+  }
+  
+  .custom-dialog .MuiDialogTitle-root {
+    background-color: #1976d2;
+    color: #ffffff;
+    padding: 16px 24px;
+  }
+  
+  .custom-dialog .MuiDialogContent-root {
+    padding: 24px;
+  }
+  
+  .custom-dialog .MuiDialogActions-root {
+    padding: 16px 24px;
+    background-color: #f6f8fa;
+  }
+  
+  .MuiTab-root {
+    text-transform: none;
+    font-weight: bold;
+    font-size: 16px;
+    color: #1976d2;
+  }
+  
+  .MuiTab-root.Mui-selected {
+    color: #005cb2;
+  }
+  
+  .MuiTabs-indicator {
+    background-color: #005cb2;
+  }
+  
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .contact-info .MuiTypography-subtitle1 {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .custom-button {
+    background-color: #1976d2;
+    color: #fff;
+    text-transform: none;
+    margin-top: 16px;
+  }
+  
+  .custom-button:hover {
+    background-color: #005cb2;
+  }
+  
+  .custom-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  

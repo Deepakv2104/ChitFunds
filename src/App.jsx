@@ -36,6 +36,8 @@ const App = () => {
       <Route path="dashboardHome" element={<DashboardHome />} />
       <Route path="dashboardHome/addContact" element={<AddContact />} />
       <Route path="dashboardHome/addContact" element={<AddContact />} />
+      <Route path="dashboardHome/addContact/existingChits/:groupId" element={<ChitFundDetails />} />
+
       {/* <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="gyltVx8F517nu95Yy7rp" />} /> */}
 
       <Route path="contacts" element={<Contacts />} />

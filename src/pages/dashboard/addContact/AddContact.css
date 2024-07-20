@@ -1,70 +1,65 @@
 .addContact {
-  padding: 20px;
-  background-color: #fffcfc;
-  border-radius: 8px;
-  flex-direction: column;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: calc(100vh - 64px); /* Ensure container takes full height of the viewport minus header height */
-  display: flex;
-  justify-content: flex-start;
-  .title {
-    font-family: 'Roboto', sans-serif;
-    font-weight: bold;
-    font-size: 28px;
-    color: #333;
-  }
-  
-  .pagination-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px; /* Add space above pagination */
-    margin-bottom: 20px; /* Adjust space at the bottom */
-  }
-  
-  .divider {
-    margin: 20px 0;
-  }
-  
-  .search-bar {
-    max-width: 400px;
-    margin: 0 auto 20px;
-  }
-  .table-container {
-    border: 2px solid #1976d2;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-top: 20px;
-  }
-  
-  
-  .table-head {
-    background-color: #0f172a;
-  }
-  
-  .table-head .MuiTableCell-root {
-    color: white;
-  }
-  
-  .table-body .MuiTableRow-root:hover {
-    background-color: #f1f1f1;
-  }
-  
-  @media (max-width: 767px) {
-    .title {
-      font-size: 24px;
-    }
-    
-    .divider {
-      width: 100%;
-      border: 1px solid #ccc;
-    }
-    
-    .search-bar {
-      max-width: 50%;
-    }
-  }
-  
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  transition: all 0.3s ease;
 }
 
+.addContact:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.title {
+  color: #2c3e50;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.divider {
+  background-color: #3498db;
+  height: 3px;
+  margin-bottom: 24px;
+}
+
+.pagination-container {
+  margin-top: 24px;
+}
+
+/* Custom styles for Material-UI components */
+.MuiButton-root {
+  text-transform: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.MuiButton-root:hover {
+  transform: scale(1.05);
+}
+
+.MuiDialog-paper {
+  border-radius: 12px;
+}
+
+.MuiDialogTitle-root {
+  background-color: #3498db;
+  color: white;
+}
+
+.MuiTablePagination-root {
+  font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .addContact {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+}

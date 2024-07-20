@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from '../../../Authentication/firebase'; // Adjust the path according to your project structure
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-import { TableRow, TableCell, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button, Tabs, Tab, Box, Typography } from '@mui/material';
+import { TableRow, TableCell, IconButton, Dialog, DialogActions,Avatar, DialogContent, DialogTitle, Button, Tabs, Tab, Box, Typography, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { db } from '../../../Authentication/firebase'; // Adjust the path according to your project structure
+import TabPanel from './TabPanel';
+import './ContactRow.css'; // Import the CSS file
 
 const ContactRow = ({ contact, onDelete, index }) => {
   const [open, setOpen] = useState(false);
   const [groupData, setGroupData] = useState([]);
+  const [filteredGroups, setFilteredGroups] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchGroupData = async () => {
@@ -17,6 +21,7 @@ const ContactRow = ({ contact, onDelete, index }) => {
         const querySnapshot = await getDocs(q);
         const groups = querySnapshot.docs.map(doc => ({ groupId: doc.id, groupName: doc.data().groupName, chitAmount: doc.data().selectedValue }));
         setGroupData(groups);
+        setFilteredGroups(groups);
 
         for (let group of groups) {
           const contributionsDocRef = doc(db, 'contributions', group.groupId);
@@ -35,6 +40,7 @@ const ContactRow = ({ contact, onDelete, index }) => {
           }
         }
         setGroupData(groups);
+        setFilteredGroups(groups);
       } catch (error) {
         console.error('Error fetching group data: ', error);
       }
@@ -57,6 +63,12 @@ const ContactRow = ({ contact, onDelete, index }) => {
     setSelectedTab(newValue);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setFilteredGroups(groupData.filter(group => group.groupName.toLowerCase().includes(event.target.value.toLowerCase())));
+    setSelectedTab(0); // Reset to the first tab
+  };
+
   return (
     <>
       <TableRow onClick={handleClickOpen} sx={{ cursor: 'pointer', height: '40px', backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff' }}>
@@ -71,30 +83,47 @@ const ContactRow = ({ contact, onDelete, index }) => {
           </IconButton>
         </TableCell>
       </TableRow>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md" classes={{ paper: 'custom-dialog' }}>
         <DialogTitle>
           <Typography variant="h5">Contact Details</Typography>
         </DialogTitle>
         <DialogContent>
-          <Box mb={2}>
-            <Typography variant="subtitle1">
-              <strong>Name:</strong> {contact.name}
-            </Typography>
-            <Typography variant="subtitle1">
-              <strong>Phone:</strong> {contact.phone}
-            </Typography>
-            <Typography variant="subtitle1">
-              <strong>Alternate Phone:</strong> {contact.alternatePhone}
-            </Typography>
-            <Typography variant="subtitle1">
-              <strong>Aadhar Card No:</strong> {contact.aadharCardNo}
-            </Typography>
-            <Typography variant="subtitle1">
-              <strong>Cheque No:</strong> {contact.chequeNo}
-            </Typography>
-          </Box>
+        <Box mb={2} className="personal-info" display="flex" alignItems="center">
+      <Box display="flex" flexDirection="column" alignItems="center" mr={4}>
+        <Avatar
+          alt={contact.name}
+          src={contact.avatarUrl} // Assuming you have an avatarUrl property
+          sx={{ width: 100, height: 100, marginBottom: 2 }}
+        />
+        <Typography variant="h6" sx={{ textAlign: 'center' }}>
+          {contact.name}
+        </Typography>
+      </Box>
+      <Box ml={4}>
+        <Typography variant="subtitle1">
+          <strong>Phone:</strong> {contact.phone}
+        </Typography>
+        <Typography variant="subtitle1">
+          <strong>Alternate Phone:</strong> {contact.alternatePhone}
+        </Typography>
+        <Typography variant="subtitle1">
+          <strong>Aadhar Card No:</strong> {contact.aadharCardNo}
+        </Typography>
+        <Typography variant="subtitle1">
+          <strong>Cheque No:</strong> {contact.chequeNo}
+        </Typography>
+      </Box>
+    </Box>
           {groupData.length > 0 && (
             <>
+              <TextField
+                label="Search Groups"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
               <Tabs
                 value={selectedTab}
                 onChange={handleChange}
@@ -103,11 +132,11 @@ const ContactRow = ({ contact, onDelete, index }) => {
                 allowScrollButtonsMobile
                 aria-label="scrollable groups tabs"
               >
-                {groupData.map((group, index) => (
+                {filteredGroups.map((group, index) => (
                   <Tab key={group.groupId} label={group.groupName} />
                 ))}
               </Tabs>
-              {groupData.map((group, index) => (
+              {filteredGroups.map((group, index) => (
                 <TabPanel key={group.groupId} value={selectedTab} index={index}>
                   <Typography variant="subtitle1">
                     <strong>Group ID:</strong> {group.groupId}
@@ -116,13 +145,13 @@ const ContactRow = ({ contact, onDelete, index }) => {
                     <strong>Group Name:</strong> {group.groupName}
                   </Typography>
                   <Typography variant="subtitle1">
-                    <strong>Chit Amount:</strong> {group.chitAmount}Lakh
+                    <strong>Chit Amount:</strong> {group.chitAmount} Lakh
                   </Typography>
                   <Typography variant="subtitle1">
                     <strong>Total Balance:</strong> {group.totalBalance}
                   </Typography>
                   <Button>
-                    <Link to={`existingChits/${group.groupId}`}> go to chit</Link>
+                    <Link to={`existingChits/${group.groupId}`}>Go to chit</Link>
                   </Button>
                 </TabPanel>
               ))}
@@ -134,18 +163,6 @@ const ContactRow = ({ contact, onDelete, index }) => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
-
-const TabPanel = ({ children, value, index }) => {
-  return (
-    <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`}>
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
   );
 };
 

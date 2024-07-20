@@ -1,21 +1,19 @@
 /* Container for the entire page */
 .new-chit-page {
   padding: 20px;
-  background-color: #f7f7f7;
   font-family: 'Arial', sans-serif;
+  min-height: 100vh;
 }
 
 /* Flex container to separate left and right sections */
 .flex-container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 20px;
 }
 
 /* Styling for the left and right containers */
-.left-container,
-.right-container {
-  flex: 1;
+.left-container, .right-container {
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -23,9 +21,7 @@
 }
 
 /* Input styling for group name, search, and end month */
-.group-name-input,
-.search-input,
-.end-month-input {
+.group-name-input, .search-input, .end-month-input {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
@@ -55,7 +51,6 @@ select {
   background: url('data:image/svg+xml;base64,...') no-repeat right 10px center; /* Add custom dropdown arrow */
 }
 
-
 /* Styling for the create button */
 .create-button {
   margin-top: 20px;
@@ -67,6 +62,7 @@ select {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
+  width: 100%;
 }
 
 .create-button:hover {
@@ -85,8 +81,10 @@ select {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   transition: background-color 0.3s;
+  width: 100%;
 }
 
 .add-contact-button:hover {
@@ -110,4 +108,38 @@ select {
 
 .dialog-actions button {
   margin-left: 10px;
+}
+
+/* Responsive styles */
+@media screen and (min-width: 768px) {
+  .flex-container {
+    flex-direction: row;
+  }
+
+  .left-container, .right-container {
+    flex: 1;
+  }
+
+  .create-button, .add-contact-button {
+    width: auto;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .new-chit-page {
+    padding: 10px;
+  }
+
+  .left-container, .right-container {
+    padding: 15px;
+  }
+
+  .group-name-input, .search-input, .end-month-input, select {
+    font-size: 14px;
+  }
+
+  .create-button, .add-contact-button {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
 }

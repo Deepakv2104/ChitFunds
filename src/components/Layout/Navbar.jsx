@@ -68,7 +68,7 @@ const Navbar = () => {
         </div>
         <ul className={menuOpen ? "open" : ""}>
           <li>
-            <NavLink to="/dashboard/dashboardHome/NewChitpage">New Chit</NavLink>
+            <NavLink to="/dashboard/dashboardHome/NewChitpage/1">New Chit</NavLink>
           </li>
           <li>
             <NavLink to="/dashboard/dashboardHome/existingChits">Existing Chit</NavLink>

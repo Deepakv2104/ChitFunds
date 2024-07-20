@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import SelectOptions from './components/SelectOptions';
 
-import NewChitPage from './pages/dashboard/NewChitPage';
+import NewChitPage from './pages/dashboard/newChit/NewChitPage';
 // import TwoNewChitPage from './pages/dashboard/TwoNewChitPage';
 import AuthPage from './pages/AuthPage';
 import Home from './pages/Home';
@@ -36,12 +36,12 @@ const App = () => {
       <Route path="dashboardHome" element={<DashboardHome />} />
       <Route path="dashboardHome/addContact" element={<AddContact />} />
       <Route path="dashboardHome/addContact" element={<AddContact />} />
-      <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="gyltVx8F517nu95Yy7rp" />} />
+      {/* <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="gyltVx8F517nu95Yy7rp" />} /> */}
 
       <Route path="contacts" element={<Contacts />} />
       <Route path="settings" element={<Settings />} />
       {/* <Route path="dashboardHome/1lakh" element={<OneLakhChit />} /> */}
-      <Route path="dashboardHome/NewChitpage" element={<NewChitPage />} />
+      <Route path="dashboardHome/NewChitpage/:chitAmount" element={<NewChitPage />} />
       <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
       <Route path="dashboardHome/existingChits/:groupId" element={<ChitFundDetails />} />
 

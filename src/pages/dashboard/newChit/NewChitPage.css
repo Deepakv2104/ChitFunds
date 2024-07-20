@@ -1,0 +1,113 @@
+/* Container for the entire page */
+.new-chit-page {
+  padding: 20px;
+  background-color: #f7f7f7;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Flex container to separate left and right sections */
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Styling for the left and right containers */
+.left-container,
+.right-container {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Input styling for group name, search, and end month */
+.group-name-input,
+.search-input,
+.end-month-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* Label and input wrapper to ensure even spacing */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+/* Dropdown styling */
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  appearance: none;
+  background: url('data:image/svg+xml;base64,...') no-repeat right 10px center; /* Add custom dropdown arrow */
+}
+
+
+/* Styling for the create button */
+.create-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #28a745;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.create-button:hover {
+  background-color: #218838;
+}
+
+/* Styling for the add contact button */
+.add-contact-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background-color 0.3s;
+}
+
+.add-contact-button:hover {
+  background-color: #0056b3;
+}
+
+.add-contact-button svg {
+  font-size: 20px;
+}
+
+/* Dialog content styling */
+.dialog-content {
+  padding: 20px;
+}
+
+.dialog-actions {
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dialog-actions button {
+  margin-left: 10px;
+}

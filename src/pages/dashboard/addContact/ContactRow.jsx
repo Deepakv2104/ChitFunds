@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { db } from '../../../Authentication/firebase'; // Adjust the path according to your project structure
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { TableRow, TableCell, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button, Tabs, Tab, Box, Typography } from '@mui/material';
@@ -120,6 +121,9 @@ const ContactRow = ({ contact, onDelete, index }) => {
                   <Typography variant="subtitle1">
                     <strong>Total Balance:</strong> {group.totalBalance}
                   </Typography>
+                  <Button>
+                    <Link to={`existingChits/${group.groupId}`}> go to chit</Link>
+                  </Button>
                 </TabPanel>
               ))}
             </>

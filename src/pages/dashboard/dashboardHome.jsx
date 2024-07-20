@@ -75,25 +75,25 @@ const DashboardHome = () => {
               src={oneLakh}
               alt="Image 1"
               className="grid-item"
-              onClick={() => handleImageClick('NewChitPage')}
+              onClick={() => handleImageClick('NewChitPage/1')}
             />
             <img
               src={twoLakh}
               alt="Image 2"
               className="grid-item"
-              onClick={() => handleImageClick('NewChitPage')}
+              onClick={() => handleImageClick('NewChitPage/2')}
             />
             <img
               src={fiveLakh}
               alt="Image 3"
               className="grid-item"
-              onClick={() => handleImageClick('NewChitPage')}
+              onClick={() => handleImageClick('NewChitPage/5')}
             />
             <img
               src={tenLakh}
               alt="Image 4"
               className="grid-item"
-              onClick={() => handleImageClick('NewChitPage')}
+              onClick={() => handleImageClick('NewChitPage/10')}
             />
           </div>
         </div>

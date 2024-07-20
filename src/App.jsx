@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SelectOptions from './components/SelectOptions';
 
 import NewChitPage from './pages/dashboard/newChit/NewChitPage';
-// import TwoNewChitPage from './pages/dashboard/TwoNewChitPage';
 import AuthPage from './pages/AuthPage';
 import Home from './pages/Home';
 import Dashboard from './pages/dashboard/dashboard';

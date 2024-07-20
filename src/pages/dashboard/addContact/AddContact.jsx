@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../Authentication/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { Container, Typography, Divider, Box, Button, TablePagination } from '@mui/material';
+import { Container, Typography, Box, Button, TablePagination, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ContactTable from './ContactTable';
 import SearchBar from './SearchBar';
 import NewContactRow from './NewContactRow';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { TableRow, TableCell, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import '../styles/dashboardHome.css'
+import '../styles/dashboardHome.css';
 
 const AddContact = () => {
   const [contacts, setContacts] = useState([]);
@@ -30,7 +29,7 @@ const AddContact = () => {
     };
 
     fetchContacts();
-  }, []);
+  }, []); // Empty dependency array to only run on mount
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -40,7 +39,7 @@ const AddContact = () => {
     try {
       const docRef = await addDoc(collection(db, 'contacts'), contact);
       await updateDoc(docRef, { memberId: docRef.id });
-      setContacts([...contacts, { ...contact, memberId: docRef.id, key: docRef.id }]);
+      setContacts(prevContacts => [...prevContacts, { ...contact, memberId: docRef.id, key: docRef.id }]);
       setDialogOpen(false); // Close dialog after adding
     } catch (error) {
       console.error('Error adding contact: ', error);
@@ -51,7 +50,7 @@ const AddContact = () => {
   const deleteContact = async (key) => {
     try {
       await deleteDoc(doc(db, 'contacts', key));
-      setContacts(contacts.filter(contact => contact.key !== key));
+      setContacts(prevContacts => prevContacts.filter(contact => contact.key !== key));
       toast.success('Contact deleted successfully!');
     } catch (error) {
       console.error('Error deleting contact: ', error);
@@ -61,8 +60,7 @@ const AddContact = () => {
 
   return (
     <Container className="dashboardHome addContact" maxWidth={false} disableGutters>
-      <p className="title">Add Contacts </p>
-      {/* <hr className="divider" /> */}
+      <p className="title">Add Contacts</p>
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
       <Box sx={{ display: { xs: 'block', md: 'none' }, textAlign: 'center' }}>
         <Button

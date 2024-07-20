@@ -41,6 +41,8 @@ const App = () => {
             <Route path="dashboardHome/NewChitpage/:chitAmount" element={<NewChitPage />} />
             <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
             <Route path="dashboardHome/existingChits/:groupId" element={<ChitFundDetails />} />
+            <Route path="dashboardHome/settings" element={<Settings />} />
+
 
           </Route>
 

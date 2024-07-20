@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-import { TableRow, TableCell, IconButton, Dialog, DialogActions,Avatar, DialogContent, DialogTitle, Button, Tabs, Tab, Box, Typography, TextField } from '@mui/material';
+import { TableRow, TableCell, IconButton, Dialog, DialogActions, Avatar, DialogContent, DialogTitle, Button, Tabs, Tab, Box, Typography, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { db } from '../../../Authentication/firebase'; // Adjust the path according to your project structure
 import TabPanel from './TabPanel';
@@ -20,27 +20,32 @@ const ContactRow = ({ contact, onDelete, index }) => {
         const q = query(collection(db, 'groups'), where('memberIds', 'array-contains', contact.memberId));
         const querySnapshot = await getDocs(q);
         const groups = querySnapshot.docs.map(doc => ({ groupId: doc.id, groupName: doc.data().groupName, chitAmount: doc.data().selectedValue }));
-        setGroupData(groups);
-        setFilteredGroups(groups);
+        
+        if (groups.length > 0) {
+          const contributionsQuery = query(collection(db, 'contributions'), where('__name__', 'in', groups.map(group => group.groupId)));
+          const contributionsSnapshot = await getDocs(contributionsQuery);
+          const contributionsData = contributionsSnapshot.docs.reduce((acc, doc) => {
+            acc[doc.id] = doc.data().months;
+            return acc;
+          }, {});
 
-        for (let group of groups) {
-          const contributionsDocRef = doc(db, 'contributions', group.groupId);
-          const contributionsDoc = await getDoc(contributionsDocRef);
-          if (contributionsDoc.exists()) {
+          const updatedGroups = groups.map(group => {
+            const months = contributionsData[group.groupId] || {};
             let totalBalance = 0;
-            const months = contributionsDoc.data().months;
             for (let month in months) {
               if (months[month].memberContributions[contact.memberId]) {
-                totalBalance = months[month].memberContributions[contact.memberId].totalBalance;
+                totalBalance += months[month].memberContributions[contact.memberId].totalBalance;
               }
             }
-            group.totalBalance = totalBalance;
-          } else {
-            group.totalBalance = 0;
-          }
+            return { ...group, totalBalance };
+          });
+
+          setGroupData(updatedGroups);
+          setFilteredGroups(updatedGroups);
+        } else {
+          setGroupData(groups);
+          setFilteredGroups(groups);
         }
-        setGroupData(groups);
-        setFilteredGroups(groups);
       } catch (error) {
         console.error('Error fetching group data: ', error);
       }
@@ -88,32 +93,32 @@ const ContactRow = ({ contact, onDelete, index }) => {
           <Typography variant="h6">Contact Details</Typography>
         </DialogTitle>
         <DialogContent>
-        <Box mb={2} className="personal-info" display="flex" alignItems="center">
-      <Box display="flex" flexDirection="column" alignItems="center" mr={4}>
-        <Avatar
-          alt={contact.name}
-          src={contact.avatarUrl} // Assuming you have an avatarUrl property
-          sx={{ width: 100, height: 100, marginBottom: 2 }}
-        />
-        <Typography variant="h5" sx={{ textAlign: 'center' }}>
-          {contact.name}
-        </Typography>
-      </Box>
-      <Box ml={4}>
-        <Typography variant="subtitle1">
-          <strong>Phone:</strong> {contact.phone}
-        </Typography>
-        <Typography variant="subtitle1">
-          <strong>Alternate Phone:</strong> {contact.alternatePhone}
-        </Typography>
-        <Typography variant="subtitle1">
-          <strong>Aadhar Card No:</strong> {contact.aadharCardNo}
-        </Typography>
-        <Typography variant="subtitle1">
-          <strong>Cheque No:</strong> {contact.chequeNo}
-        </Typography>
-      </Box>
-    </Box>
+          <Box mb={2} className="personal-info" display="flex" alignItems="center">
+            <Box display="flex" flexDirection="column" alignItems="center" mr={4}>
+              <Avatar
+                alt={contact.name}
+                src={contact.avatarUrl} // Assuming you have an avatarUrl property
+                sx={{ width: 100, height: 100, marginBottom: 2 }}
+              />
+              <Typography variant="h5" sx={{ textAlign: 'center' }}>
+                {contact.name}
+              </Typography>
+            </Box>
+            <Box ml={4}>
+              <Typography variant="subtitle1">
+                <strong>Phone:</strong> {contact.phone}
+              </Typography>
+              <Typography variant="subtitle1">
+                <strong>Alternate Phone:</strong> {contact.alternatePhone}
+              </Typography>
+              <Typography variant="subtitle1">
+                <strong>Aadhar Card No:</strong> {contact.aadharCardNo}
+              </Typography>
+              <Typography variant="subtitle1">
+                <strong>Cheque No:</strong> {contact.chequeNo}
+              </Typography>
+            </Box>
+          </Box>
           {groupData.length > 0 && (
             <>
               <TextField
@@ -138,9 +143,6 @@ const ContactRow = ({ contact, onDelete, index }) => {
               </Tabs>
               {filteredGroups.map((group, index) => (
                 <TabPanel key={group.groupId} value={selectedTab} index={index}>
-                  {/* <Typography variant="subtitle1">
-                    <strong>Group ID:</strong> {group.groupId}
-                  </Typography> */}
                   <Typography variant="subtitle1">
                     <strong>Group Name:</strong> {group.groupName}
                   </Typography>

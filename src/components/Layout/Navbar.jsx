@@ -61,22 +61,26 @@ const Navbar = () => {
         <div onClick={handleTitleClick} className="title">
           CHITFUNDS
         </div>
-        <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+        {currentUser && (
+          <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        )}
         <ul className={menuOpen ? "open" : ""}>
-          <li>
-            <NavLink to="/dashboard/dashboardHome/NewChitpage/1">New Chit</NavLink>
-          </li>
-          <li>
-            <NavLink to="/dashboard/dashboardHome/existingChits">Existing Chit</NavLink>
-          </li>
           {currentUser && (
-            <li>
-              <button onClick={handleLogout}>Logout</button>
-            </li>
+            <>
+              <li>
+                <NavLink to="/dashboard/dashboardHome/NewChitpage/1">New Chit</NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/dashboardHome/existingChits">Existing Chit</NavLink>
+              </li>
+              <li>
+                <button onClick={handleLogout}>Logout</button>
+              </li>
+            </>
           )}
         </ul>
       </nav>

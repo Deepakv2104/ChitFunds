@@ -73,12 +73,12 @@ const ContactList = ({ selectedContacts, handleRemoveContact, availableContacts,
             <span className="chip-name">{contact.name}</span>
             <span className="contact-phone">{contact.phone}</span>
           </div>
-          <IconButton
+          {/* <IconButton
             onClick={() => handleRemoveContactWrapper(contact)}
             color="secondary"
           >
             <DeleteIcon />
-          </IconButton>
+          </IconButton> */}
         </div>
       ))}
     </div>

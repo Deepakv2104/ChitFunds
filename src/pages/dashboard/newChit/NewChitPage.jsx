@@ -250,6 +250,8 @@ const NewChitPage = () => {
           
           <ContactList
             availableContacts={filteredContacts}
+            handleRemoveContact={handleRemoveContact}
+
             handleAddContact={handleAddContact}
             isAvailableList={true}
           />

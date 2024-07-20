@@ -51,11 +51,8 @@ const NewChitPage = () => {
     aadharCardNo: '',
     chequeNo: ''
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [clickedContacts, setClickedContacts] = useState([]);
-  const contactsPerPage = 7;
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Add this line to use navigate
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -72,15 +69,14 @@ const NewChitPage = () => {
   }, []);
 
   const handleAddContact = (contact) => {
-    if (!selectedContacts.includes(contact)) {
-      setSelectedContacts([...selectedContacts, contact]);
-      setClickedContacts([...clickedContacts, contact.id]);
-    }
+    setSelectedContacts([...selectedContacts, contact]);
+    setAvailableContacts(availableContacts.filter(c => c.id !== contact.id));
   };
 
   const handleRemoveContact = (id) => {
+    const contactToRemove = selectedContacts.find(c => c.id === id);
+    setAvailableContacts([...availableContacts, contactToRemove]);
     setSelectedContacts(selectedContacts.filter(c => c.id !== id));
-    setClickedContacts(clickedContacts.filter(contactId => contactId !== id));
   };
 
   const handleSearchChange = (event) => {
@@ -105,15 +101,18 @@ const NewChitPage = () => {
     try {
       const batch = writeBatch(db);
 
+      // Create the group document
       const groupsRef = collection(db, 'groups');
       const newGroupRef = doc(groupsRef);
       const groupId = newGroupRef.id;
 
-      const monthsArray = generateMonths(20);
+      // Get the months array from startMonth to endMonth
+      const monthsArray = generateMonths(40);
       const startMonthIndex = monthsArray.indexOf(startMonth);
       const endMonthIndex = monthsArray.indexOf(endMonth);
       const selectedMonths = monthsArray.slice(startMonthIndex, endMonthIndex + 1);
 
+      // Create the group data
       const groupData = {
         groupId,
         groupName,
@@ -122,16 +121,19 @@ const NewChitPage = () => {
         startMonth,
         endMonth,
         numberOfMembers: selectedContacts.length,
-        monthsArray: selectedMonths
+        monthsArray: selectedMonths // Store the array of months as strings
       };
 
       batch.set(newGroupRef, groupData);
 
+      // Create the initial contributions document
       const contributionsRef = doc(collection(db, 'contributions'), groupId);
       const monthsData = selectedMonths.reduce((acc, month) => {
         acc[month] = { memberContributions: {} };
         return acc;
       }, {});
+
+      // Ensure monthsData is ordered
       const orderedMonthsData = Object.keys(monthsData).sort((a, b) => {
         const dateA = new Date(parseInt(a.slice(3)), monthStringToNumber(a.slice(0, 3)));
         const dateB = new Date(parseInt(b.slice(3)), monthStringToNumber(b.slice(0, 3)));
@@ -142,7 +144,7 @@ const NewChitPage = () => {
       }, {});
 
       batch.set(contributionsRef, {
-        months: orderedMonthsData
+        months: orderedMonthsData // Ensure only the selected months are stored in order
       });
 
       await batch.commit();
@@ -202,14 +204,9 @@ const NewChitPage = () => {
     contact && contact.name && contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const indexOfLastContact = currentPage * contactsPerPage;
-  const indexOfFirstContact = indexOfLastContact - contactsPerPage;
-  const currentContacts = filteredContacts.slice(indexOfFirstContact, indexOfLastContact);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   return (
     <div className="new-chit-page">
+      <ToastContainer />
       <h2>Create a New Group</h2>
       <div className="flex-container">
         <div className="left-container">
@@ -229,6 +226,7 @@ const NewChitPage = () => {
             <option value="5">5 lakhs</option>
             <option value="10">10 lakhs</option>
           </select>
+          <br />
           <p>Start Month</p>
           <select value={startMonth} onChange={handleStartMonthChange}>
             <option value="">Select Start Month</option>
@@ -236,8 +234,10 @@ const NewChitPage = () => {
               <option key={index} value={month}>{month}</option>
             ))}
           </select>
+          <br />
           <p>End Month</p>
           <input type="text" value={endMonth} readOnly className="end-month-input" />
+          <br />
           <p>Selected Contacts</p>
           <div className="selected-contacts">
             {selectedContacts.map(contact => (
@@ -248,7 +248,9 @@ const NewChitPage = () => {
               </div>
             ))}
           </div>
-          <button className="create-button" onClick={handleCreateGroup}>Create</button>
+          <Button variant="success" className="create-button" onClick={handleCreateGroup}>
+            Create
+          </Button>
         </div>
         <div className="right-container">
           <p>Search contact</p>
@@ -259,46 +261,19 @@ const NewChitPage = () => {
             onChange={handleSearchChange}
             className="search-input"
           />
-          <button className="add-contact-button" onClick={handleOpenDialog}>
+          <Button variant="primary" className="add-contact-button" onClick={handleOpenDialog}>
             <AddIcon /> New Contact
-          </button>
+          </Button>
           <div className="available-contacts">
-            {currentContacts.map(contact => (
-              <div
-                key={contact.id}
-                className={`contact-card ${clickedContacts.includes(contact.id) ? 'clicked' : ''}`}
-                onClick={() => handleAddContact(contact)}
-              >
+            {filteredContacts.map(contact => (
+              <div key={contact.id} className="contact-row" onClick={() => handleAddContact(contact)}>
                 <Avatar alt={contact.name} src={contact.image} />
-                <div className="contact-info">
-                  <span className="contact-name">{contact.name}</span>
-                  <span className="contact-phone">{contact.phone}</span>
-                </div>
+                <span className="contact-name">{contact.name}</span>
               </div>
             ))}
           </div>
-          <div className="pagination-container">
-            <button
-              className="pagination-button"
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <span className="pagination-info">
-              Page {currentPage} of {Math.ceil(filteredContacts.length / contactsPerPage)}
-            </span>
-            <button
-              className="pagination-button"
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === Math.ceil(filteredContacts.length / contactsPerPage)}
-            >
-              Next
-            </button>
-          </div>
         </div>
       </div>
-      <ToastContainer />
       <Dialog open={open} onClose={handleCloseDialog}>
         <DialogTitle>Add New Contact</DialogTitle>
         <DialogContent>
@@ -307,6 +282,7 @@ const NewChitPage = () => {
               <TextField
                 name="name"
                 label="Name"
+                variant="outlined"
                 fullWidth
                 value={newContact.name}
                 onChange={handleNewContactChange}
@@ -316,6 +292,7 @@ const NewChitPage = () => {
               <TextField
                 name="phone"
                 label="Phone"
+                variant="outlined"
                 fullWidth
                 value={newContact.phone}
                 onChange={handleNewContactChange}
@@ -325,6 +302,7 @@ const NewChitPage = () => {
               <TextField
                 name="alternatePhone"
                 label="Alternate Phone"
+                variant="outlined"
                 fullWidth
                 value={newContact.alternatePhone}
                 onChange={handleNewContactChange}
@@ -334,6 +312,7 @@ const NewChitPage = () => {
               <TextField
                 name="aadharCardNo"
                 label="Aadhar Card No"
+                variant="outlined"
                 fullWidth
                 value={newContact.aadharCardNo}
                 onChange={handleNewContactChange}
@@ -343,6 +322,7 @@ const NewChitPage = () => {
               <TextField
                 name="chequeNo"
                 label="Cheque No"
+                variant="outlined"
                 fullWidth
                 value={newContact.chequeNo}
                 onChange={handleNewContactChange}
@@ -351,29 +331,40 @@ const NewChitPage = () => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleAddNewContact}>Add</Button>
+          <Button variant="secondary" onClick={handleCloseDialog}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleAddNewContact}>
+            Add
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
 };
 
-const generateMonths = (numberOfMonths) => {
+export default NewChitPage;
+
+// dateUtils.js
+const generateMonths = (numMonths) => {
   const months = [];
-  const currentDate = new Date();
-  for (let i = 0; i < numberOfMonths; i++) {
-    const monthYear = currentDate.toLocaleString('default', { month: 'short' }).toUpperCase() + ' ' + currentDate.getFullYear();
-    months.push(monthYear);
-    currentDate.setMonth(currentDate.getMonth() + 1);
+  const date = new Date();
+
+  for (let i = 0; i < numMonths; i++) {
+    const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+    const year = date.getFullYear();
+    months.push(`${month}${year}`);
+    date.setMonth(date.getMonth() + 1);
   }
+
   return months;
 };
 
 const calculateEndMonth = (startMonth) => {
-  const [startMonthName, startYear] = startMonth.split(' ');
-  const endMonthDate = new Date(startYear, monthStringToNumber(startMonthName) + 19);
-  return endMonthDate.toLocaleString('default', { month: 'short' }).toUpperCase() + ' ' + endMonthDate.getFullYear();
-};
+  const months = generateMonths(40);
+  const startIndex = months.indexOf(startMonth);
+  if (startIndex === -1) return '';
 
-export default NewChitPage;
+  const endIndex = startIndex + 19;
+  return months[endIndex] || '';
+};

@@ -7,63 +7,64 @@
   min-height: calc(100vh - 64px); /* Ensure container takes full height of the viewport minus header height */
   display: flex;
   justify-content: flex-start;
-}
-
-.title {
-  font-family: 'Roboto', sans-serif;
-  font-weight: bold;
-  font-size: 28px;
-  color: #333;
-}
-
-.pagination-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px; /* Add space above pagination */
-  margin-bottom: 20px; /* Adjust space at the bottom */
-}
-
-.divider {
-  margin: 20px 0;
-}
-
-.search-bar {
-  max-width: 400px;
-  margin: 0 auto 20px;
-}
-.table-container {
-  border: 2px solid #1976d2;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-top: 20px;
-}
-
-
-.table-head {
-  background-color: #0f172a;
-}
-
-.table-head .MuiTableCell-root {
-  color: white;
-}
-
-.table-body .MuiTableRow-root:hover {
-  background-color: #f1f1f1;
-}
-
-@media (max-width: 767px) {
   .title {
-    font-size: 24px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    font-size: 28px;
+    color: #333;
+  }
+  
+  .pagination-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Add space above pagination */
+    margin-bottom: 20px; /* Adjust space at the bottom */
   }
   
   .divider {
-    width: 100%;
-    border: 1px solid #ccc;
+    margin: 20px 0;
   }
   
   .search-bar {
-    max-width: 50%;
+    max-width: 400px;
+    margin: 0 auto 20px;
   }
+  .table-container {
+    border: 2px solid #1976d2;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  
+  
+  .table-head {
+    background-color: #0f172a;
+  }
+  
+  .table-head .MuiTableCell-root {
+    color: white;
+  }
+  
+  .table-body .MuiTableRow-root:hover {
+    background-color: #f1f1f1;
+  }
+  
+  @media (max-width: 767px) {
+    .title {
+      font-size: 24px;
+    }
+    
+    .divider {
+      width: 100%;
+      border: 1px solid #ccc;
+    }
+    
+    .search-bar {
+      max-width: 50%;
+    }
+  }
+  
 }
+

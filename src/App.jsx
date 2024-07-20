@@ -25,32 +25,26 @@ const App = () => {
   return (
     <Router>
 
-<div className="App">
-  <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/signup" element={<AuthPage />} />
-    <Route path="/testing" element={<Testing />} />
-    <Route path="/login" element={<Login />} />
-    
-    <Route path="/dashboard" element={<Dashboard />}>
-      <Route path="dashboardHome" element={<DashboardHome />} />
-      <Route path="dashboardHome/addContact" element={<AddContact />} />
-      <Route path="dashboardHome/addContact" element={<AddContact />} />
-      <Route path="dashboardHome/addContact/existingChits/:groupId" element={<ChitFundDetails />} />
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<AuthPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/contacts" element={<Contacts />} />
+          <Route path="/settings" element={<Settings />} />
 
-      {/* <Route path="dashboardHome/chitdetails" element={<ChitFundDetails groupId="gyltVx8F517nu95Yy7rp" />} /> */}
 
-      <Route path="contacts" element={<Contacts />} />
-      <Route path="settings" element={<Settings />} />
-      {/* <Route path="dashboardHome/1lakh" element={<OneLakhChit />} /> */}
-      <Route path="dashboardHome/NewChitpage/:chitAmount" element={<NewChitPage />} />
-      <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
-      <Route path="dashboardHome/existingChits/:groupId" element={<ChitFundDetails />} />
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route path="dashboardHome" element={<DashboardHome />} />
+            <Route path="dashboardHome/addContact" element={<AddContact />} />
+            <Route path="dashboardHome/addContact/existingChits/:groupId" element={<ChitFundDetails />} />
+            <Route path="dashboardHome/NewChitpage/:chitAmount" element={<NewChitPage />} />
+            <Route path="dashboardHome/existingChits" element={<ExistingChits />} />
+            <Route path="dashboardHome/existingChits/:groupId" element={<ChitFundDetails />} />
 
           </Route>
 
-        
-          {/* <Route path="/TwoNewChitPage" element={<TwoNewChitPage />} /> */}
+
         </Routes>
       </div>
     </Router>

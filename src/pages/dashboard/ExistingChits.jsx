@@ -6,11 +6,13 @@ import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 
 const ExistingChits = () => {
   const [groups, setGroups] = useState([]);
-  const [selectedValue, setSelectedValue] = useState('1'); 
+  const [selectedValue, setSelectedValue] = useState('1');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [groupToDelete, setGroupToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate(); 
+  const [currentPage, setCurrentPage] = useState(1);
+  const groupsPerPage = 4;// change accordingly  mf
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -18,7 +20,6 @@ const ExistingChits = () => {
         const snapshot = await getDocs(collection(db, 'groups'));
         const groupData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setGroups(groupData);
-        console.log(groupData)
       } catch (error) {
         console.error('Error fetching groups:', error);
       }
@@ -29,6 +30,7 @@ const ExistingChits = () => {
 
   const handleOptionClick = (value) => {
     setSelectedValue(value);
+    setCurrentPage(1); // Reset to first page when changing filter
   };
 
   const handleRowClick = (groupId) => {
@@ -60,11 +62,19 @@ const ExistingChits = () => {
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
   const filteredGroups = groups
     .filter(group => group.selectedValue === selectedValue)
     .filter(group => group.groupName.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  // Pagination logic
+  const indexOfLastGroup = currentPage * groupsPerPage;
+  const indexOfFirstGroup = indexOfLastGroup - groupsPerPage;
+  const currentGroups = filteredGroups.slice(indexOfFirstGroup, indexOfLastGroup);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className='existing-chit-page'>
@@ -95,6 +105,13 @@ const ExistingChits = () => {
             className='search-input'
           />
         </div>
+        <div className='pagination'>
+          {Array.from({ length: Math.ceil(filteredGroups.length / groupsPerPage) }, (_, i) => (
+            <button key={i} onClick={() => paginate(i + 1)} className={currentPage === i + 1 ? 'active' : ''}>
+              {i + 1}
+            </button>
+          ))}
+        </div>
         <table>
           <thead>
             <tr>
@@ -105,7 +122,7 @@ const ExistingChits = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredGroups.map(group => (
+            {currentGroups.map(group => (
               <tr key={group.id}>
                 <td onClick={() => handleRowClick(group.id)}>{group.groupName}</td>
                 <td onClick={() => handleRowClick(group.id)}>{group.NumberOfMembers || 0}</td>

@@ -3,6 +3,7 @@
   padding: 20px;
   font-family: 'Arial', sans-serif;
   min-height: 100vh;
+  background-color: #e2e2e2;
 }
 
 /* Flex container to separate left and right sections */
@@ -56,25 +57,21 @@ select {
   margin-top: 20px;
   padding: 10px 20px;
   font-size: 18px;
-  background-color: #28a745;
+  justify-content: center;
+  align-items: center;
   border: none;
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
   width: 100%;
+  display: flex;
 }
 
-.create-button:hover {
-  background-color: #218838;
-}
-
-/* Styling for the add contact button */
 .add-contact-button {
   margin-top: 10px;
   padding: 10px 20px;
   font-size: 18px;
-  background-color: #007bff;
   border: none;
   color: #fff;
   border-radius: 4px;
@@ -85,11 +82,11 @@ select {
   gap: 10px;
   transition: background-color 0.3s;
   width: 100%;
+  
 }
 
-.add-contact-button:hover {
-  background-color: #0056b3;
-}
+
+
 
 .add-contact-button svg {
   font-size: 20px;

@@ -1,4 +1,13 @@
-.available-contacts,
+.available-contacts {
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #fafafa;
+  box-sizing: border-box;
+}
+
 .selected-contacts {
   max-height: 300px;
   overflow-y: auto;
@@ -17,14 +26,18 @@
   margin-bottom: 5px;
   padding: 8px;
   border-radius: 4px;
-  /* background-color: #e9f5ff; */
   transition: background-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
 }
 
 .contact-row:hover,
 .chip:hover {
   background-color: #d8eaff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contact-row.selected {
+  background-color: #cfe3ff; /* Temporary highlight for selection */
 }
 
 .contact-info {
@@ -44,11 +57,11 @@
 }
 
 .chip {
-  background-color: rgba(233, 245, 255, 0.6); /* Blurred effect */
+  background-color: rgba(233, 245, 255, 0.6);
 }
 
 .chip:hover {
-  background-color: rgba(233, 245, 255, 1); /* Remove blur on hover */
+  background-color: rgba(233, 245, 255, 1);
 }
 
 .icon-button {

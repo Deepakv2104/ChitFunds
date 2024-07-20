@@ -186,7 +186,7 @@ const NewChitPage = () => {
   return (
     <div className="new-chit-page">
       <ToastContainer />
-      <h2>Create a New Group</h2>
+      <h2><center>Create a New Group</center></h2>
       <div className="flex-container">
         <div className="left-container">
           <div className="form-group">
@@ -226,9 +226,12 @@ const NewChitPage = () => {
             selectedContacts={selectedContacts}
             handleRemoveContact={handleRemoveContact}
           />
-          <Button variant="success" className="create-button" onClick={handleCreateGroup}>
+          <div  className="create-button">
+          <Button variant="success" width="full" onClick={handleCreateGroup}>
             Create
           </Button>
+          </div>
+         
         </div>
         <div className="right-container">
           <div className="form-group">
@@ -241,9 +244,10 @@ const NewChitPage = () => {
               className="search-input"
             />
           </div>
-          <Button variant="primary" className="add-contact-button" onClick={handleOpenDialog}>
+          <div className="add-contact-button" ><Button variant="primary" width="full" onClick={handleOpenDialog}>
             <AddIcon /> New Contact
-          </Button>
+          </Button></div>
+          
           <ContactList
             availableContacts={filteredContacts}
             handleAddContact={handleAddContact}

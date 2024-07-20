@@ -11,7 +11,7 @@ import Dashboard from './pages/dashboard/dashboard';
 import DashboardHome from './pages/dashboard/dashboardHome';
 import Contacts from './pages/dashboard/Contacts';
 import Settings from './pages/Settings';
-import AddContact from './pages/dashboard/AddContact';
+import AddContact from './pages/dashboard/addContact/AddContact';
 import ExistingChits from './pages/dashboard/ExistingChits';
 import './App.css';
 import GroupDetails from './pages/dashboard/GroupDetails';

@@ -313,7 +313,7 @@ const ChitFundDetails = () => {
   if (!data.groupData) return <Typography>No data available</Typography>;
 
   return (
-    <Box sx={{ minHeight: '100vh', p: { xs: 2, sm: 3 } }}>
+    <Box sx={{ minHeight: '100vh'}}>
       <Container maxWidth="xl">
         <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 2 }}>
           <Typography variant="h3" gutterBottom fontWeight="bold" color="primary" sx={{ fontSize: { xs: '1.75rem', sm: '3rem' } }}>

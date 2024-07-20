@@ -9,7 +9,7 @@ import NewContactRow from './NewContactRow';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TableRow, TableCell, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-
+import '../styles/dashboardHome.css'
 
 const AddContact = () => {
   const [contacts, setContacts] = useState([]);
@@ -60,11 +60,9 @@ const AddContact = () => {
   };
 
   return (
-    <Container className="addContact" maxWidth={false} disableGutters>
-      <Typography variant="h4" component="h1" className="title" gutterBottom>
-        Add Contacts
-      </Typography>
-      <Divider className="divider" />
+    <Container className="dashboardHome addContact" maxWidth={false} disableGutters>
+      <p className="title">Add Contacts </p>
+      {/* <hr className="divider" /> */}
       <SearchBar filterText={filterText} onFilterTextInput={setFilterText} />
       <Box sx={{ display: { xs: 'block', md: 'none' }, textAlign: 'center' }}>
         <Button

@@ -100,7 +100,6 @@ const DashboardHome = () => {
         {!isMobileView && (
           <>
             <br />
-            <hr className="divider" />
             <AddContact />
           </>
         )}

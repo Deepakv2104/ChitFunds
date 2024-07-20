@@ -4,6 +4,8 @@
   justify-content: space-between;
   background-color: #f2f2f2;
   padding: 20px;
+
+  
 }
 
 /* Sidebar styles */
@@ -55,9 +57,16 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 80vh; /* Set max height */
 }
 
 /* Table styles */
+.groups-table-container {
+  max-height: 60vh; /* Set max height for the table container */
+  overflow-y: auto; /* Enable vertical scrolling for the table */
+}
+
 .existing-chit-page table {
   width: 100%;
   border-collapse: collapse;
@@ -185,41 +194,5 @@
   .existing-chit-page .option.active {
     background-color: #b5e1ff;
     color: white;
-  }
-}
-/* Pagination styles */
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.pagination button {
-  margin: 0 5px;
-  padding: 8px 12px;
-  border: 1px solid #007bff;
-  background-color: white;
-  color: #007bff;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.pagination button:hover {
-  background-color: #007bff;
-  color: white;
-}
-
-.pagination button.active {
-  background-color: #007bff;
-  color: white;
-}
-
-@media only screen and (max-width: 768px) {
-  .pagination {
-    flex-wrap: wrap;
-  }
-
-  .pagination button {
-    margin: 5px;
   }
 }

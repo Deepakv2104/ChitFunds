@@ -31,7 +31,7 @@ const ContactRow = ({ contact, onDelete, index }) => {
             const months = contributionsDoc.data().months;
             for (let month in months) {
               if (months[month].memberContributions[contact.memberId]) {
-                totalBalance += months[month].memberContributions[contact.memberId].totalBalance;
+                totalBalance = months[month].memberContributions[contact.memberId].totalBalance;
               }
             }
             group.totalBalance = totalBalance;
@@ -85,7 +85,7 @@ const ContactRow = ({ contact, onDelete, index }) => {
       </TableRow>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md" classes={{ paper: 'custom-dialog' }}>
         <DialogTitle>
-          <Typography variant="h5">Contact Details</Typography>
+          <Typography variant="h6">Contact Details</Typography>
         </DialogTitle>
         <DialogContent>
         <Box mb={2} className="personal-info" display="flex" alignItems="center">
@@ -95,7 +95,7 @@ const ContactRow = ({ contact, onDelete, index }) => {
           src={contact.avatarUrl} // Assuming you have an avatarUrl property
           sx={{ width: 100, height: 100, marginBottom: 2 }}
         />
-        <Typography variant="h6" sx={{ textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ textAlign: 'center' }}>
           {contact.name}
         </Typography>
       </Box>
@@ -138,9 +138,9 @@ const ContactRow = ({ contact, onDelete, index }) => {
               </Tabs>
               {filteredGroups.map((group, index) => (
                 <TabPanel key={group.groupId} value={selectedTab} index={index}>
-                  <Typography variant="subtitle1">
+                  {/* <Typography variant="subtitle1">
                     <strong>Group ID:</strong> {group.groupId}
-                  </Typography>
+                  </Typography> */}
                   <Typography variant="subtitle1">
                     <strong>Group Name:</strong> {group.groupName}
                   </Typography>

@@ -18,7 +18,7 @@ const DashboardFooter = () => {
         <MdPeople className="icon" size={24} />
         <span className="text">Contact</span>
       </button>
-      <button className="tab-button" onClick={() => navigate(currentUser ? 'settings' : '/signup')}>
+      <button className="tab-button" onClick={() => navigate(currentUser ? 'dashboardHome/settings' : '/signup')}>
         <MdSettings className="icon" size={24} />
         <span className="text">Profile</span>
       </button>

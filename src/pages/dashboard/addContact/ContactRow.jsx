@@ -29,17 +29,33 @@ const ContactRow = ({ contact, onDelete, index }) => {
             return acc;
           }, {});
 
+          
           const updatedGroups = groups.map(group => {
             const months = contributionsData[group.groupId] || {};
-            let totalBalance = 0;
-            for (let month in months) {
-              if (months[month].memberContributions[contact.memberId]) {
-                totalBalance += months[month].memberContributions[contact.memberId].totalBalance;
+            let lastTotalBalance = 0;
+          
+            // Assuming months are already sorted, find the last month with a valid balance
+            const monthKeys = Object.keys(months);
+            for (let i = monthKeys.length - 1; i >= 0; i--) {
+              const month = monthKeys[i];
+              const memberContribution = months[month].memberContributions[contact.memberId];
+              
+              if (memberContribution && typeof memberContribution.totalBalance === 'number') {
+                lastTotalBalance = memberContribution.totalBalance;
+                break; // Exit the loop once we find the last valid totalBalance
               }
             }
-            return { ...group, totalBalance };
+          
+            console.log(`Final Total Balance for group ${group.groupName}: ${lastTotalBalance}`);
+          
+            return { ...group, totalBalance: lastTotalBalance };
           });
-
+          
+          
+          
+          
+          
+          
           setGroupData(updatedGroups);
           setFilteredGroups(updatedGroups);
         } else {
@@ -142,21 +158,29 @@ const ContactRow = ({ contact, onDelete, index }) => {
                 ))}
               </Tabs>
               {filteredGroups.map((group, index) => (
-                <TabPanel key={group.groupId} value={selectedTab} index={index}>
-                  <Typography variant="subtitle1">
-                    <strong>Group Name:</strong> {group.groupName}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>Chit Amount:</strong> {group.chitAmount} Lakh
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>Total Balance:</strong> {group.totalBalance}
-                  </Typography>
-                  <Button>
-                    <Link to={`existingChits/${group.groupId}`}>Go to chit</Link>
-                  </Button>
-                </TabPanel>
-              ))}
+  <TabPanel key={group.groupId} value={selectedTab} index={index}>
+    <Typography variant="subtitle1">
+      <strong>Group Name:</strong> {group.groupName}
+    </Typography>
+    <Typography variant="subtitle1">
+      <strong>Chit Amount:</strong> {group.chitAmount} Lakh
+    </Typography>
+    <Typography variant="subtitle1">
+      <strong>Total Balance:</strong> 
+      <span style={{ color: group.totalBalance < 0 ? 'green' : 'red' }}>
+      {
+  group.totalBalance < 0 
+    ? `+${Math.abs(group.totalBalance)}`  // Display as +amount for negative totalBalance
+    : group.totalBalance                  // Display as amount for non-negative totalBalance
+}
+      </span>
+    </Typography>
+    <Button>
+      <Link to={`existingChits/${group.groupId}`}>Go to chit</Link>
+    </Button>
+  </TabPanel>
+))}
+
             </>
           )}
         </DialogContent>

@@ -1,74 +1,126 @@
 /* Homepage styles */
 .homepage {
-    width: 100%;
-    font-family: 'Roboto', sans-serif;
-    min-height: 100vh;
-    /* margin-top: 50px; */
- 
-  }
-  
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+}
+
+.homepage .container {
+  display: flex;
+  flex-direction: row; /* Flex column layout by default */
+  padding: 20px;
+}
+
+.homepage .left-section,
+.homepage .right-section {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.homepage .left-section h1 {
+  font-size: 42px; /* Increase font size */
+  line-height: 48px; /* Adjust line height */
+  font-weight: bold; /* Make font bold */
+}
+
+.homepage .left-section h2 {
+  font-size: 28px; /* Increase font size */
+  font-weight: bold; /* Make font bold */
+}
+
+.homepage .left-section p {
+  font-size: 18px; /* Increase font size */
+  line-height: 24px; /* Adjust line height */
+  font-weight: bold; /* Make font bold */
+}
+
+.homepage .left-section .button-row {
+  display: flex;
+  gap: 10px; /* Adjust the gap between buttons */
+}
+
+.homepage .right-section {
+  display: flex;
+  justify-content: center;
+  border: 3px solid #454242; /* Border around the right section */
+  border-radius: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Media query for tablet view */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
   .homepage .container {
     display: flex;
-    flex-direction: column; /* Flex column layout by default */
-    padding: 20px;
+    flex-direction: row; /* Flex row layout for screens larger than 768px */
   }
-  
+
   .homepage .left-section,
   .homepage .right-section {
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 20px;
+    width: 50%;
+    margin-bottom: 0;
   }
+
   .homepage .left-section h1 {
-    /* margin-top: 20px; */
-    font-size: 42px; /* Increase font size */
-    line-height: 48px; /* Adjust line height */
-    font-weight: bold; /* Make font bold */
+    font-size: 36px; /* Adjust font size for tablet */
+    line-height: 42px;
   }
-  
+
   .homepage .left-section h2 {
-    /* margin-top: 20px; */
-    font-size: 28px; /* Increase font size */
-    /* line-height: 44px; */ /* You can adjust line height if needed */
-    font-weight: bold; /* Make font bold */
+    font-size: 24px; /* Adjust font size for tablet */
   }
-  
+
   .homepage .left-section p {
-    font-size: 18px; /* Increase font size */
-    line-height: 24px; /* Adjust line height */
-    font-weight: bold; /* Make font bold */
+    font-size: 16px; /* Adjust font size for tablet */
   }
-  
+}
 
-  .homepage .left-section .button-row {
-    display: flex;
-    gap: 10px; /* Adjust the gap between buttons */
+/* Media query for desktop view */
+@media screen and (min-width: 1025px) {
+
+
+  .homepage .left-section h1 {
+    font-size: 48px; /* Larger font size for large screens */
+    line-height: 54px;
   }
-  
-  
+
+  .homepage .left-section h2 {
+    font-size: 32px; /* Larger font size for large screens */
+  }
+
+  .homepage .left-section p {
+    font-size: 20px; /* Larger font size for large screens */
+    line-height: 28px;
+  }
+
   .homepage .right-section {
-    display: flex;
-    justify-content: center;
-    border: 3px solid #454242; /* Border around the right section */
-    /* margin: 10px; */
-   border-radius: 10px;
-   width: 100%;
-   margin-bottom: 20px;
-   
+    margin-bottom: 0;
+    padding: 30px; /* More padding for large screens */
   }
-  
-  /* Media query for mobile view */
-  @media screen and (min-width: 768px) {
-     .homepage .container {
-      flex-direction: row; /* Flex row layout for screens larger than 768px */
-    }
-  
-    .homepage .left-section,
-    .homepage .right-section {
-      width: 50%;
-      margin-bottom: 0;
-    }
-  }
-  
+}
 
-  
+/* Media query for small mobile view */
+@media screen and (max-width: 430px) {
+  .homepage .container {
+    display: flex;
+    flex-direction: column; /* Flex row layout for screens larger than 768px */
+  }
+
+  .homepage .left-section h1 {
+    font-size: 24px; /* Smaller font size for small screens */
+    line-height: 30px;
+  }
+
+  .homepage .left-section h2 {
+    font-size: 20px; /* Smaller font size for small screens */
+  }
+
+  .homepage .left-section p {
+    font-size: 14px; /* Smaller font size for small screens */
+  }
+
+  .homepage .right-section {
+    padding: 15px; /* Less padding for small screens */
+  }
+}

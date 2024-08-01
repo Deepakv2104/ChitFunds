@@ -119,13 +119,16 @@ const ChitFundDetails = () => {
   }, [data]);
 
   const calculateMonthlyAmount = (memberId, month) => {
-    const baseAmount = monthlyAmount;
-    const monthIndex = sortedMonths.indexOf(month);
-    const isWinner = data.previousWinners.includes(memberId);
-    const isAfterFirstMonth = monthIndex > 0;
-    const additionalAmount = (isWinner && isAfterFirstMonth) ? 1000 * parseInt(data.groupData.selectedValue) : 0;
-    return baseAmount + additionalAmount;
-  }
+    const baseAmount = monthlyAmount; // Base amount depending on chit value
+    const currentMonthIndex = sortedMonths.indexOf(month); // Index of the current month
+    const previousWinner = sortedMonths.slice(0, currentMonthIndex).some(previousMonth => {
+      return data.contributionsData.months[previousMonth]?.memberContributions[memberId]?.winner;
+    });
+    
+    const additionalAmount = previousWinner ? 1000 * parseInt(data.groupData.selectedValue) : 0; // Additional amount if the member won previously (excluding the current month)
+    return baseAmount + additionalAmount; // Return the total monthly amount
+  };
+  
 
   useEffect(() => {
     if (sortedMonths.length > 0 && !selectedMonth) {
@@ -169,31 +172,18 @@ const ChitFundDetails = () => {
         }
       };
   
-      const handleInputChange = (memberId, field, value) => {
-        setEditableData(prevData => {
-          const newData = {
-            ...prevData,
-            [memberId]: {
-              ...prevData[memberId],
-              [field]: field === 'totalBalance' ? (parseFloat(value) || 0) : value,
-            }
-          };
-      
-          if (field === 'amount') {
-            const { balance, advancePayment, totalBalance } = calculateBalanceAndPayment(value, prevData[memberId], memberId, selectedMonth);
-            newData[memberId].balance = balance;
-            newData[memberId].advancePayment = advancePayment;
-            newData[memberId].totalBalance = totalBalance;
-            newData[memberId].paid = balance === 0 || totalBalance <= 0;
-          }
-      
-          return newData;
-        });
-      };
-      
+      if (field === 'amount') {
+        const { balance, advancePayment, totalBalance } = calculateBalanceAndPayment(value, prevData[memberId], memberId, selectedMonth);
+        newData[memberId].balance = balance;
+        newData[memberId].advancePayment = advancePayment;
+        newData[memberId].totalBalance = totalBalance;
+        newData[memberId].paid = balance === 0 || totalBalance <= 0;
+      }
+  
       return newData;
     });
   };
+  
   
 
   const calculateBalanceAndPayment = (amount, prevData, memberId, month) => {

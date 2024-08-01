@@ -1,0 +1,29 @@
+.settings-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+  }
+  
+  .settings-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    background: #fff;
+  }
+  
+  .user-info-card {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 8px;
+  }
+  
+  .logout-button {
+    /* Additional styling for the logout button */
+    font-weight: bold;
+    border-radius: 5px;
+    height: 40px;
+  }
+  
